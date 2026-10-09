@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Count Pemilu - E-Voting</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); 
+            min-height: 100vh; 
+            color: #fff; 
+            padding: 30px 20px; 
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { font-size: 2.2rem; font-weight: 700; color: #4facfe; margin-bottom: 6px; }
+        header p { color: #a1c4fd; font-size: 0.95rem; }
+
+        .card { 
+            background: rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.18); 
+            border-radius: 20px; 
+            padding: 25px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.37); 
+            margin-bottom: 25px;
+        }
+
+        /* Top Bar Stat Summary */
+        .summary-box {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: rgba(0, 242, 254, 0.1);
+            border: 1px solid rgba(0, 242, 254, 0.3);
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .stat-item h2 { font-size: 2rem; color: #00f2fe; }
+        .stat-item p { font-size: 0.85rem; color: #a1c4fd; }
+
+        /* Style Per Paslon (Gaya Pemilu) */
+        .results-container { display: flex; flex-direction: column; gap: 20px; }
+        .candidate-result-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .candidate-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #00f2fe;
+            flex-shrink: 0;
+        }
+        .candidate-details { flex: 1; }
+        .candidate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .candidate-name { font-size: 1.1rem; font-weight: 700; color: #fff; }
+        .candidate-vote-count { font-size: 0.95rem; color: #a1c4fd; }
+        .candidate-percentage { font-size: 1.3rem; font-weight: 800; color: #00f2fe; }
+
+        /* Progress Bar Pemilu */
+        .progress-bg {
+            width: 100%;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            border-radius: 10px;
+            transition: width 0.8s ease-in-out;
+        }
+
+        .chart-container { max-width: 320px; margin: 20px auto 0 auto; }
+        #statusText { text-align: center; color: #a1c4fd; font-size: 0.85rem; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1><i class="fas fa-chart-line"></i> Real Count Pemilihan</h1>
+        <p>Hasil Perhitungan Suara Digital Secara Transparan & Real-Time</p>
+    </header>
+
+    <div class="summary-box">
+        <div class="stat-item">
+            <h2 id="totalVotes">0</h2>
+            <p>Total Suara Masuk</p>
+        </div>
+        <div class="stat-item">
+            <h2 id="lastUpdated">--:--</h2>
+            <p>Pembaruan Terakhir</p>
+        </div>
+    </div>
+
+    <!-- Perolehan Suara Per Paslon (Gaya Pemilu) -->
+    <div class="card">
+        <h3 style="margin-bottom: 20px; color: #00f2fe;"><i class="fas fa-poll-h"></i> Rekapitulasi Suara Paslon</h3>
+        <div id="resultsList" class="results-container">
+            <!-- Data Hasil Suara di-render otomatis via JS -->
+        </div>
+    </div>
+
+    <!-- Grafik Pie/Doughnut -->
+    <div class="card">
+        <h3 style="margin-bottom: 15px; color: #00f2fe; text-align: center;"><i class="fas fa-chart-pie"></i> Diagram Proporsi</h3>
+        <div class="chart-container">
+            <canvas id="voteChart"></canvas>
+        </div>
+    </div>
+
+    <p id="statusText"><i class="fas fa-sync fa-spin"></i> Menyinkronkan data dengan server...</p>
+</div>
+
+<script>
+    // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP KAMU DI SINI
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
+
+    let myChart = null;
+
+    async function fetchRealCount() {
+        try {
+            const res = await fetch(SCRIPT_URL);
+            const data = await res.json();
+
+            const candidates = data.candidates || [];
+            const votesData = data.votes || {};
+
+            let totalVotes = 0;
+            Object.values(votesData).forEach(v => totalVotes += v);
+
+            document.getElementById("totalVotes").innerText = totalVotes;
+            document.getElementById("lastUpdated").innerText = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            renderPemiluStyleResults(candidates, votesData, totalVotes);
+            updateChart(candidates, votesData);
+
+            document.getElementById("statusText").innerHTML = '✅ Terhubung secara Real-Time ke Server';
+        } catch (err) {
+            console.error(err);
+            document.getElementById("statusText").innerHTML = '<span style="color:#f44336;">❌ Gagal memperbarui data dari server.</span>';
+        }
+    }
+
+    function renderPemiluStyleResults(candidates, votesData, totalVotes) {
+        const container = document.getElementById("resultsList");
+        container.innerHTML = "";
+
+        if (candidates.length === 0) {
+            container.innerHTML = "<p style='text-align:center; color:#a1c4fd;'>Belum ada data paslon.</p>";
+            return;
+        }
+
+        candidates.forEach((c) => {
+            const count = votesData[c.name] || 0;
+            const percentage = totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(1) : "0.0";
+
+            const div = document.createElement("div");
+            div.className = "candidate-result-card";
+            div.innerHTML = `
+                <img src="${c.photo || 'https://via.placeholder.com/150'}" class="candidate-img" alt="${c.name}" onerror="this.src='https://via.placeholder.com/150'">
+                <div class="candidate-details">
+                    <div class="candidate-header">
+                        <div>
+                            <div class="candidate-name">${c.name}</div>
+                            <div class="candidate-vote-count">${count} Suara</div>
+                        </div>
+                        <div class="candidate-percentage">${percentage}%</div>
+                    </div>
+                    <div class="progress-bg">
+                        <div class="progress-fill" style="width: ${percentage}%;"></div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function updateChart(candidates, votesData) {
+        const labels = candidates.map(c => c.name);
+        const votes = candidates.map(c => votesData[c.name] || 0);
+
+        const ctx = document.getElementById('voteChart').getContext('2d');
+        if (myChart) myChart.destroy();
+
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: votes,
+                    backgroundColor: ['#00f2fe', '#4facfe', '#00c6ff', '#0072ff', '#a1c4fd', '#38ef7d'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#fff' } }
+                }
+            }
+        });
+    }
+
+    // Panggil saat pertama buka & otomatis update tiap 5 detik
+    fetchRealCount();
+    setInterval(fetchRealCount, 5000);
+</script>
+
+</body>
+</html>
