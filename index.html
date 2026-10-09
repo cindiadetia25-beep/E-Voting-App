@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Voting</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f9; }
+    .card { background: white; padding: 15px; margin: 15px auto; max-width: 300px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    button { background-color: #007bff; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; }
+    button:disabled { background-color: #cccccc; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <h2>Silakan Pilih Kandidat Anda</h2>
+  
+  <div class="card">
+    <h3>Kandidat 01</h3>
+    <p>Nama Paslon A</p>
+    <button onclick="kirimSuara('Kandidat 01')" id="btn1">Pilih 01</button>
+  </div>
+
+  <div class="card">
+    <h3>Kandidat 02</h3>
+    <p>Nama Paslon B</p>
+    <button onclick="kirimSuara('Kandidat 02')" id="btn2">Pilih 02</button>
+  </div>
+
+  <h3 id="status" style="color: blue;"></h3>
+
+  <script>
+    // MASUKKAN URL DARI GOOGLE APPS SCRIPT (LANGKAH 1) DI DALAM TANDA PETIK DI BAWAH INI:
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec"; 
+
+    function kirimSuara(pilihan) {
+      if (!confirm("Apakah Anda yakin ingin memilih " + pilihan + "?")) return;
+
+      // Matikan tombol agar pemilih tidak menekan 2 kali
+      document.getElementById('btn1').disabled = true;
+      document.getElementById('btn2').disabled = true;
+      document.getElementById('status').innerText = "Mengirim suara...";
+
+      // Mengirim data ke Google Sheets melalui Apps Script
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kandidat: pilihan })
+      })
+      .then(() => {
+        document.getElementById('status').style.color = "green";
+        document.getElementById('status').innerText = "Terima kasih! Suara Anda telah berhasil dikirim.";
+        localStorage.setItem('voted', 'true');
+      })
+      .catch(err => {
+        document.getElementById('status').style.color = "red";
+        document.getElementById('status').innerText = "Gagal mengirim suara. Coba lagi.";
+        document.getElementById('btn1').disabled = false;
+        document.getElementById('btn2').disabled = false;
+      });
+    }
+
+    // Cek jika pemilih sudah pernah memilih di HP yang sama
+    if (localStorage.getItem('voted')) {
+      document.getElementById('btn1').disabled = true;
+      document.getElementById('btn2').disabled = true;
+      document.getElementById('status').innerText = "Anda sudah pernah memilih di perangkat ini.";
+    }
+  </script>
+</body>
+</html>
