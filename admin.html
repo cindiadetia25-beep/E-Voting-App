@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Real Count E-Voting</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h2 { text-align: center; color: #1a73e8; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 25px; }
+        .chart-box {
+            position: relative;
+            max-width: 450px;
+            margin: 0 auto 30px auto;
+        }
+        .stats-box {
+            display: flex;
+            justify-content: space-around;
+            background: #eef3fc;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-item h3 { margin: 0; font-size: 24px; color: #1a73e8; }
+        .stat-item p { margin: 5px 0 0 0; font-size: 13px; color: #555; }
+        .btn-refresh {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn-refresh:hover { background: #1557b0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Dashboard Real Count</h2>
+    <p class="subtitle">Hasil Perolehan Suara Pemilihan E-Voting</p>
+
+    <div class="chart-box">
+        <canvas id="voteChart"></canvas>
+    </div>
+
+    <div class="stats-box">
+        <div class="stat-item">
+            <h3 id="totalVotes">0</h3>
+            <p>Total Suara Masuk</p>
+        </div>
+        <div class="stat-item">
+            <h3 id="statusText">Memuat...</h3>
+            <p>Status Koneksi</p>
+        </div>
+    </div>
+
+    <button class="btn-refresh" onclick="fetchData()">🔄 Perbarui Data Manual</button>
+</div>
+
+<script>
+    // URL Google Apps Script Web App kamu
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqV5o9e88g1k8a0Tj_ZkGZ_xQ0R9z2l3x-4Y5Z6A/exec"; // Sesuaikan jika ada URL Apps Script khusus
+
+    let myChart = null;
+
+    async function fetchData() {
+        document.getElementById("statusText").innerText = "Memuat...";
+        try {
+            const response = await fetch(SCRIPT_URL);
+            const data = await response.json();
+
+            const labels = Object.keys(data);
+            const votes = Object.values(data);
+            const total = votes.reduce((a, b) => a + b, 0);
+
+            document.getElementById("totalVotes").innerText = total;
+            document.getElementById("statusText").innerText = "Terhubung";
+
+            updateChart(labels, votes);
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById("statusText").innerText = "Gagal Memuat";
+        }
+    }
+
+    function updateChart(labels, votes) {
+        const ctx = document.getElementById('voteChart').getContext('2d');
+        
+        if (myChart) {
+            myChart.destroy();
+        }
+
+        myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah Suara',
+                    data: votes,
+                    backgroundColor: ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#9C27B0'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
+
+    // Ambil data pertama kali saat halaman dibuka
+    fetchData();
+
+    // Auto-refresh data setiap 10 detik
+    setInterval(fetchData, 10000);
+</script>
+
+</body>
+</html>
