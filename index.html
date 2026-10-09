@@ -25,7 +25,6 @@
             margin-bottom: 30px; 
         }
 
-        /* Card Glassmorphism Serupa dengan Halaman Admin */
         .card { 
             background: rgba(255, 255, 255, 0.08); 
             backdrop-filter: blur(12px); 
@@ -113,6 +112,30 @@
             padding: 12px;
             border-radius: 8px;
         }
+
+        /* Tampilan Kotak Terkunci / Sudah Memilih */
+        .voted-card {
+            background: rgba(244, 67, 54, 0.12);
+            border: 2px solid rgba(244, 67, 54, 0.5);
+            border-radius: 20px;
+            padding: 40px 20px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+        }
+        .voted-card i {
+            font-size: 3.5rem;
+            color: #ff5252;
+            margin-bottom: 15px;
+        }
+        .voted-card h2 {
+            font-size: 1.5rem;
+            color: #ff5252;
+            margin-bottom: 10px;
+        }
+        .voted-card p {
+            color: #a1c4fd;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 <body>
@@ -124,15 +147,38 @@
     </header>
 
     <div id="loading"><i class="fas fa-spinner fa-spin"></i> Memuat daftar Paslon terbaru...</div>
+    
+    <!-- Kontainer jika belum memilih -->
     <div id="candidatesContainer" class="candidates-grid"></div>
+    
+    <!-- Kontainer jika sudah pernah memilih pada perangkat ini -->
+    <div id="votedContainer" style="display: none;" class="voted-card">
+        <i class="fas fa-user-check"></i>
+        <h2>Akses Dibatasi</h2>
+        <p>Anda sudah menggunakan hak pilih Anda pada perangkat ini.</p>
+    </div>
+
     <div id="message"></div>
 </div>
 
 <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP KAMU DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
+    function checkVotingStatus() {
+        const hasVoted = localStorage.getItem("evoting_has_voted");
+        if (hasVoted === "true") {
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("candidatesContainer").style.display = "none";
+            document.getElementById("votedContainer").style.display = "block";
+            return true;
+        }
+        return false;
+    }
+
     async function loadCandidates() {
+        // Jika sudah pernah memilih di perangkat ini, hentikan load paslon
+        if (checkVotingStatus()) return;
+
         try {
             const res = await fetch(SCRIPT_URL);
             const data = await res.json();
@@ -182,10 +228,20 @@
             const result = await res.json();
 
             if (result.status === "success") {
+                // Kunci perangkat ini di LocalStorage
+                localStorage.setItem("evoting_has_voted", "true");
+
                 msgDiv.style.color = "#81C784";
                 msgDiv.style.background = "rgba(76, 175, 80, 0.2)";
                 msgDiv.style.border = "1px solid #4CAF50";
                 msgDiv.innerHTML = "✅ Terima kasih! Suara Anda telah berhasil direkam.";
+
+                // Sembunyikan kartu paslon dan munculkan peringatan terkunci setelah 2 detik
+                setTimeout(() => {
+                    msgDiv.style.display = "none";
+                    document.getElementById("candidatesContainer").style.display = "none";
+                    document.getElementById("votedContainer").style.display = "block";
+                }, 2000);
             } else {
                 alert("Gagal mengirim suara: " + result.message);
                 buttons.forEach(b => b.disabled = false);
@@ -198,11 +254,7 @@
         }
     }
 
-    // Panggil saat pertama kali halaman dibuka
     loadCandidates();
-
-    // Otomatis cek pembaruan paslon dari server setiap 10 detik
-    setInterval(loadCandidates, 10000);
 </script>
 
 </body>
