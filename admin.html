@@ -3,139 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin - Real Count E-Voting</title>
+    <title>Admin Dashboard - E-Voting Modern</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        h2 { text-align: center; color: #1a73e8; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 25px; }
-        .chart-box {
-            position: relative;
-            max-width: 450px;
-            margin: 0 auto 30px auto;
-        }
-        .stats-box {
-            display: flex;
-            justify-content: space-around;
-            background: #eef3fc;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .stat-item h3 { margin: 0; font-size: 24px; color: #1a73e8; }
-        .stat-item p { margin: 5px 0 0 0; font-size: 13px; color: #555; }
-        .btn-refresh {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background: #1a73e8;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .btn-refresh:hover { background: #1557b0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); min-height: 100vh; color: #fff; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 { font-size: 2.2rem; font-weight: 700; color: #4facfe; margin-bottom: 5px; }
+        header p { color: #a1c4fd; font-size: 0.95rem; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+
+        .card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .card h2 { font-size: 1.3rem; margin-bottom: 20px; color: #00f2fe; display: flex; align-items: center; gap: 10px; }
+
+        .stats-container { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 20px; }
+        .stat-box { flex: 1; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.3); padding: 15px; border-radius: 12px; text-align: center; }
+        .stat-box h3 { font-size: 1.8rem; color: #00f2fe; }
+        .stat-box p { font-size: 0.8rem; color: #a1c4fd; margin-top: 5px; }
+
+        .chart-wrapper { position: relative; max-width: 320px; margin: 0 auto; }
+
+        .paslon-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .paslon-item { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.05); padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .paslon-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #00f2fe; }
+        .paslon-info { flex: 1; }
+        .paslon-info input { width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 6px 10px; border-radius: 6px; color: #fff; font-size: 0.9rem; margin-bottom: 4px; }
+        .paslon-info input::placeholder { color: rgba(255,255,255,0.5); }
+
+        .btn { padding: 10px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(45deg, #00c6ff, #0072ff); color: #fff; width: 100%; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-add { background: rgba(76, 175, 80, 0.2); border: 1px solid #4CAF50; color: #81C784; width: 100%; margin-bottom: 12px; }
+        .btn-add:hover { background: rgba(76, 175, 80, 0.4); }
+        .btn-danger { background: rgba(244, 67, 54, 0.2); border: 1px solid #f44336; color: #e57373; padding: 6px 10px; font-size: 0.8rem; }
+        .btn-danger:hover { background: rgba(244, 67, 54, 0.4); }
+
+        #statusText { text-align: center; font-size: 0.85rem; color: #a1c4fd; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Dashboard Real Count</h2>
-    <p class="subtitle">Hasil Perolehan Suara Pemilihan E-Voting</p>
+    <header>
+        <h1><i class="fas fa-chart-pie"></i> Dashboard Admin E-Voting</h1>
+        <p>Kelola data Paslon dan pantau perolehan suara secara Real-Time</p>
+    </header>
 
-    <div class="chart-box">
-        <canvas id="voteChart"></canvas>
-    </div>
-
-    <div class="stats-box">
-        <div class="stat-item">
-            <h3 id="totalVotes">0</h3>
-            <p>Total Suara Masuk</p>
+    <div class="grid">
+        <!-- Kolom Kiri: Real Count -->
+        <div class="card">
+            <h2><i class="fas fa-poll"></i> Hasil Perolehan Suara</h2>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <h3 id="totalVotes">0</h3>
+                    <p>Total Suara Masuk</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="connStatus"><i class="fas fa-sync fa-spin"></i></h3>
+                    <p>Status Server</p>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="voteChart"></canvas>
+            </div>
         </div>
-        <div class="stat-item">
-            <h3 id="statusText">Memuat...</h3>
-            <p>Status Koneksi</p>
+
+        <!-- Kolom Kanan: Kelola Paslon -->
+        <div class="card">
+            <h2><i class="fas fa-users-cog"></i> Kelola Paslon</h2>
+            <div id="paslonContainer" class="paslon-list">
+                <!-- Data Paslon di-render via Javascript -->
+            </div>
+            <button class="btn btn-add" onclick="addPaslonRow()"><i class="fas fa-plus"></i> Tambah Paslon Baru</button>
+            <button class="btn btn-primary" onclick="saveCandidates()"><i class="fas fa-save"></i> Simpan Perubahan Paslon</button>
+            <p id="statusText"></p>
         </div>
     </div>
-
-    <button class="btn-refresh" onclick="fetchData()">🔄 Perbarui Data Manual</button>
 </div>
 
 <script>
-    // URL Google Apps Script Web App kamu
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqV5o9e88g1k8a0Tj_ZkGZ_xQ0R9z2l3x-4Y5Z6A/exec"; // Sesuaikan jika ada URL Apps Script khusus
+    // MASUKKAN URL GOOGLE APPS SCRIPT KAMU DI SINI
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqV5o9e88g1k8a0Tj_ZkGZ_xQ0R9z2l3x-4Y5Z6A/exec";
 
     let myChart = null;
+    let currentCandidates = [];
 
-    async function fetchData() {
-        document.getElementById("statusText").innerText = "Memuat...";
+    async function loadData() {
+        document.getElementById("statusText").innerText = "Memuat data...";
         try {
-            const response = await fetch(SCRIPT_URL);
-            const data = await response.json();
+            const res = await fetch(SCRIPT_URL);
+            const data = await res.json();
 
-            const labels = Object.keys(data);
-            const votes = Object.values(data);
+            // Handle Perolehan Suara
+            const votesData = data.votes || {};
+            const labels = Object.keys(votesData);
+            const votes = Object.values(votesData);
             const total = votes.reduce((a, b) => a + b, 0);
 
             document.getElementById("totalVotes").innerText = total;
-            document.getElementById("statusText").innerText = "Terhubung";
+            document.getElementById("connStatus").innerHTML = '<i class="fas fa-check-circle" style="color: #00f2fe;"></i>';
 
             updateChart(labels, votes);
-        } catch (error) {
-            console.error("Error:", error);
-            document.getElementById("statusText").innerText = "Gagal Memuat";
+
+            // Handle Paslon (hanya render jika belum ada perubahan input manual)
+            if (data.candidates && currentCandidates.length === 0) {
+                currentCandidates = data.candidates;
+                renderPaslonInputs();
+            }
+            document.getElementById("statusText").innerText = "Data diperbarui pada " + new Date().toLocaleTimeString();
+        } catch (err) {
+            console.error(err);
+            document.getElementById("connStatus").innerHTML = '<i class="fas fa-times-circle" style="color: #f44336;"></i>';
+            document.getElementById("statusText").innerText = "Gagal terhubung ke server.";
+        }
+    }
+
+    function renderPaslonInputs() {
+        const container = document.getElementById("paslonContainer");
+        container.innerHTML = "";
+
+        currentCandidates.forEach((c, index) => {
+            const div = document.createElement("div");
+            div.className = "paslon-item";
+            div.innerHTML = `
+                <img src="${c.photo || 'https://via.placeholder.com/150'}" class="paslon-img" id="img-prev-${index}" onerror="this.src='https://via.placeholder.com/150'">
+                <div class="paslon-info">
+                    <input type="text" value="${c.name}" placeholder="Nama Paslon" onchange="updateCandidateData(${index}, 'name', this.value)">
+                    <input type="text" value="${c.photo}" placeholder="URL Foto (https://...)" onchange="updateCandidateData(${index}, 'photo', this.value); document.getElementById('img-prev-${index}').src=this.value;">
+                </div>
+                <button class="btn btn-danger" onclick="removePaslonRow(${index})"><i class="fas fa-trash"></i></button>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function updateCandidateData(index, key, value) {
+        currentCandidates[index][key] = value;
+    }
+
+    function addPaslonRow() {
+        currentCandidates.push({ id: Date.now(), name: "Paslon Baru", photo: "https://via.placeholder.com/150" });
+        renderPaslonInputs();
+    }
+
+    function removePaslonRow(index) {
+        currentCandidates.splice(index, 1);
+        renderPaslonInputs();
+    }
+
+    async function saveCandidates() {
+        document.getElementById("statusText").innerText = "Menyimpan perubahan...";
+        try {
+            const res = await fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "updateCandidates", candidates: currentCandidates })
+            });
+            const result = await res.json();
+            if (result.status === "success") {
+                alert("Daftar paslon berhasil disimpan!");
+                loadData();
+            } else {
+                alert("Gagal menyimpan: " + result.message);
+            }
+        } catch (err) {
+            alert("Terjadi kesalahan saat menyimpan data paslon.");
         }
     }
 
     function updateChart(labels, votes) {
         const ctx = document.getElementById('voteChart').getContext('2d');
-        
-        if (myChart) {
-            myChart.destroy();
-        }
+        if (myChart) myChart.destroy();
 
         myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Jumlah Suara',
                     data: votes,
-                    backgroundColor: ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#9C27B0'],
-                    borderWidth: 1
+                    backgroundColor: ['#00f2fe', '#4facfe', '#00c6ff', '#0072ff', '#a1c4fd'],
+                    borderWidth: 0
                 }]
             },
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { position: 'bottom' }
+                    legend: { position: 'bottom', labels: { color: '#fff' } }
                 }
             }
         });
     }
 
-    // Ambil data pertama kali saat halaman dibuka
-    fetchData();
-
-    // Auto-refresh data setiap 10 detik
-    setInterval(fetchData, 10000);
+    // Load data otomatis saat pertama buka & refresh tiap 10 detik
+    loadData();
+    setInterval(loadData, 10000);
 </script>
 
 </body>
