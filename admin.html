@@ -28,11 +28,15 @@
         .chart-wrapper { position: relative; max-width: 320px; margin: 0 auto; }
 
         .paslon-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .paslon-item { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.05); padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .paslon-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #00f2fe; }
-        .paslon-info { flex: 1; }
-        .paslon-info input { width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 6px 10px; border-radius: 6px; color: #fff; font-size: 0.9rem; margin-bottom: 4px; }
-        .paslon-info input::placeholder { color: rgba(255,255,255,0.5); }
+        .paslon-item { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.05); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .paslon-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #00f2fe; flex-shrink: 0; }
+        .paslon-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .paslon-info input[type="text"] { width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 6px 10px; border-radius: 6px; color: #fff; font-size: 0.9rem; }
+        
+        /* Style Tombol Upload File */
+        .file-upload-btn { display: inline-block; padding: 6px 10px; background: rgba(0, 242, 254, 0.2); border: 1px dashed #00f2fe; border-radius: 6px; color: #00f2fe; font-size: 0.8rem; cursor: pointer; text-align: center; }
+        .file-upload-btn:hover { background: rgba(0, 242, 254, 0.3); }
+        .file-upload-btn input[type="file"] { display: none; }
 
         .btn { padding: 10px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-primary { background: linear-gradient(45deg, #00c6ff, #0072ff); color: #fff; width: 100%; }
@@ -86,7 +90,7 @@
 </div>
 
 <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT KAMU DI SINI
+    // MASUKKAN URL GOOGLE APPS SCRIPT WE BAPP KAMU DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
     let myChart = null;
@@ -98,7 +102,6 @@
             const res = await fetch(SCRIPT_URL);
             const data = await res.json();
 
-            // Handle Perolehan Suara
             const votesData = data.votes || {};
             const labels = Object.keys(votesData);
             const votes = Object.values(votesData);
@@ -109,7 +112,6 @@
 
             updateChart(labels, votes);
 
-            // Handle Paslon (hanya render jika belum ada perubahan input manual)
             if (data.candidates && currentCandidates.length === 0) {
                 currentCandidates = data.candidates;
                 renderPaslonInputs();
@@ -133,12 +135,35 @@
                 <img src="${c.photo || 'https://via.placeholder.com/150'}" class="paslon-img" id="img-prev-${index}" onerror="this.src='https://via.placeholder.com/150'">
                 <div class="paslon-info">
                     <input type="text" value="${c.name}" placeholder="Nama Paslon" onchange="updateCandidateData(${index}, 'name', this.value)">
-                    <input type="text" value="${c.photo}" placeholder="URL Foto (https://...)" onchange="updateCandidateData(${index}, 'photo', this.value); document.getElementById('img-prev-${index}').src=this.value;">
+                    <label class="file-upload-btn">
+                        <i class="fas fa-upload"></i> Upload Foto dari Perangkat
+                        <input type="file" accept="image/*" onchange="handleFileUpload(event, ${index})">
+                    </label>
                 </div>
                 <button class="btn btn-danger" onclick="removePaslonRow(${index})"><i class="fas fa-trash"></i></button>
             `;
             container.appendChild(div);
         });
+    }
+
+    // Fungsi konversi file lokal menjadi URL Base64
+    function handleFileUpload(event, index) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Batasi ukuran gambar maksimal 2MB agar loading ringan
+        if (file.size > 2 * 1024 * 1024) {
+            alert("Ukuran gambar terlalu besar! Pilih gambar di bawah 2MB.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const base64Image = e.target.result;
+            currentCandidates[index].photo = base64Image;
+            document.getElementById(`img-prev-${index}`).src = base64Image;
+        };
+        reader.readAsDataURL(file);
     }
 
     function updateCandidateData(index, key, value) {
@@ -164,7 +189,7 @@
             });
             const result = await res.json();
             if (result.status === "success") {
-                alert("Daftar paslon berhasil disimpan!");
+                alert("Daftar paslon dan foto berhasil disimpan!");
                 loadData();
             } else {
                 alert("Gagal menyimpan: " + result.message);
@@ -197,7 +222,6 @@
         });
     }
 
-    // Load data otomatis saat pertama buka & refresh tiap 10 detik
     loadData();
     setInterval(loadData, 10000);
 </script>
