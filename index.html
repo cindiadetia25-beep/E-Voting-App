@@ -3,45 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-Voting</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f9; }
-    .card { background: white; padding: 15px; margin: 15px auto; max-width: 300px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    button { background-color: #007bff; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; }
-    button:disabled { background-color: #cccccc; cursor: not-allowed; }
-  </style>
+  <title>E-Voting Paslon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-  <h2>Silakan Pilih Kandidat Anda</h2>
-  
-  <div class="card">
-    <h3>Kandidat 01</h3>
-    <p>Nama Paslon A</p>
-    <button onclick="kirimSuara('Kandidat 01')" id="btn1">Pilih 01</button>
+  <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden p-6 text-center border border-slate-200">
+    <div class="mb-6">
+      <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">E-Voting Online</span>
+      <h1 class="text-2xl font-bold text-slate-800 mt-2">Pemilihan Ketua</h1>
+      <p class="text-sm text-slate-500">Gunakan hak suara Anda dengan bijak</p>
+    </div>
+
+    <!-- Container Paslon (Ditarik Dinamis dari Config) -->
+    <div id="paslon-container" class="space-y-4">
+      <div class="animate-pulse flex space-x-4 p-4 border rounded-xl">
+        <div class="rounded-full bg-slate-200 h-16 w-16"></div>
+        <div class="flex-1 space-y-2 py-1">
+          <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+          <div class="h-4 bg-slate-200 rounded w-1/2"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="status-box" class="mt-6 text-sm font-medium"></div>
   </div>
-
-  <div class="card">
-    <h3>Kandidat 02</h3>
-    <p>Nama Paslon B</p>
-    <button onclick="kirimSuara('Kandidat 02')" id="btn2">Pilih 02</button>
-  </div>
-
-  <h3 id="status" style="color: blue;"></h3>
 
   <script>
-    // MASUKKAN URL DARI GOOGLE APPS SCRIPT (LANGKAH 1) DI DALAM TANDA PETIK DI BAWAH INI:
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec"; 
+    // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+    const SCRIPT_URL = "URL_APPS_SCRIPT_ANDA"; 
+
+    // Data Kandidat Default (Dapat Diubah)
+    const paslonList = [
+      {
+        id: "Kandidat 01",
+        nama: "Andi & Budi",
+        visi: "Mewujudkan organisasi yang inovatif dan inklusif.",
+        foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300"
+      },
+      {
+        id: "Kandidat 02",
+        nama: "Citra & Dewi",
+        visi: "Meningkatkan solidaritas dan prestasi bersama.",
+        foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300"
+      }
+    ];
+
+    function renderPaslon() {
+      const container = document.getElementById('paslon-container');
+      container.innerHTML = '';
+
+      const isVoted = localStorage.getItem('voted');
+
+      paslonList.forEach(paslon => {
+        const card = document.createElement('div');
+        card.className = "border border-slate-200 rounded-xl p-4 flex flex-col items-center bg-slate-50 hover:border-indigo-500 transition-all shadow-sm";
+        card.innerHTML = `
+          <img src="${paslon.foto}" alt="${paslon.nama}" class="w-24 h-24 object-cover rounded-full border-2 border-indigo-500 shadow-md mb-3">
+          <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded mb-1">${paslon.id}</span>
+          <h3 class="text-lg font-bold text-slate-800">${paslon.nama}</h3>
+          <p class="text-xs text-slate-500 mb-4 px-2 italic">"${paslon.visi}"</p>
+          <button onclick="kirimSuara('${paslon.id}')" ${isVoted ? 'disabled' : ''} 
+            class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-medium rounded-lg shadow-sm transition-all flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-check-to-slot"></i>
+            <span>${isVoted ? 'Sudah Memilih' : 'Pilih ' + paslon.id}</span>
+          </button>
+        `;
+        container.appendChild(card);
+      });
+
+      if (isVoted) {
+        showStatus("Anda telah memberikan suara di perangkat ini.", "indigo");
+      }
+    }
 
     function kirimSuara(pilihan) {
-      if (!confirm("Apakah Anda yakin ingin memilih " + pilihan + "?")) return;
+      if (!confirm(`Apakah Anda yakin ingin memilih ${pilihan}?`)) return;
 
-      // Matikan tombol agar pemilih tidak menekan 2 kali
-      document.getElementById('btn1').disabled = true;
-      document.getElementById('btn2').disabled = true;
-      document.getElementById('status').innerText = "Mengirim suara...";
+      disableAllButtons();
+      showStatus("Mengirim suara ke sistem...", "slate");
 
-      // Mengirim data ke Google Sheets melalui Apps Script
       fetch(SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
@@ -49,24 +91,31 @@
         body: JSON.stringify({ kandidat: pilihan })
       })
       .then(() => {
-        document.getElementById('status').style.color = "green";
-        document.getElementById('status').innerText = "Terima kasih! Suara Anda telah berhasil dikirim.";
         localStorage.setItem('voted', 'true');
+        showStatus("Terima kasih! Suara Anda berhasil dicatat.", "emerald");
+        renderPaslon();
       })
-      .catch(err => {
-        document.getElementById('status').style.color = "red";
-        document.getElementById('status').innerText = "Gagal mengirim suara. Coba lagi.";
-        document.getElementById('btn1').disabled = false;
-        document.getElementById('btn2').disabled = false;
+      .catch(() => {
+        showStatus("Gagal mengirim suara. Periksa koneksi internet Anda.", "rose");
+        enableAllButtons();
       });
     }
 
-    // Cek jika pemilih sudah pernah memilih di HP yang sama
-    if (localStorage.getItem('voted')) {
-      document.getElementById('btn1').disabled = true;
-      document.getElementById('btn2').disabled = true;
-      document.getElementById('status').innerText = "Anda sudah pernah memilih di perangkat ini.";
+    function showStatus(msg, color) {
+      const box = document.getElementById('status-box');
+      box.className = `mt-6 p-3 rounded-lg text-sm font-medium bg-${color}-50 text-${color}-600 border border-${color}-200`;
+      box.innerText = msg;
     }
+
+    function disableAllButtons() {
+      document.querySelectorAll('button').forEach(b => b.disabled = true);
+    }
+
+    function enableAllButtons() {
+      document.querySelectorAll('button').forEach(b => b.disabled = false);
+    }
+
+    renderPaslon();
   </script>
 </body>
 </html>
