@@ -12,7 +12,7 @@
         .container { max-width: 1000px; margin: 0 auto; }
         header { text-align: center; margin-bottom: 30px; }
         header h1 { font-size: 2.2rem; font-weight: 700; color: #4facfe; margin-bottom: 5px; }
-        header p { color: #a1c4fd; font-size: 0.95rem; }
+        header p { color: #a1c4fd; font-size: 0.95rem; margin-bottom: 15px; }
 
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
@@ -25,7 +25,17 @@
         .stat-box h3 { font-size: 1.8rem; color: #00f2fe; }
         .stat-box p { font-size: 0.8rem; color: #a1c4fd; margin-top: 5px; }
 
-        .chart-wrapper { position: relative; max-width: 320px; margin: 0 auto; }
+        /* Style Perolehan Suara Bergaya Pemilu */
+        .pemilu-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .pemilu-item { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px 15px; border-radius: 10px; }
+        .pemilu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem; }
+        .pemilu-name { color: #fff; }
+        .pemilu-count { color: #a1c4fd; font-size: 0.85rem; }
+        .pemilu-percent { color: #00f2fe; font-weight: 700; }
+        .progress-bar-bg { width: 100%; height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #00c6ff, #0072ff); border-radius: 6px; transition: width 0.5s ease-in-out; }
+
+        .chart-wrapper { position: relative; max-width: 260px; margin: 0 auto; }
 
         .paslon-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         .paslon-item { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.05); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -33,18 +43,19 @@
         .paslon-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
         .paslon-info input[type="text"] { width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 6px 10px; border-radius: 6px; color: #fff; font-size: 0.9rem; }
         
-        /* Style Tombol Upload File */
         .file-upload-btn { display: inline-block; padding: 6px 10px; background: rgba(0, 242, 254, 0.2); border: 1px dashed #00f2fe; border-radius: 6px; color: #00f2fe; font-size: 0.8rem; cursor: pointer; text-align: center; }
         .file-upload-btn:hover { background: rgba(0, 242, 254, 0.3); }
         .file-upload-btn input[type="file"] { display: none; }
 
-        .btn { padding: 10px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn { padding: 10px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
         .btn-primary { background: linear-gradient(45deg, #00c6ff, #0072ff); color: #fff; width: 100%; }
         .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
         .btn-add { background: rgba(76, 175, 80, 0.2); border: 1px solid #4CAF50; color: #81C784; width: 100%; margin-bottom: 12px; }
         .btn-add:hover { background: rgba(76, 175, 80, 0.4); }
         .btn-danger { background: rgba(244, 67, 54, 0.2); border: 1px solid #f44336; color: #e57373; padding: 6px 10px; font-size: 0.8rem; }
         .btn-danger:hover { background: rgba(244, 67, 54, 0.4); }
+        .btn-public { background: rgba(0, 242, 254, 0.15); border: 1px solid #00f2fe; color: #00f2fe; font-size: 0.85rem; padding: 8px 14px; border-radius: 20px; }
+        .btn-public:hover { background: rgba(0, 242, 254, 0.3); }
 
         #statusText { text-align: center; font-size: 0.85rem; color: #a1c4fd; margin-top: 15px; }
     </style>
@@ -55,10 +66,13 @@
     <header>
         <h1><i class="fas fa-chart-pie"></i> Dashboard Admin E-Voting</h1>
         <p>Kelola data Paslon dan pantau perolehan suara secara Real-Time</p>
+        <a href="realcount.html" target="_blank" class="btn btn-public">
+            <i class="fas fa-external-link-alt"></i> Buka Tampilan Real Count Publik
+        </a>
     </header>
 
     <div class="grid">
-        <!-- Kolom Kiri: Real Count -->
+        <!-- Kolom Kiri: Real Count Gaya Pemilu -->
         <div class="card">
             <h2><i class="fas fa-poll"></i> Hasil Perolehan Suara</h2>
             <div class="stats-container">
@@ -71,6 +85,12 @@
                     <p>Status Server</p>
                 </div>
             </div>
+
+            <!-- List Progress Bar Perolehan Suara -->
+            <div id="pemiluResults" class="pemilu-list">
+                <!-- Di-render via JS -->
+            </div>
+
             <div class="chart-wrapper">
                 <canvas id="voteChart"></canvas>
             </div>
@@ -90,7 +110,6 @@
 </div>
 
 <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT WE BAPP KAMU DI SINI
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
     let myChart = null;
@@ -103,17 +122,19 @@
             const data = await res.json();
 
             const votesData = data.votes || {};
-            const labels = Object.keys(votesData);
-            const votes = Object.values(votesData);
-            const total = votes.reduce((a, b) => a + b, 0);
+            const candidates = data.candidates || [];
+
+            let total = 0;
+            Object.values(votesData).forEach(v => total += v);
 
             document.getElementById("totalVotes").innerText = total;
             document.getElementById("connStatus").innerHTML = '<i class="fas fa-check-circle" style="color: #00f2fe;"></i>';
 
-            updateChart(labels, votes);
+            renderPemiluStyle(candidates, votesData, total);
+            updateChart(candidates, votesData);
 
-            if (data.candidates && currentCandidates.length === 0) {
-                currentCandidates = data.candidates;
+            if (candidates.length > 0 && currentCandidates.length === 0) {
+                currentCandidates = candidates;
                 renderPaslonInputs();
             }
             document.getElementById("statusText").innerText = "Data diperbarui pada " + new Date().toLocaleTimeString();
@@ -122,6 +143,37 @@
             document.getElementById("connStatus").innerHTML = '<i class="fas fa-times-circle" style="color: #f44336;"></i>';
             document.getElementById("statusText").innerText = "Gagal terhubung ke server.";
         }
+    }
+
+    function renderPemiluStyle(candidates, votesData, total) {
+        const container = document.getElementById("pemiluResults");
+        container.innerHTML = "";
+
+        if (candidates.length === 0) {
+            container.innerHTML = "<p style='text-align:center; color:#a1c4fd; font-size:0.85rem;'>Belum ada data paslon.</p>";
+            return;
+        }
+
+        candidates.forEach(c => {
+            const count = votesData[c.name] || 0;
+            const percent = total > 0 ? ((count / total) * 100).toFixed(1) : "0.0";
+
+            const div = document.createElement("div");
+            div.className = "pemilu-item";
+            div.innerHTML = `
+                <div class="pemilu-header">
+                    <div>
+                        <span class="pemilu-name">${c.name}</span>
+                        <span class="pemilu-count">(${count} Suara)</span>
+                    </div>
+                    <span class="pemilu-percent">${percent}%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
     }
 
     function renderPaslonInputs() {
@@ -146,12 +198,10 @@
         });
     }
 
-    // Fungsi konversi file lokal menjadi URL Base64
     function handleFileUpload(event, index) {
         const file = event.target.files[0];
         if (!file) return;
 
-        // Batasi ukuran gambar maksimal 2MB agar loading ringan
         if (file.size > 2 * 1024 * 1024) {
             alert("Ukuran gambar terlalu besar! Pilih gambar di bawah 2MB.");
             return;
@@ -199,7 +249,10 @@
         }
     }
 
-    function updateChart(labels, votes) {
+    function updateChart(candidates, votesData) {
+        const labels = candidates.map(c => c.name);
+        const votes = candidates.map(c => votesData[c.name] || 0);
+
         const ctx = document.getElementById('voteChart').getContext('2d');
         if (myChart) myChart.destroy();
 
@@ -209,7 +262,7 @@
                 labels: labels,
                 datasets: [{
                     data: votes,
-                    backgroundColor: ['#00f2fe', '#4facfe', '#00c6ff', '#0072ff', '#a1c4fd'],
+                    backgroundColor: ['#00f2fe', '#4facfe', '#00c6ff', '#0072ff', '#a1c4fd', '#38ef7d'],
                     borderWidth: 0
                 }]
             },
