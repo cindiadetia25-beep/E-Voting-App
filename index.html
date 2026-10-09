@@ -1,121 +1,209 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-Voting Paslon</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Voting - Surat Suara Digital</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); 
+            min-height: 100vh; 
+            color: #fff; 
+            padding: 30px 20px; 
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 40px; }
+        header h1 { font-size: 2.3rem; font-weight: 700; color: #4facfe; margin-bottom: 8px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        header p { color: #a1c4fd; font-size: 1rem; }
+
+        .candidates-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 30px; 
+        }
+
+        /* Card Glassmorphism Serupa dengan Halaman Admin */
+        .card { 
+            background: rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18); 
+            border-radius: 20px; 
+            padding: 25px 20px; 
+            text-align: center; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.37); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: space-between; 
+        }
+        .card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 12px 40px rgba(0, 242, 254, 0.25); 
+            border-color: rgba(0, 242, 254, 0.5);
+        }
+
+        .candidate-img { 
+            width: 130px; 
+            height: 130px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 3px solid #00f2fe; 
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+            margin-bottom: 18px; 
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .candidate-name { 
+            font-size: 1.25rem; 
+            font-weight: 700; 
+            color: #ffffff; 
+            margin-bottom: 20px; 
+            word-break: break-word;
+        }
+
+        .btn-vote { 
+            width: 100%; 
+            padding: 12px 18px; 
+            background: linear-gradient(45deg, #00c6ff, #0072ff); 
+            color: #fff; 
+            border: none; 
+            border-radius: 10px; 
+            font-size: 0.95rem;
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+        }
+        .btn-vote:hover { 
+            opacity: 0.9; 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.6);
+        }
+        .btn-vote:disabled { 
+            background: rgba(255, 255, 255, 0.2); 
+            color: #aaa;
+            box-shadow: none;
+            cursor: not-allowed; 
+            transform: none;
+        }
+
+        #loading { 
+            text-align: center; 
+            font-size: 1.1rem; 
+            color: #00f2fe; 
+            padding: 50px 20px; 
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px dashed rgba(0, 242, 254, 0.3);
+        }
+        #message { 
+            text-align: center; 
+            font-weight: 600; 
+            margin-top: 20px; 
+            font-size: 1rem;
+            padding: 12px;
+            border-radius: 8px;
+        }
+    </style>
 </head>
-<body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+<body>
 
-  <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden p-6 text-center border border-slate-200">
-    <div class="mb-6">
-      <span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">E-Voting Online</span>
-      <h1 class="text-2xl font-bold text-slate-800 mt-2">Pemilihan Ketua</h1>
-      <p class="text-sm text-slate-500">Gunakan hak suara Anda dengan bijak</p>
-    </div>
+<div class="container">
+    <header>
+        <h1><i class="fas fa-vote-yea"></i> Surat Suara E-Voting</h1>
+        <p>Pilih Pasangan Calon pilihan Anda secara aman & rahasia</p>
+    </header>
 
-    <!-- Container Paslon (Ditarik Dinamis dari Config) -->
-    <div id="paslon-container" class="space-y-4">
-      <div class="animate-pulse flex space-x-4 p-4 border rounded-xl">
-        <div class="rounded-full bg-slate-200 h-16 w-16"></div>
-        <div class="flex-1 space-y-2 py-1">
-          <div class="h-4 bg-slate-200 rounded w-3/4"></div>
-          <div class="h-4 bg-slate-200 rounded w-1/2"></div>
-        </div>
-      </div>
-    </div>
+    <div id="loading"><i class="fas fa-spinner fa-spin"></i> Memuat daftar Paslon terbaru...</div>
+    <div id="candidatesContainer" class="candidates-grid"></div>
+    <div id="message"></div>
+</div>
 
-    <div id="status-box" class="mt-6 text-sm font-medium"></div>
-  </div>
+<script>
+    // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP KAMU DI SINI
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
-  <script>
-    // GANTI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
-    const SCRIPT_URL = "URL_APPS_SCRIPT_ANDA"; 
+    async function loadCandidates() {
+        try {
+            const res = await fetch(SCRIPT_URL);
+            const data = await res.json();
 
-    // Data Kandidat Default (Dapat Diubah)
-    const paslonList = [
-      {
-        id: "Kandidat 01",
-        nama: "Andi & Budi",
-        visi: "Mewujudkan organisasi yang inovatif dan inklusif.",
-        foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300"
-      },
-      {
-        id: "Kandidat 02",
-        nama: "Citra & Dewi",
-        visi: "Meningkatkan solidaritas dan prestasi bersama.",
-        foto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300"
-      }
-    ];
+            document.getElementById("loading").style.display = "none";
+            const container = document.getElementById("candidatesContainer");
+            container.innerHTML = "";
 
-    function renderPaslon() {
-      const container = document.getElementById('paslon-container');
-      container.innerHTML = '';
+            if (!data.candidates || data.candidates.length === 0) {
+                container.innerHTML = "<p style='grid-column: 1/-1; text-align:center; color:#a1c4fd;'>Belum ada data paslon yang ditambahkan oleh admin.</p>";
+                return;
+            }
 
-      const isVoted = localStorage.getItem('voted');
-
-      paslonList.forEach(paslon => {
-        const card = document.createElement('div');
-        card.className = "border border-slate-200 rounded-xl p-4 flex flex-col items-center bg-slate-50 hover:border-indigo-500 transition-all shadow-sm";
-        card.innerHTML = `
-          <img src="${paslon.foto}" alt="${paslon.nama}" class="w-24 h-24 object-cover rounded-full border-2 border-indigo-500 shadow-md mb-3">
-          <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded mb-1">${paslon.id}</span>
-          <h3 class="text-lg font-bold text-slate-800">${paslon.nama}</h3>
-          <p class="text-xs text-slate-500 mb-4 px-2 italic">"${paslon.visi}"</p>
-          <button onclick="kirimSuara('${paslon.id}')" ${isVoted ? 'disabled' : ''} 
-            class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-medium rounded-lg shadow-sm transition-all flex items-center justify-center space-x-2">
-            <i class="fa-solid fa-check-to-slot"></i>
-            <span>${isVoted ? 'Sudah Memilih' : 'Pilih ' + paslon.id}</span>
-          </button>
-        `;
-        container.appendChild(card);
-      });
-
-      if (isVoted) {
-        showStatus("Anda telah memberikan suara di perangkat ini.", "indigo");
-      }
+            data.candidates.forEach((c) => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerHTML = `
+                    <img src="${c.photo || 'https://via.placeholder.com/150'}" class="candidate-img" alt="${c.name}" onerror="this.src='https://via.placeholder.com/150'">
+                    <div class="candidate-name">${c.name}</div>
+                    <button class="btn-vote" onclick="submitVote('${c.name}', this)">
+                        <i class="fas fa-paper-plane"></i> Pilih Paslon Ini
+                    </button>
+                `;
+                container.appendChild(card);
+            });
+        } catch (err) {
+            console.error(err);
+            document.getElementById("loading").innerHTML = "<span style='color:#f44336;'><i class='fas fa-exclamation-triangle'></i> Gagal memuat daftar paslon. Pastikan SCRIPT_URL sudah benar.</span>";
+        }
     }
 
-    function kirimSuara(pilihan) {
-      if (!confirm(`Apakah Anda yakin ingin memilih ${pilihan}?`)) return;
+    async function submitVote(candidateName, btnElement) {
+        if (!confirm(`Apakah Anda yakin ingin memberikan suara untuk: ${candidateName}?`)) return;
 
-      disableAllButtons();
-      showStatus("Mengirim suara ke sistem...", "slate");
+        const buttons = document.querySelectorAll(".btn-vote");
+        buttons.forEach(b => b.disabled = true);
 
-      fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kandidat: pilihan })
-      })
-      .then(() => {
-        localStorage.setItem('voted', 'true');
-        showStatus("Terima kasih! Suara Anda berhasil dicatat.", "emerald");
-        renderPaslon();
-      })
-      .catch(() => {
-        showStatus("Gagal mengirim suara. Periksa koneksi internet Anda.", "rose");
-        enableAllButtons();
-      });
+        const msgDiv = document.getElementById("message");
+        msgDiv.style.color = "#00f2fe";
+        msgDiv.innerHTML = '<i class="fas fa-sync fa-spin"></i> Mengirim suara Anda ke sistem...';
+
+        try {
+            const res = await fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify({ candidate: candidateName })
+            });
+            const result = await res.json();
+
+            if (result.status === "success") {
+                msgDiv.style.color = "#81C784";
+                msgDiv.style.background = "rgba(76, 175, 80, 0.2)";
+                msgDiv.style.border = "1px solid #4CAF50";
+                msgDiv.innerHTML = "✅ Terima kasih! Suara Anda telah berhasil direkam.";
+            } else {
+                alert("Gagal mengirim suara: " + result.message);
+                buttons.forEach(b => b.disabled = false);
+                msgDiv.innerHTML = "";
+            }
+        } catch (err) {
+            alert("Terjadi kesalahan koneksi saat mengirim suara.");
+            buttons.forEach(b => b.disabled = false);
+            msgDiv.innerHTML = "";
+        }
     }
 
-    function showStatus(msg, color) {
-      const box = document.getElementById('status-box');
-      box.className = `mt-6 p-3 rounded-lg text-sm font-medium bg-${color}-50 text-${color}-600 border border-${color}-200`;
-      box.innerText = msg;
-    }
+    // Panggil saat pertama kali halaman dibuka
+    loadCandidates();
 
-    function disableAllButtons() {
-      document.querySelectorAll('button').forEach(b => b.disabled = true);
-    }
+    // Otomatis cek pembaruan paslon dari server setiap 10 detik
+    setInterval(loadCandidates, 10000);
+</script>
 
-    function enableAllButtons() {
-      document.querySelectorAll('button').forEach(b => b.disabled = false);
-    }
-
-    renderPaslon();
-  </script>
 </body>
 </html>
