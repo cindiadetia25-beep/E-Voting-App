@@ -47,18 +47,18 @@
         }
 
         .candidate-img { 
-            width: 130px; 
-            height: 130px; 
+            width: 140px; 
+            height: 140px; 
             border-radius: 50%; 
             object-fit: cover; 
-            border: 3px solid #00f2fe; 
+            border: 4px solid #00f2fe; 
             box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
             margin-bottom: 18px; 
             background: rgba(255, 255, 255, 0.1);
         }
 
         .candidate-name { 
-            font-size: 1.25rem; 
+            font-size: 1.3rem; 
             font-weight: 700; 
             color: #ffffff; 
             margin-bottom: 20px; 
@@ -67,13 +67,13 @@
 
         .btn-vote { 
             width: 100%; 
-            padding: 12px 18px; 
+            padding: 14px 18px; 
             background: linear-gradient(45deg, #00c6ff, #0072ff); 
             color: #fff; 
             border: none; 
             border-radius: 10px; 
-            font-size: 0.95rem;
-            font-weight: 600; 
+            font-size: 1rem;
+            font-weight: 700; 
             cursor: pointer; 
             transition: all 0.3s ease; 
             display: flex;
@@ -104,37 +104,56 @@
             border-radius: 16px;
             border: 1px dashed rgba(0, 242, 254, 0.3);
         }
-        #message { 
-            text-align: center; 
-            font-weight: 600; 
-            margin-top: 20px; 
-            font-size: 1rem;
-            padding: 12px;
-            border-radius: 8px;
-        }
 
-        /* Tampilan Kotak Terkunci / Sudah Memilih */
-        .voted-card {
-            background: rgba(244, 67, 54, 0.12);
-            border: 2px solid rgba(244, 67, 54, 0.5);
+        .success-card {
+            background: rgba(76, 175, 80, 0.12);
+            border: 2px solid rgba(76, 175, 80, 0.5);
             border-radius: 20px;
             padding: 40px 20px;
             text-align: center;
             backdrop-filter: blur(12px);
+            margin-bottom: 20px;
         }
-        .voted-card i {
-            font-size: 3.5rem;
-            color: #ff5252;
+        .success-card i {
+            font-size: 4rem;
+            color: #81C784;
             margin-bottom: 15px;
         }
-        .voted-card h2 {
-            font-size: 1.5rem;
-            color: #ff5252;
+        .success-card h2 {
+            font-size: 1.6rem;
+            color: #81C784;
             margin-bottom: 10px;
         }
-        .voted-card p {
+        .success-card p {
             color: #a1c4fd;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+
+        .btn-reset {
+            padding: 14px 28px;
+            background: linear-gradient(45deg, #11998e, #38ef7d);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
+        }
+        .btn-reset:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(56, 239, 125, 0.6);
+        }
+
+        .timer-info {
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #81C784;
         }
     </style>
 </head>
@@ -143,43 +162,39 @@
 <div class="container">
     <header>
         <h1><i class="fas fa-vote-yea"></i> Surat Suara E-Voting</h1>
-        <p>Pilih Pasangan Calon pilihan Anda secara aman & rahasia</p>
+        <p>Silakan sentuh / klik Pasangan Calon pilihan Anda</p>
     </header>
 
-    <div id="loading"><i class="fas fa-spinner fa-spin"></i> Memuat daftar Paslon terbaru...</div>
+    <div id="loading"><i class="fas fa-spinner fa-spin"></i> Memuat daftar Paslon...</div>
     
-    <!-- Kontainer jika belum memilih -->
     <div id="candidatesContainer" class="candidates-grid"></div>
     
-    <!-- Kontainer jika sudah pernah memilih pada perangkat ini -->
-    <div id="votedContainer" style="display: none;" class="voted-card">
-        <i class="fas fa-user-check"></i>
-        <h2>Akses Dibatasi</h2>
-        <p>Anda sudah menggunakan hak pilih Anda pada perangkat ini.</p>
+    <div id="successContainer" style="display: none;" class="success-card">
+        <i class="fas fa-check-circle"></i>
+        <h2>Suara Anda Berhasil Disimpan!</h2>
+        <p>Terima kasih telah menggunakan hak pilih Anda.</p>
+        <button class="btn-reset" onclick="resetForNextVoter()">
+            <i class="fas fa-redo"></i> Selesai & Siapkan untuk Pemilih Berikutnya
+        </button>
+        <div class="timer-info">Layar akan otomatis kembali dalam <span id="countdown">5</span> detik</div>
     </div>
-
-    <div id="message"></div>
 </div>
 
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
-    function checkVotingStatus() {
-        const hasVoted = localStorage.getItem("evoting_has_voted");
-        if (hasVoted === "true") {
-            document.getElementById("loading").style.display = "none";
-            document.getElementById("candidatesContainer").style.display = "none";
-            document.getElementById("votedContainer").style.display = "block";
-            return true;
-        }
-        return false;
-    }
+    let autoResetTimer = null;
+    let countdownInterval = null;
 
     async function loadCandidates() {
-        // Jika sudah pernah memilih di perangkat ini, hentikan load paslon
-        if (checkVotingStatus()) return;
-
         try {
+            if (autoResetTimer) clearTimeout(autoResetTimer);
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            document.getElementById("loading").style.display = "block";
+            document.getElementById("candidatesContainer").style.display = "grid";
+            document.getElementById("successContainer").style.display = "none";
+
             const res = await fetch(SCRIPT_URL);
             const data = await res.json();
 
@@ -206,19 +221,16 @@
             });
         } catch (err) {
             console.error(err);
-            document.getElementById("loading").innerHTML = "<span style='color:#f44336;'><i class='fas fa-exclamation-triangle'></i> Gagal memuat daftar paslon. Pastikan SCRIPT_URL sudah benar.</span>";
+            document.getElementById("loading").innerHTML = "<span style='color:#f44336;'><i class='fas fa-exclamation-triangle'></i> Gagal memuat daftar paslon. Periksa koneksi internet.</span>";
         }
     }
 
     async function submitVote(candidateName, btnElement) {
-        if (!confirm(`Apakah Anda yakin ingin memberikan suara untuk: ${candidateName}?`)) return;
+        if (!confirm(`Apakah Anda yakin ingin memilih: ${candidateName}?`)) return;
 
         const buttons = document.querySelectorAll(".btn-vote");
         buttons.forEach(b => b.disabled = true);
-
-        const msgDiv = document.getElementById("message");
-        msgDiv.style.color = "#00f2fe";
-        msgDiv.innerHTML = '<i class="fas fa-sync fa-spin"></i> Mengirim suara Anda ke sistem...';
+        btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
         try {
             const res = await fetch(SCRIPT_URL, {
@@ -228,30 +240,37 @@
             const result = await res.json();
 
             if (result.status === "success") {
-                // Kunci perangkat ini di LocalStorage
-                localStorage.setItem("evoting_has_voted", "true");
+                document.getElementById("candidatesContainer").style.display = "none";
+                document.getElementById("successContainer").style.display = "block";
 
-                msgDiv.style.color = "#81C784";
-                msgDiv.style.background = "rgba(76, 175, 80, 0.2)";
-                msgDiv.style.border = "1px solid #4CAF50";
-                msgDiv.innerHTML = "✅ Terima kasih! Suara Anda telah berhasil direkam.";
+                // Hitung mundur 5 detik
+                let timeLeft = 5;
+                document.getElementById("countdown").innerText = timeLeft;
 
-                // Sembunyikan kartu paslon dan munculkan peringatan terkunci setelah 2 detik
-                setTimeout(() => {
-                    msgDiv.style.display = "none";
-                    document.getElementById("candidatesContainer").style.display = "none";
-                    document.getElementById("votedContainer").style.display = "block";
-                }, 2000);
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    document.getElementById("countdown").innerText = timeLeft;
+                    if (timeLeft <= 0) clearInterval(countdownInterval);
+                }, 1000);
+
+                autoResetTimer = setTimeout(() => {
+                    resetForNextVoter();
+                }, 5000);
+
             } else {
                 alert("Gagal mengirim suara: " + result.message);
                 buttons.forEach(b => b.disabled = false);
-                msgDiv.innerHTML = "";
+                btnElement.innerHTML = '<i class="fas fa-paper-plane"></i> Pilih Paslon Ini';
             }
         } catch (err) {
-            alert("Terjadi kesalahan koneksi saat mengirim suara.");
+            alert("Terjadi kesalahan koneksi saat mengirim suara. Coba lagi.");
             buttons.forEach(b => b.disabled = false);
-            msgDiv.innerHTML = "";
+            btnElement.innerHTML = '<i class="fas fa-paper-plane"></i> Pilih Paslon Ini';
         }
+    }
+
+    function resetForNextVoter() {
+        loadCandidates();
     }
 
     loadCandidates();
