@@ -3,110 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - E-Voting Modern</title>
+    <title>Real Count Pemilu - E-Voting Digital</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); min-height: 100vh; color: #fff; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 30px; }
-        header h1 { font-size: 2.2rem; font-weight: 700; color: #4facfe; margin-bottom: 5px; }
-        header p { color: #a1c4fd; font-size: 0.95rem; margin-bottom: 15px; }
-
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
-
-        .card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-        .card h2 { font-size: 1.3rem; margin-bottom: 20px; color: #00f2fe; display: flex; align-items: center; gap: 10px; }
-
-        .stats-container { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 20px; }
-        .stat-box { flex: 1; background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.3); padding: 15px; border-radius: 12px; text-align: center; }
-        .stat-box h3 { font-size: 1.8rem; color: #00f2fe; }
-        .stat-box p { font-size: 0.8rem; color: #a1c4fd; margin-top: 5px; }
-
-        /* Style Perolehan Suara Bergaya Pemilu */
-        .pemilu-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-        .pemilu-item { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px 15px; border-radius: 10px; }
-        .pemilu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem; }
-        .pemilu-name { color: #fff; }
-        .pemilu-count { color: #a1c4fd; font-size: 0.85rem; }
-        .pemilu-percent { color: #00f2fe; font-weight: 700; }
-        .progress-bar-bg { width: 100%; height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 6px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #00c6ff, #0072ff); border-radius: 6px; transition: width 0.5s ease-in-out; }
-
-        .chart-wrapper { position: relative; max-width: 260px; margin: 0 auto; }
-
-        .paslon-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .paslon-item { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.05); padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .paslon-img { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #00f2fe; flex-shrink: 0; }
-        .paslon-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-        .paslon-info input[type="text"] { width: 100%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); padding: 6px 10px; border-radius: 6px; color: #fff; font-size: 0.9rem; }
+        body { 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); 
+            min-height: 100vh; 
+            color: #fff; 
+            padding: 30px 20px; 
+        }
+        .container { max-width: 950px; margin: 0 auto; }
         
-        .file-upload-btn { display: inline-block; padding: 6px 10px; background: rgba(0, 242, 254, 0.2); border: 1px dashed #00f2fe; border-radius: 6px; color: #00f2fe; font-size: 0.8rem; cursor: pointer; text-align: center; }
-        .file-upload-btn:hover { background: rgba(0, 242, 254, 0.3); }
-        .file-upload-btn input[type="file"] { display: none; }
+        header { text-align: center; margin-bottom: 35px; }
+        header h1 { font-size: 2.3rem; font-weight: 800; color: #00f2fe; margin-bottom: 8px; text-shadow: 0 4px 15px rgba(0,242,254,0.3); }
+        header p { color: #a1c4fd; font-size: 1rem; }
 
-        .btn { padding: 10px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
-        .btn-primary { background: linear-gradient(45deg, #00c6ff, #0072ff); color: #fff; width: 100%; }
-        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
-        .btn-add { background: rgba(76, 175, 80, 0.2); border: 1px solid #4CAF50; color: #81C784; width: 100%; margin-bottom: 12px; }
-        .btn-add:hover { background: rgba(76, 175, 80, 0.4); }
-        .btn-danger { background: rgba(244, 67, 54, 0.2); border: 1px solid #f44336; color: #e57373; padding: 6px 10px; font-size: 0.8rem; }
-        .btn-danger:hover { background: rgba(244, 67, 54, 0.4); }
-        .btn-public { background: rgba(0, 242, 254, 0.15); border: 1px solid #00f2fe; color: #00f2fe; font-size: 0.85rem; padding: 8px 14px; border-radius: 20px; }
-        .btn-public:hover { background: rgba(0, 242, 254, 0.3); }
+        /* Top Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .stat-card i { font-size: 2rem; color: #00f2fe; margin-bottom: 10px; }
+        .stat-card h2 { font-size: 2.2rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+        .stat-card p { font-size: 0.85rem; color: #a1c4fd; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-        #statusText { text-align: center; font-size: 0.85rem; color: #a1c4fd; margin-top: 15px; }
+        .main-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+            margin-bottom: 30px;
+        }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #00f2fe;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 12px;
+        }
+
+        /* Result Items Pemilu Style */
+        .results-container { display: flex; flex-direction: column; gap: 20px; }
+        .candidate-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .candidate-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 242, 254, 0.4);
+        }
+        .candidate-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #00f2fe;
+            box-shadow: 0 0 12px rgba(0,242,254,0.3);
+            flex-shrink: 0;
+            background: rgba(255,255,255,0.1);
+        }
+        .candidate-info { flex: 1; }
+        .candidate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 10px;
+        }
+        .candidate-name { font-size: 1.2rem; font-weight: 700; color: #fff; }
+        .candidate-votes { font-size: 0.95rem; color: #a1c4fd; margin-top: 2px; }
+        .candidate-percentage { font-size: 1.6rem; font-weight: 800; color: #00f2fe; text-shadow: 0 0 10px rgba(0,242,254,0.3); }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            border-radius: 10px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 8px rgba(0, 198, 255, 0.6);
+        }
+
+        /* Chart Section */
+        .chart-box { max-width: 320px; margin: 0 auto; }
+        
+        #statusFooter {
+            text-align: center;
+            color: #a1c4fd;
+            font-size: 0.85rem;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1><i class="fas fa-chart-pie"></i> Dashboard Admin E-Voting</h1>
-        <p>Kelola data Paslon dan pantau perolehan suara secara Real-Time</p>
-        <!-- Tautan diperbarui ke alamat absolut GitHub Pages -->
-        <a href="https://cindiadetia25-beep.github.io/E-Voting-App/realcount.html" target="_blank" class="btn btn-public">
-            <i class="fas fa-external-link-alt"></i> Buka Tampilan Real Count Publik
-        </a>
+        <h1><i class="fas fa-chart-line"></i> Real Count Pemilihan</h1>
+        <p>Hasil Perhitungan Suara Digital Secara Transparan & Real-Time</p>
     </header>
 
-    <div class="grid">
-        <!-- Kolom Kiri: Real Count Gaya Pemilu -->
-        <div class="card">
-            <h2><i class="fas fa-poll"></i> Hasil Perolehan Suara</h2>
-            <div class="stats-container">
-                <div class="stat-box">
-                    <h3 id="totalVotes">0</h3>
-                    <p>Total Suara Masuk</p>
-                </div>
-                <div class="stat-box">
-                    <h3 id="connStatus"><i class="fas fa-sync fa-spin"></i></h3>
-                    <p>Status Server</p>
-                </div>
-            </div>
-
-            <!-- List Progress Bar Perolehan Suara -->
-            <div id="pemiluResults" class="pemilu-list">
-                <!-- Di-render via JS -->
-            </div>
-
-            <div class="chart-wrapper">
-                <canvas id="voteChart"></canvas>
-            </div>
+    <!-- Stat Ringkasan Atas -->
+    <div class="summary-grid">
+        <div class="stat-card">
+            <i class="fas fa-vote-yea"></i>
+            <h2 id="totalVotes">0</h2>
+            <p>Total Suara Masuk</p>
         </div>
-
-        <!-- Kolom Kanan: Kelola Paslon -->
-        <div class="card">
-            <h2><i class="fas fa-users-cog"></i> Kelola Paslon</h2>
-            <div id="paslonContainer" class="paslon-list">
-                <!-- Data Paslon di-render via Javascript -->
-            </div>
-            <button class="btn btn-add" onclick="addPaslonRow()"><i class="fas fa-plus"></i> Tambah Paslon Baru</button>
-            <button class="btn btn-primary" onclick="saveCandidates()"><i class="fas fa-save"></i> Simpan Perubahan Paslon</button>
-            <p id="statusText"></p>
+        <div class="stat-card">
+            <i class="fas fa-clock"></i>
+            <h2 id="lastUpdated">--:--</h2>
+            <p>Update Terakhir</p>
         </div>
+    </div>
+
+    <!-- Tampilan Perolehan Suara Per Paslon (Gaya Pemilu) -->
+    <div class="main-card">
+        <div class="section-title">
+            <i class="fas fa-poll-h"></i> Rekapitulasi Suara Pasangan Calon
+        </div>
+        <div id="resultsList" class="results-container">
+            <p style="text-align: center; color: #a1c4fd;"><i class="fas fa-spinner fa-spin"></i> Memuat data perhitungan suara...</p>
+        </div>
+    </div>
+
+    <!-- Diagram Lingkaran / Chart -->
+    <div class="main-card">
+        <div class="section-title" style="justify-content: center; border-bottom: none; margin-bottom: 10px;">
+            <i class="fas fa-chart-pie"></i> Diagram Proporsi Suara
+        </div>
+        <div class="chart-box">
+            <canvas id="voteChart"></canvas>
+        </div>
+    </div>
+
+    <div id="statusFooter">
+        <i class="fas fa-sync fa-spin" id="syncIcon"></i> <span id="statusText">Menyinkronkan dengan server...</span>
     </div>
 </div>
 
@@ -114,140 +182,67 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
     let myChart = null;
-    let currentCandidates = [];
 
-    async function loadData() {
-        document.getElementById("statusText").innerText = "Memuat data...";
+    async function fetchRealCount() {
         try {
             const res = await fetch(SCRIPT_URL);
             const data = await res.json();
 
-            const votesData = data.votes || {};
             const candidates = data.candidates || [];
+            const votesData = data.votes || {};
 
-            let total = 0;
-            Object.values(votesData).forEach(v => total += v);
+            let totalVotes = 0;
+            Object.values(votesData).forEach(v => totalVotes += v);
 
-            document.getElementById("totalVotes").innerText = total;
-            document.getElementById("connStatus").innerHTML = '<i class="fas fa-check-circle" style="color: #00f2fe;"></i>';
+            document.getElementById("totalVotes").innerText = totalVotes.toLocaleString('id-ID');
+            document.getElementById("lastUpdated").innerText = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-            renderPemiluStyle(candidates, votesData, total);
+            renderPemiluResults(candidates, votesData, totalVotes);
             updateChart(candidates, votesData);
 
-            if (candidates.length > 0 && currentCandidates.length === 0) {
-                currentCandidates = candidates;
-                renderPaslonInputs();
-            }
-            document.getElementById("statusText").innerText = "Data diperbarui pada " + new Date().toLocaleTimeString();
+            document.getElementById("syncIcon").className = "fas fa-check-circle";
+            document.getElementById("syncIcon").style.color = "#38ef7d";
+            document.getElementById("statusText").innerText = "Terhubung secara Real-Time ke Server";
         } catch (err) {
             console.error(err);
-            document.getElementById("connStatus").innerHTML = '<i class="fas fa-times-circle" style="color: #f44336;"></i>';
-            document.getElementById("statusText").innerText = "Gagal terhubung ke server.";
+            document.getElementById("syncIcon").className = "fas fa-exclamation-triangle";
+            document.getElementById("syncIcon").style.color = "#f44336";
+            document.getElementById("statusText").innerText = "Gagal memperbarui data dari server.";
         }
     }
 
-    function renderPemiluStyle(candidates, votesData, total) {
-        const container = document.getElementById("pemiluResults");
+    function renderPemiluResults(candidates, votesData, totalVotes) {
+        const container = document.getElementById("resultsList");
         container.innerHTML = "";
 
         if (candidates.length === 0) {
-            container.innerHTML = "<p style='text-align:center; color:#a1c4fd; font-size:0.85rem;'>Belum ada data paslon.</p>";
+            container.innerHTML = "<p style='text-align:center; color:#a1c4fd;'>Belum ada data paslon.</p>";
             return;
         }
 
-        candidates.forEach(c => {
+        candidates.forEach((c) => {
             const count = votesData[c.name] || 0;
-            const percent = total > 0 ? ((count / total) * 100).toFixed(1) : "0.0";
+            const percentage = totalVotes > 0 ? ((count / totalVotes) * 100).toFixed(1) : "0.0";
 
-            const div = document.createElement("div");
-            div.className = "pemilu-item";
-            div.innerHTML = `
-                <div class="pemilu-header">
-                    <div>
-                        <span class="pemilu-name">${c.name}</span>
-                        <span class="pemilu-count">(${count} Suara)</span>
+            const card = document.createElement("div");
+            card.className = "candidate-card";
+            card.innerHTML = `
+                <img src="${c.photo || 'https://via.placeholder.com/150'}" class="candidate-avatar" alt="${c.name}" onerror="this.src='https://via.placeholder.com/150'">
+                <div class="candidate-info">
+                    <div class="candidate-header">
+                        <div>
+                            <div class="candidate-name">${c.name}</div>
+                            <div class="candidate-votes"><i class="fas fa-ticket-alt"></i> ${count.toLocaleString('id-ID')} Suara</div>
+                        </div>
+                        <div class="candidate-percentage">${percentage}%</div>
                     </div>
-                    <span class="pemilu-percent">${percent}%</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: ${percentage}%;"></div>
+                    </div>
                 </div>
             `;
-            container.appendChild(div);
+            container.appendChild(card);
         });
-    }
-
-    function renderPaslonInputs() {
-        const container = document.getElementById("paslonContainer");
-        container.innerHTML = "";
-
-        currentCandidates.forEach((c, index) => {
-            const div = document.createElement("div");
-            div.className = "paslon-item";
-            div.innerHTML = `
-                <img src="${c.photo || 'https://via.placeholder.com/150'}" class="paslon-img" id="img-prev-${index}" onerror="this.src='https://via.placeholder.com/150'">
-                <div class="paslon-info">
-                    <input type="text" value="${c.name}" placeholder="Nama Paslon" onchange="updateCandidateData(${index}, 'name', this.value)">
-                    <label class="file-upload-btn">
-                        <i class="fas fa-upload"></i> Upload Foto dari Perangkat
-                        <input type="file" accept="image/*" onchange="handleFileUpload(event, ${index})">
-                    </label>
-                </div>
-                <button class="btn btn-danger" onclick="removePaslonRow(${index})"><i class="fas fa-trash"></i></button>
-            `;
-            container.appendChild(div);
-        });
-    }
-
-    function handleFileUpload(event, index) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        if (file.size > 2 * 1024 * 1024) {
-            alert("Ukuran gambar terlalu besar! Pilih gambar di bawah 2MB.");
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const base64Image = e.target.result;
-            currentCandidates[index].photo = base64Image;
-            document.getElementById(`img-prev-${index}`).src = base64Image;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function updateCandidateData(index, key, value) {
-        currentCandidates[index][key] = value;
-    }
-
-    function addPaslonRow() {
-        currentCandidates.push({ id: Date.now(), name: "Paslon Baru", photo: "https://via.placeholder.com/150" });
-        renderPaslonInputs();
-    }
-
-    function removePaslonRow(index) {
-        currentCandidates.splice(index, 1);
-        renderPaslonInputs();
-    }
-
-    async function saveCandidates() {
-        document.getElementById("statusText").innerText = "Menyimpan perubahan...";
-        try {
-            const res = await fetch(SCRIPT_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "updateCandidates", candidates: currentCandidates })
-            });
-            const result = await res.json();
-            if (result.status === "success") {
-                alert("Daftar paslon dan foto berhasil disimpan!");
-                loadData();
-            } else {
-                alert("Gagal menyimpan: " + result.message);
-            }
-        } catch (err) {
-            alert("Terjadi kesalahan saat menyimpan data paslon.");
-        }
     }
 
     function updateChart(candidates, votesData) {
@@ -270,14 +265,14 @@
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { position: 'bottom', labels: { color: '#fff' } }
+                    legend: { position: 'bottom', labels: { color: '#fff', font: { size: 12 } } }
                 }
             }
         });
     }
 
-    loadData();
-    setInterval(loadData, 10000);
+    fetchRealCount();
+    setInterval(fetchRealCount, 5000);
 </script>
 
 </body>
