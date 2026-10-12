@@ -355,6 +355,7 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
     let currentNis = "";
+    let currentNama = ""; // Variabel untuk menyimpan nama siswa yang berhasil login
 
     function updateClock() {
       const now = new Date();
@@ -394,6 +395,8 @@
 
           if (response.success) {
             currentNis = nis;
+            currentNama = response.nama; // Menyimpan Nama dari database master siswa
+
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('votingSection').classList.remove('hidden');
             
@@ -418,7 +421,8 @@
         return;
       }
 
-      fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihan)}`)
+      // Mengirimkan NISN, PILIHAN, dan NAMA sekaligus ke Apps Script
+      fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihan)}&nama=${encodeURIComponent(currentNama)}`)
         .then(res => res.json())
         .then(response => {
           if (response.success) {
