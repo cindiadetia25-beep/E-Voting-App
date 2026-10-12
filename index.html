@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Voting Ketua PASKIBRA MAN 6 Ciamis</title>
+    <title>E-Voting Ketua Paslon</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * { 
@@ -26,7 +26,7 @@
 
         .container { 
             width: 100%;
-            max-width: 480px; /* Ukuran khusus responsif HP */
+            max-width: 480px; /* Dioptimalkan khusus untuk layar smartphone */
             margin: 0 auto; 
         }
 
@@ -137,6 +137,11 @@
             align-items: center;
             justify-content: center;
             gap: 5px;
+            transition: transform 0.2s;
+        }
+
+        .btn-vote:active {
+            transform: scale(0.98);
         }
 
         /* Modal Notifikasi Sukses / Auto-Reset 5 Detik */
@@ -187,8 +192,8 @@
 
 <div class="container">
     <header>
-        <h1>E-VOTING KETUA PASKIBRA</h1>
-        <p>MAN 6 Ciamis - Periode 2026/2027</p>
+        <h1>E-VOTING KETUA PASLON</h1>
+        <p>Sistem Pemilihan Digital Berbasis QR Code</p>
         <div class="clock-box">
             <i class="fas fa-clock"></i>
             <span id="liveClock">--:--:-- WIB</span>
@@ -201,9 +206,9 @@
             <div class="paslon-number">1</div>
             <img src="https://via.placeholder.com/150" class="paslon-img" alt="Paslon 1">
             <div class="paslon-info">
-                <h2>Calon Ketua 1</h2>
-                <p>Visi: Mewujudkan Paskibra yang disiplin, berprestasi, dan solid.</p>
-                <button class="btn-vote" onclick="vote(1, 'Calon Ketua 1')">
+                <h2>Paslon No. 1</h2>
+                <p>Visi: Mewujudkan kepemimpinan yang inovatif, adil, dan berprestasi.</p>
+                <button class="btn-vote" onclick="vote(1, 'Paslon No. 1')">
                     <i class="fas fa-vote-yea"></i> PILIH PASLON 1
                 </button>
             </div>
@@ -214,9 +219,9 @@
             <div class="paslon-number">2</div>
             <img src="https://via.placeholder.com/150" class="paslon-img" alt="Paslon 2">
             <div class="paslon-info">
-                <h2>Calon Ketua 2</h2>
-                <p>Visi: Mengembangkan potensi kepemimpinan dan karakter tangguh.</p>
-                <button class="btn-vote" onclick="vote(2, 'Calon Ketua 2')">
+                <h2>Paslon No. 2</h2>
+                <p>Visi: Mengembangkan solidaritas, karakter unggul, dan integritas tinggi.</p>
+                <button class="btn-vote" onclick="vote(2, 'Paslon No. 2')">
                     <i class="fas fa-vote-yea"></i> PILIH PASLON 2
                 </button>
             </div>
@@ -227,9 +232,9 @@
             <div class="paslon-number">3</div>
             <img src="https://via.placeholder.com/150" class="paslon-img" alt="Paslon 3">
             <div class="paslon-info">
-                <h2>Calon Ketua 3</h2>
-                <p>Visi: Mempererat kekeluargaan dan profesionalisme organisasi.</p>
-                <button class="btn-vote" onclick="vote(3, 'Calon Ketua 3')">
+                <h2>Paslon No. 3</h2>
+                <p>Visi: Mempererat kerja sama tim dan profesionalisme kerja.</p>
+                <button class="btn-vote" onclick="vote(3, 'Paslon No. 3')">
                     <i class="fas fa-vote-yea"></i> PILIH PASLON 3
                 </button>
             </div>
@@ -237,7 +242,7 @@
     </div>
 
     <footer>
-        <p>&copy; PASMANECIS - Sistem E-Voting Resmi</p>
+        <p>&copy; E-Voting System - Pemilihan Digital</p>
     </footer>
 </div>
 
@@ -254,7 +259,7 @@
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
-    // Update Jam WIB Real-Time
+    // Update Jam Real-Time
     function updateClock() {
         const now = new Date();
         const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " WIB";
@@ -265,7 +270,7 @@
 
     // Fungsi Submit Voting
     async function vote(noPaslon, namaPaslon) {
-        if (!confirm(`Apakah Anda yakin memilih Paslon No. ${noPaslon} (${namaPaslon})?`)) return;
+        if (!confirm(`Apakah Anda yakin memilih ${namaPaslon}?`)) return;
 
         try {
             await fetch(SCRIPT_URL, {
@@ -283,7 +288,7 @@
                 document.getElementById("countdown").innerText = count;
                 if (count <= 0) {
                     clearInterval(timer);
-                    window.location.reload(); // Auto reset halaman untuk pemilih berikutnya
+                    window.location.reload(); // Reset halaman untuk pemilih berikutnya
                 }
             }, 1000);
 
