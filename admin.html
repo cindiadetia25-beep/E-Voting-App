@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin E-Voting OSIS SMPN 1 Rancah</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <style>
         * { 
             box-sizing: border-box; 
@@ -21,11 +22,24 @@
             padding: 20px; 
         }
 
-        .container { max-width: 900px; margin: 0 auto; }
+        .container { max-width: 1050px; margin: 0 auto; }
 
         header { text-align: center; margin-bottom: 25px; }
         header h1 { color: #00f2fe; font-size: 1.8rem; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,242,254,0.3); }
         header p { color: #a1c4fd; font-size: 0.95rem; }
+
+        .clock-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 242, 254, 0.12);
+            border: 1px solid rgba(0, 242, 254, 0.35);
+            padding: 6px 16px;
+            border-radius: 20px;
+            color: #00f2fe;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
 
         .card { 
             background: rgba(255, 255, 255, 0.08); 
@@ -37,11 +51,12 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.3);
         }
 
-        .card h2 { color: #00f2fe; margin-bottom: 15px; font-size: 1.2rem; }
+        .card h2 { color: #00f2fe; margin-bottom: 15px; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
 
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; color: #a1c4fd; font-size: 0.9rem; }
-        .form-group input, .form-group textarea { 
+        .form-group input, .form-group select, .form-group textarea { 
             width: 100%; 
             padding: 10px; 
             border-radius: 8px; 
@@ -50,24 +65,31 @@
             color: #fff; 
             font-size: 0.9rem;
         }
-        .form-group textarea { height: 80px; resize: vertical; }
+        .form-group textarea { height: 75px; resize: vertical; }
 
         .btn { 
-            padding: 10px 18px; 
+            padding: 9px 16px; 
             border: none; 
             color: #fff; 
             border-radius: 8px; 
             cursor: pointer; 
-            font-size: 0.9rem; 
+            font-size: 0.85rem; 
             display: inline-flex; 
             align-items: center; 
             gap: 8px; 
             background: linear-gradient(45deg, #00c6ff, #0072ff);
+            transition: 0.3s;
         }
+        .btn-excel { background: linear-gradient(45deg, #11998e, #38ef7d); }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; }
         th { background: rgba(0, 242, 254, 0.2); color: #00f2fe; }
+
+        .action-box { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; }
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        .file-input-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -75,20 +97,26 @@
 <div class="container">
     <header>
         <h1>DASHBOARD ADMIN E-VOTING OSIS</h1>
-        <p>SMPN 1 Rancah - Kelola Paslon, Visi & Misi</p>
+        <p>SMPN 1 Rancah - Sistem Pemilihan Ketua & Wakil Ketua OSIS</p>
+        <div class="clock-box">
+            <i class="fas fa-clock"></i>
+            <span id="liveClock">--:--:-- WIB</span>
+        </div>
     </header>
 
-    <!-- Form Input / Edit Visi & Misi Manual -->
+    <!-- FITUR TAMBAHAN BARU: ISIAN MANUAL VISI & MISI PASLON -->
     <div class="card">
-        <h2><i class="fas fa-edit"></i> Kelola Data Paslon (Visi & Misi)</h2>
+        <h2><i class="fas fa-user-edit"></i> Kelola Visi & Misi Paslon (Manual)</h2>
         <form id="formPaslon" onsubmit="savePaslon(event)">
-            <div class="form-group">
-                <label>Nomor Urut Paslon</label>
-                <input type="number" id="paslonNo" min="1" placeholder="Contoh: 1" required>
-            </div>
-            <div class="form-group">
-                <label>Nama Paslon (Ketua & Wakil)</label>
-                <input type="text" id="paslonNama" placeholder="Contoh: Ahmad & Siti" required>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nomor Urut Paslon</label>
+                    <input type="number" id="paslonNo" min="1" placeholder="Contoh: 1" required>
+                </div>
+                <div class="form-group">
+                    <label>Nama Paslon (Ketua & Wakil)</label>
+                    <input type="text" id="paslonNama" placeholder="Contoh: Ahmad & Siti" required>
+                </div>
             </div>
             <div class="form-group">
                 <label>Visi Paslon</label>
@@ -96,16 +124,12 @@
             </div>
             <div class="form-group">
                 <label>Misi Paslon</label>
-                <textarea id="paslonMisi" placeholder="Tuliskan Misi Paslon (Gunakan nomor / baris baru)..." required></textarea>
+                <textarea id="paslonMisi" placeholder="Tuliskan Misi Paslon (Gunakan baris baru/nomor)..." required></textarea>
             </div>
-            <button type="submit" class="btn"><i class="fas fa-save"></i> Simpan Data Paslon</button>
+            <button type="submit" class="btn"><i class="fas fa-save"></i> Simpan Visi & Misi Paslon</button>
         </form>
-    </div>
 
-    <!-- Tabel Monitoring Paslon -->
-    <div class="card">
-        <h2><i class="fas fa-list-ol"></i> Daftar Paslon Terdaftar</h2>
-        <table>
+        <table style="margin-top: 15px;">
             <thead>
                 <tr>
                     <th>No</th>
@@ -114,8 +138,73 @@
                     <th>Misi</th>
                 </tr>
             </thead>
-            <tbody id="tablePaslon">
-                <tr><td colspan="4" style="text-align:center;">Memuat data...</td></tr>
+            <tbody id="tablePaslonAdmin">
+                <tr><td colspan="4" style="text-align:center;">Memuat data paslon...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FITUR SEBELUMNYA 1: REKAPITULASI PEROLEHAN SUARA -->
+    <div class="card">
+        <h2><i class="fas fa-chart-bar"></i> Perolehan Suara Real-Time (E-Voting)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>No. Paslon</th>
+                    <th>Nama Paslon</th>
+                    <th>Jumlah Suara</th>
+                    <th>Persentase</th>
+                </tr>
+            </thead>
+            <tbody id="tableHasilVote">
+                <tr><td colspan="4" style="text-align:center;">Memuat rekap suara...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FITUR SEBELUMNYA 2: MANAJEMEN DATA DPT / DPTb (PEMILIH) -->
+    <div class="card">
+        <h2><i class="fas fa-users"></i> Daftar Pemilih Tetap (DPT OSIS)</h2>
+        
+        <form onsubmit="submitPemilihManual(event)" style="margin-top: 10px;">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>NIS / ID Pemilih</label>
+                    <input type="text" id="pemilihNis" placeholder="Contoh: 23241001" required>
+                </div>
+                <div class="form-group">
+                    <label>Nama Pemilih</label>
+                    <input type="text" id="pemilihNama" placeholder="Nama Siswa/i" required>
+                </div>
+                <div class="form-group">
+                    <label>Kelas</label>
+                    <input type="text" id="pemilihKelas" placeholder="Contoh: 7A / 8B" required>
+                </div>
+            </div>
+            <button type="submit" class="btn"><i class="fas fa-user-plus"></i> Tambah Pemilih Manual</button>
+        </form>
+
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+
+        <div class="action-box">
+            <span><strong>Import Data Pemilih via Excel:</strong></span>
+            <div class="file-input-wrapper">
+                <button class="btn btn-excel"><i class="fas fa-file-excel"></i> Upload Excel DPT</button>
+                <input type="file" accept=".xlsx, .xls, .csv" onchange="importExcelPemilih(event)">
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>NIS</th>
+                    <th>Nama Pemilih</th>
+                    <th>Kelas</th>
+                    <th>Status Memilih</th>
+                </tr>
+            </thead>
+            <tbody id="tablePemilih">
+                <tr><td colspan="4" style="text-align:center;">Memuat data pemilih...</td></tr>
             </tbody>
         </table>
     </div>
@@ -124,6 +213,16 @@
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
+    // Jam Real-time
+    function updateClock() {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " WIB";
+        document.getElementById("liveClock").innerText = timeStr;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Simpan Visi & Misi Paslon
     async function savePaslon(e) {
         e.preventDefault();
         const no = document.getElementById("paslonNo").value;
@@ -136,37 +235,121 @@
                 method: "POST",
                 body: JSON.stringify({ action: "savePaslon", no, nama, visi, misi })
             });
-            alert("Data Paslon berhasil disimpan!");
+            alert("Data Visi & Misi Paslon berhasil disimpan!");
             e.target.reset();
-            loadPaslonAdmin();
+            loadDashboardData();
         } catch (err) {
             alert("Gagal menyimpan data ke server.");
         }
     }
 
-    async function loadPaslonAdmin() {
+    // Load Data Dashboard Keseluruhan
+    async function loadDashboardData() {
         try {
-            const res = await fetch(SCRIPT_URL + "?action=getPaslon");
+            const res = await fetch(SCRIPT_URL + "?action=getDashboardEVoting");
             const data = await res.json();
-            const tbody = document.getElementById("tablePaslon");
-            tbody.innerHTML = "";
-            
-            data.forEach(p => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${p.no}</strong></td>
-                        <td>${p.nama}</td>
-                        <td>${p.visi}</td>
-                        <td>${p.misi.replace(/\n/g, '<br>')}</td>
-                    </tr>
-                `;
-            });
+
+            // 1. Render Visi Misi Paslon
+            const tbodyPaslon = document.getElementById("tablePaslonAdmin");
+            tbodyPaslon.innerHTML = "";
+            if (data.paslon && data.paslon.length > 0) {
+                data.paslon.forEach(p => {
+                    tbodyPaslon.innerHTML += `
+                        <tr>
+                            <td><strong>${p.no}</strong></td>
+                            <td>${p.nama}</td>
+                            <td>${p.visi}</td>
+                            <td>${p.misi ? p.misi.replace(/\n/g, '<br>') : '-'}</td>
+                        </tr>`;
+                });
+            } else {
+                tbodyPaslon.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Belum ada data Visi & Misi paslon.</td></tr>";
+            }
+
+            // 2. Render Hasil Vote
+            const tbodyVote = document.getElementById("tableHasilVote");
+            tbodyVote.innerHTML = "";
+            if (data.hasilVote && data.hasilVote.length > 0) {
+                data.hasilVote.forEach(h => {
+                    tbodyVote.innerHTML += `
+                        <tr>
+                            <td><strong>${h.no}</strong></td>
+                            <td>${h.nama}</td>
+                            <td>${h.totalSuara} Suara</td>
+                            <td>${h.persentase}%</td>
+                        </tr>`;
+                });
+            } else {
+                tbodyVote.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Belum ada suara masuk.</td></tr>";
+            }
+
+            // 3. Render DPT Pemilih
+            const tbodyPemilih = document.getElementById("tablePemilih");
+            tbodyPemilih.innerHTML = "";
+            if (data.pemilih && data.pemilih.length > 0) {
+                data.pemilih.forEach(pem => {
+                    tbodyPemilih.innerHTML += `
+                        <tr>
+                            <td><strong>${pem.NIS}</strong></td>
+                            <td>${pem.Nama}</td>
+                            <td>${pem.Kelas}</td>
+                            <td>${pem.SudahMemilih ? '<span style="color:#38ef7d;">Sudah</span>' : '<span style="color:#e74c3c;">Belum</span>'}</td>
+                        </tr>`;
+                });
+            } else {
+                tbodyPemilih.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Belum ada data DPT.</td></tr>";
+            }
+
         } catch (err) {
-            console.error(err);
+            console.error("Error loading dashboard data:", err);
         }
     }
 
-    loadPaslonAdmin();
+    // Input Manual Pemilih DPT
+    async function submitPemilihManual(e) {
+        e.preventDefault();
+        const nis = document.getElementById("pemilihNis").value;
+        const nama = document.getElementById("pemilihNama").value;
+        const kelas = document.getElementById("pemilihKelas").value;
+
+        await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: JSON.stringify({ action: "addPemilih", nis, nama, kelas })
+        });
+        e.target.reset();
+        loadDashboardData();
+    }
+
+    // Import Pemilih DPT dari Excel
+    function importExcelPemilih(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+
+            for (let row of jsonData) {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        action: "addPemilih",
+                        nis: row.NIS || row.nis || "-",
+                        nama: row.Nama || row.nama || "",
+                        kelas: row.Kelas || row.kelas || ""
+                    })
+                });
+            }
+            alert("Berhasil mengimpor DPT dari Excel!");
+            loadDashboardData();
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    loadDashboardData();
 </script>
 
 </body>
