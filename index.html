@@ -371,51 +371,54 @@
     updateClock();
 
     function prosesLogin() {
-      const nis = document.getElementById('nisInput').value.trim();
-      const errorDiv = document.getElementById('loginError');
-      const btnLogin = document.getElementById('btnLogin');
-      
-      errorDiv.innerText = "";
-      errorDiv.classList.add('hidden');
+  const nis = document.getElementById('nisInput').value.trim();
+  const errorDiv = document.getElementById('loginError');
+  const btnLogin = document.getElementById('btnLogin');
+  
+  errorDiv.innerText = "";
+  errorDiv.classList.add('hidden');
 
-      if (!nis) {
-        errorDiv.innerText = "NISN / Nama Guru tidak boleh kosong!";
+  if (!nis) {
+    errorDiv.innerText = "NISN / Nama Guru tidak boleh kosong!";
+    errorDiv.classList.remove('hidden');
+    return;
+  }
+
+  // UBAH TEKS TOMBOL INSTAN
+  btnLogin.innerText = "MEMERIKSA...";
+  btnLogin.disabled = true;
+
+  const startTime = performance.now();
+
+  fetch(`${SCRIPT_URL}?action=verifikasi&nis=${encodeURIComponent(nis)}`)
+    .then(res => res.json())
+    .then(response => {
+      btnLogin.innerText = "MASUK SYSTEM";
+      btnLogin.disabled = false;
+
+      if (response.success) {
+        currentNis = nis;
+        currentNama = response.nama;
+
+        // Transisi Halaman Cepat
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('votingSection').classList.remove('hidden');
+        
+        document.getElementById('userName').innerText = response.nama;
+        document.getElementById('userKelas').innerText = response.kelas;
+        document.getElementById('userNis').innerText = nis;
+      } else {
+        errorDiv.innerText = response.message;
         errorDiv.classList.remove('hidden');
-        return;
       }
-
-      btnLogin.innerText = "MEMERIKSA DATA...";
-      btnLogin.disabled = true;
-
-      fetch(`${SCRIPT_URL}?action=verifikasi&nis=${encodeURIComponent(nis)}`)
-        .then(res => res.json())
-        .then(response => {
-          btnLogin.innerText = "MASUK SYSTEM";
-          btnLogin.disabled = false;
-
-          if (response.success) {
-            currentNis = nis;
-            currentNama = response.nama; 
-
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('votingSection').classList.remove('hidden');
-            
-            document.getElementById('userName').innerText = response.nama;
-            document.getElementById('userKelas').innerText = response.kelas;
-            document.getElementById('userNis').innerText = nis;
-          } else {
-            errorDiv.innerText = response.message;
-            errorDiv.classList.remove('hidden');
-          }
-        })
-        .catch(() => {
-          btnLogin.innerText = "MASUK SYSTEM";
-          btnLogin.disabled = false;
-          errorDiv.innerText = "Gagal terhubung ke server database!";
-          errorDiv.classList.remove('hidden');
-        });
-    }
-
+    })
+    .catch(() => {
+      btnLogin.innerText = "MASUK SYSTEM";
+      btnLogin.disabled = false;
+      errorDiv.innerText = "Gagal terhubung ke server database!";
+      errorDiv.classList.remove('hidden');
+    });
+}
     function kirimPilihan(pilihan) {
       if (!confirm("Apakah Anda yakin ingin memilih " + pilihan + "? Pilihan tidak dapat diubah setelah disimpan.")) {
         return;
