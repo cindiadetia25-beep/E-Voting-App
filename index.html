@@ -283,12 +283,12 @@
     <!-- Login Section -->
     <div id="loginSection" class="login-box">
       <p style="margin-bottom: 22px; color: #94a3b8; font-size: 15px;">
-        Silakan masukkan NISN Anda untuk masuk ke sistem pemilihan
+        Silakan masukkan NISN (Siswa) atau Nama Lengkap (Guru) untuk masuk ke sistem pemilihan
       </p>
       
       <div class="input-group">
-        <label for="nisInput">NISN Siswa</label>
-        <input type="text" id="nisInput" placeholder="Masukkan NISN..." autocomplete="off">
+        <label for="nisInput">NISN Siswa / Nama Guru</label>
+        <input type="text" id="nisInput" placeholder="Masukkan NISN atau Nama Guru..." autocomplete="off">
       </div>
       
       <button class="btn" id="btnLogin" onclick="prosesLogin()">MASUK SYSTEM</button>
@@ -303,8 +303,8 @@
       </div>
 
       <div class="user-info">
-        👤 <b>Pemilih:</b> <span id="userName">-</span> | <b>Kelas:</b> <span id="userKelas">-</span><br>
-        🆔 <b>NISN:</b> <span id="userNis">-</span>
+        👤 <b>Pemilih:</b> <span id="userName">-</span> | <b>Kelas/Jabatan:</b> <span id="userKelas">-</span><br>
+        🆔 <b>NISN/Identitas:</b> <span id="userNis">-</span>
       </div>
 
       <h3 style="text-align: center; color: #e2e8f0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
@@ -355,7 +355,7 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
     let currentNis = "";
-    let currentNama = ""; // Variabel untuk menyimpan nama siswa yang berhasil login
+    let currentNama = ""; 
 
     function updateClock() {
       const now = new Date();
@@ -379,7 +379,7 @@
       errorDiv.classList.add('hidden');
 
       if (!nis) {
-        errorDiv.innerText = "NISN tidak boleh kosong!";
+        errorDiv.innerText = "NISN / Nama Guru tidak boleh kosong!";
         errorDiv.classList.remove('hidden');
         return;
       }
@@ -395,7 +395,7 @@
 
           if (response.success) {
             currentNis = nis;
-            currentNama = response.nama; // Menyimpan Nama dari database master siswa
+            currentNama = response.nama; 
 
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('votingSection').classList.remove('hidden');
@@ -421,7 +421,6 @@
         return;
       }
 
-      // Mengirimkan NISN, PILIHAN, dan NAMA sekaligus ke Apps Script
       fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihan)}&nama=${encodeURIComponent(currentNama)}`)
         .then(res => res.json())
         .then(response => {
