@@ -118,6 +118,8 @@
             border: 1px solid #00f2fe;
         }
 
+        .hidden { display: none !important; }
+
         /* Modal Real Count */
         .modal {
             display: none; 
@@ -325,7 +327,7 @@
     // Load Data Paslon
     async function loadPaslonData() {
         try {
-            const res = await fetch(SCRIPT_URL + "?action=getDashboardEVoting");
+            const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
             const data = await res.json();
 
             const tbodyPaslon = document.getElementById("tablePaslonAdmin");
@@ -359,13 +361,14 @@
         document.getElementById("modalRealCount").style.display = "none";
     }
 
-    // Load Data Real Count Suara
+    // Load Data Real Count Suara (Diperbarui dengan Anti-Cache Parameter)
     async function loadRealCountData() {
         const tbodyVote = document.getElementById("tableHasilVote");
-        tbodyVote.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat perolehan suara...</td></tr>";
+        tbodyVote.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat perolehan suara terbaru...</td></tr>";
 
         try {
-            const res = await fetch(SCRIPT_URL + "?action=getDashboardEVoting");
+            // Parameter &t=Date.now() mencegah browser mengambil cache lama
+            const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
             const data = await res.json();
 
             tbodyVote.innerHTML = "";
