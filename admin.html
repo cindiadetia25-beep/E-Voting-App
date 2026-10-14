@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin E-Voting OSIS SMPN 1 Rancah</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js Library untuk Grafik Modern -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { 
             box-sizing: border-box; 
@@ -86,7 +88,6 @@
             padding: 14px 24px;
             box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
         }
-        .btn-danger { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
         .btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
         .nav-menu-box {
@@ -120,6 +121,32 @@
 
         .hidden { display: none !important; }
 
+        /* Style Live Indicator */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(56, 239, 125, 0.15);
+            border: 1px solid #38ef7d;
+            color: #38ef7d;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #38ef7d;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(56, 239, 125, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 239, 125, 0); }
+        }
+
         /* Modal Real Count */
         .modal {
             display: none; 
@@ -141,7 +168,7 @@
             border: 1px solid #00f2fe;
             border-radius: 16px;
             width: 100%;
-            max-width: 800px;
+            max-width: 850px;
             padding: 25px;
             box-shadow: 0 10px 40px rgba(0,242,254,0.3);
             position: relative;
@@ -156,6 +183,15 @@
             color: #ff4b2b;
             font-size: 1.8rem;
             cursor: pointer;
+        }
+
+        .chart-container {
+            position: relative;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
     </style>
 </head>
@@ -192,8 +228,9 @@
                     <input type="text" id="paslonNama" placeholder="Contoh: Ahmad & Siti" required>
                 </div>
                 <div class="form-group">
-                    <label>Upload Foto Paslon (JPG / PNG)</label>
-                    <input type="file" id="paslonFoto" accept="image/jpeg, image/png" onchange="previewImage(event)" required>
+                    <!-- FOTO DIBUAT OPSIONAL (TIDAK WAKIB UPLOAD) -->
+                    <label>Upload Foto Paslon (Opsional - JPG/PNG)</label>
+                    <input type="file" id="paslonFoto" accept="image/jpeg, image/png" onchange="previewImage(event)">
                     <img id="imgPreview" class="paslon-img-preview hidden" alt="Preview Foto">
                 </div>
             </div>
@@ -232,11 +269,20 @@
 <div id="modalRealCount" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="closeRealCountModal()">&times;</span>
-        <h2 style="color: #00f2fe; margin-bottom: 20px;"><i class="fas fa-chart-pie"></i> Real Count Perolehan Suara E-Voting</h2>
-        
-        <button class="btn" onclick="loadRealCountData()" style="margin-bottom: 15px;">
-            <i class="fas fa-sync-alt"></i> Refresh Data Suara
-        </button>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+            <h2 style="color: #00f2fe; margin-bottom: 10px;">
+                <i class="fas fa-chart-pie"></i> Real Count Perolehan Suara
+                <span class="live-badge"><span class="live-dot"></span> AUTO UPDATE REALTIME</span>
+            </h2>
+            <button class="btn" onclick="loadRealCountData()" style="margin-bottom: 10px; padding: 6px 12px; font-size: 0.8rem;">
+                <i class="fas fa-sync-alt"></i> Refresh Manual
+            </button>
+        </div>
+
+        <!-- CONTAINER GRAFIK CHART.JS -->
+        <div class="chart-container">
+            <canvas id="realCountChart" style="max-height: 280px;"></canvas>
+        </div>
 
         <table>
             <thead>
@@ -257,6 +303,8 @@
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
     let base64Foto = "";
+    let autoUpdateTimer = null;
+    let realCountChart = null;
 
     // Jam Real-time
     function updateClock() {
@@ -284,10 +332,13 @@
                 imgEl.classList.remove("hidden");
             };
             reader.readAsDataURL(file);
+        } else {
+            base64Foto = "";
+            document.getElementById("imgPreview").classList.add("hidden");
         }
     }
 
-    // Simpan Data Paslon + Foto
+    // Simpan Data Paslon
     async function savePaslon(e) {
         e.preventDefault();
         const btn = document.getElementById("btnSimpanPaslon");
@@ -311,7 +362,7 @@
                     foto: base64Foto 
                 })
             });
-            alert("Data & Foto Paslon berhasil disimpan!");
+            alert("Data Paslon berhasil disimpan!");
             e.target.reset();
             document.getElementById("imgPreview").classList.add("hidden");
             base64Foto = "";
@@ -355,25 +406,88 @@
     function openRealCountModal() {
         document.getElementById("modalRealCount").style.display = "flex";
         loadRealCountData();
+        
+        // AUTO UPDATE OTOMATIS SETIAP 3 DETIK
+        if (!autoUpdateTimer) {
+            autoUpdateTimer = setInterval(loadRealCountData, 3000);
+        }
     }
 
     function closeRealCountModal() {
         document.getElementById("modalRealCount").style.display = "none";
+        // Stop timer auto-update saat modal ditutup
+        if (autoUpdateTimer) {
+            clearInterval(autoUpdateTimer);
+            autoUpdateTimer = null;
+        }
     }
 
-    // Load Data Real Count Suara (Diperbarui dengan Anti-Cache Parameter)
-    async function loadRealCountData() {
-        const tbodyVote = document.getElementById("tableHasilVote");
-        tbodyVote.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Memuat perolehan suara terbaru...</td></tr>";
+    // Render Grafik Modern Chart.js
+    function renderChart(labels, dataSuara) {
+        const ctx = document.getElementById('realCountChart').getContext('2d');
+        
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, '#00f2fe');
+        gradient.addColorStop(1, '#4facfe');
 
+        if (realCountChart) {
+            realCountChart.data.labels = labels;
+            realCountChart.data.datasets[0].data = dataSuara;
+            realCountChart.update();
+        } else {
+            realCountChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jumlah Suara',
+                        data: dataSuara,
+                        backgroundColor: gradient,
+                        borderColor: '#00f2fe',
+                        borderWidth: 1.5,
+                        borderRadius: 8,
+                        barThickness: 38
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#a1c4fd', font: { family: 'Cambria', weight: 'bold' } },
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#a1c4fd', stepSize: 1, precision: 0 },
+                            grid: { color: 'rgba(255,255,255,0.08)' }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    // Load Data Real Count Suara
+    async function loadRealCountData() {
         try {
-            // Parameter &t=Date.now() mencegah browser mengambil cache lama
             const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
             const data = await res.json();
 
+            const tbodyVote = document.getElementById("tableHasilVote");
             tbodyVote.innerHTML = "";
+
             if (data.hasilVote && data.hasilVote.length > 0) {
+                const labels = [];
+                const dataSuara = [];
+
                 data.hasilVote.forEach(h => {
+                    labels.push(h.no);
+                    dataSuara.push(h.totalSuara);
+
                     tbodyVote.innerHTML += `
                         <tr>
                             <td><strong>${h.no}</strong></td>
@@ -382,11 +496,15 @@
                             <td>${h.persentase}%</td>
                         </tr>`;
                 });
+
+                // Update Grafik
+                renderChart(labels, dataSuara);
             } else {
                 tbodyVote.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Belum ada suara masuk.</td></tr>";
+                renderChart([], []);
             }
         } catch (err) {
-            tbodyVote.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Gagal mengambil data perolehan suara.</td></tr>";
+            console.error("Gagal mengambil data perolehan suara:", err);
         }
     }
 
