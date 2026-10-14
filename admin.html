@@ -88,6 +88,9 @@
             padding: 14px 24px;
             box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
         }
+        .btn-danger { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
+        .btn-warning { background: linear-gradient(45deg, #f7b731, #ffa801); color: #000; }
+        .btn-secondary { background: linear-gradient(45deg, #718093, #2f3640); }
         .btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
         .nav-menu-box {
@@ -193,6 +196,11 @@
             border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.1);
         }
+
+        .action-btns {
+            display: flex;
+            gap: 6px;
+        }
     </style>
 </head>
 <body>
@@ -228,7 +236,6 @@
                     <input type="text" id="paslonNama" placeholder="Contoh: Ahmad & Siti" required>
                 </div>
                 <div class="form-group">
-                    <!-- FOTO DIBUAT OPSIONAL (TIDAK WAKIB UPLOAD) -->
                     <label>Upload Foto Paslon (Opsional - JPG/PNG)</label>
                     <input type="file" id="paslonFoto" accept="image/jpeg, image/png" onchange="previewImage(event)">
                     <img id="imgPreview" class="paslon-img-preview hidden" alt="Preview Foto">
@@ -242,9 +249,14 @@
                 <label>Misi Paslon</label>
                 <textarea id="paslonMisi" placeholder="Tuliskan Misi Paslon (Gunakan baris baru/nomor)..." required></textarea>
             </div>
-            <button type="submit" class="btn" id="btnSimpanPaslon">
-                <i class="fas fa-save"></i> Simpan Data Paslon
-            </button>
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" class="btn" id="btnSimpanPaslon">
+                    <i class="fas fa-save"></i> Simpan Data Paslon
+                </button>
+                <button type="button" class="btn btn-secondary hidden" id="btnBatalEdit" onclick="batalEdit()">
+                    <i class="fas fa-times"></i> Batal Edit
+                </button>
+            </div>
         </form>
 
         <h3 style="color: #a1c4fd; margin-top: 25px; font-size: 1rem;">Daftar Paslon Terdaftar</h3>
@@ -256,10 +268,11 @@
                     <th>Nama Paslon</th>
                     <th>Visi</th>
                     <th>Misi</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody id="tablePaslonAdmin">
-                <tr><td colspan="5" style="text-align:center;">Memuat data paslon...</td></tr>
+                <tr><td colspan="6" style="text-align:center;">Memuat data paslon...</td></tr>
             </tbody>
         </table>
     </div>
@@ -305,6 +318,7 @@
     let base64Foto = "";
     let autoUpdateTimer = null;
     let realCountChart = null;
+    let paslonCache = [];
 
     // Jam Real-time
     function updateClock() {
@@ -333,12 +347,13 @@
             };
             reader.readAsDataURL(file);
         } else {
-            base64Foto = "";
-            document.getElementById("imgPreview").classList.add("hidden");
+            if(!base64Foto) {
+                document.getElementById("imgPreview").classList.add("hidden");
+            }
         }
     }
 
-    // Simpan Data Paslon
+    // Simpan / Edit Data Paslon
     async function savePaslon(e) {
         e.preventDefault();
         const btn = document.getElementById("btnSimpanPaslon");
@@ -363,9 +378,7 @@
                 })
             });
             alert("Data Paslon berhasil disimpan!");
-            e.target.reset();
-            document.getElementById("imgPreview").classList.add("hidden");
-            base64Foto = "";
+            batalEdit();
             loadPaslonData();
         } catch (err) {
             alert("Gagal menyimpan data ke server.");
@@ -383,7 +396,9 @@
 
             const tbodyPaslon = document.getElementById("tablePaslonAdmin");
             tbodyPaslon.innerHTML = "";
+            
             if (data.paslon && data.paslon.length > 0) {
+                paslonCache = data.paslon; // Simpan cache untuk kemudahan edit
                 data.paslon.forEach(p => {
                     tbodyPaslon.innerHTML += `
                         <tr>
@@ -392,13 +407,70 @@
                             <td>${p.nama}</td>
                             <td>${p.visi}</td>
                             <td>${p.misi ? p.misi.replace(/\n/g, '<br>') : '-'}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn btn-warning" style="padding:5px 10px; font-size:0.75rem;" onclick="editPaslon('${p.no}')"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger" style="padding:5px 10px; font-size:0.75rem;" onclick="deletePaslon('${p.no}')"><i class="fas fa-trash"></i> Hapus</button>
+                                </div>
+                            </td>
                         </tr>`;
                 });
             } else {
-                tbodyPaslon.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Belum ada data paslon.</td></tr>";
+                paslonCache = [];
+                tbodyPaslon.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Belum ada data paslon.</td></tr>";
             }
         } catch (err) {
             console.error("Error loading paslon data:", err);
+        }
+    }
+
+    // Fungsi Edit Paslon
+    function editPaslon(no) {
+        const p = paslonCache.find(item => item.no.toString() === no.toString());
+        if (!p) return;
+
+        document.getElementById("paslonNo").value = p.no;
+        document.getElementById("paslonNama").value = p.nama;
+        document.getElementById("paslonVisi").value = p.visi;
+        document.getElementById("paslonMisi").value = p.misi;
+
+        if (p.foto) {
+            base64Foto = p.foto;
+            const imgEl = document.getElementById("imgPreview");
+            imgEl.src = base64Foto;
+            imgEl.classList.remove("hidden");
+        } else {
+            base64Foto = "";
+            document.getElementById("imgPreview").classList.add("hidden");
+        }
+
+        document.getElementById("btnSimpanPaslon").innerHTML = '<i class="fas fa-sync-alt"></i> Update Paslon';
+        document.getElementById("btnBatalEdit").classList.remove("hidden");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Batal Edit
+    function batalEdit() {
+        document.getElementById("formPaslon").reset();
+        base64Foto = "";
+        document.getElementById("imgPreview").classList.add("hidden");
+        document.getElementById("btnSimpanPaslon").innerHTML = '<i class="fas fa-save"></i> Simpan Data Paslon';
+        document.getElementById("btnBatalEdit").classList.add("hidden");
+    }
+
+    // Fungsi Hapus Paslon
+    async function deletePaslon(no) {
+        if (!confirm(`Apakah Anda yakin ingin menghapus Paslon No. ${no}?`)) return;
+
+        try {
+            await fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "deletePaslon", no: no })
+            });
+            alert(`Paslon No. ${no} berhasil dihapus!`);
+            loadPaslonData();
+        } catch (err) {
+            alert("Gagal menghapus data paslon.");
         }
     }
 
@@ -407,7 +479,6 @@
         document.getElementById("modalRealCount").style.display = "flex";
         loadRealCountData();
         
-        // AUTO UPDATE OTOMATIS SETIAP 3 DETIK
         if (!autoUpdateTimer) {
             autoUpdateTimer = setInterval(loadRealCountData, 3000);
         }
@@ -415,7 +486,6 @@
 
     function closeRealCountModal() {
         document.getElementById("modalRealCount").style.display = "none";
-        // Stop timer auto-update saat modal ditutup
         if (autoUpdateTimer) {
             clearInterval(autoUpdateTimer);
             autoUpdateTimer = null;
@@ -497,7 +567,6 @@
                         </tr>`;
                 });
 
-                // Update Grafik
                 renderChart(labels, dataSuara);
             } else {
                 tbodyVote.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Belum ada suara masuk.</td></tr>";
