@@ -1,443 +1,534 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-Voting Ketua & Wakil Ketua OSIS SMPN 1 Rancah</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Cambria', serif;
-      font-weight: bold;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin E-Voting OSIS SMPN 1 Rancah</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js Library untuk Grafik Modern -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Cambria', Georgia, serif; 
+            font-weight: bold;
+        }
+        
+        body { 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); 
+            min-height: 100vh; 
+            color: #fff; 
+            padding: 20px; 
+        }
 
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #090d16 0%, #0f172a 30%, #1e1b4b 65%, #311042 100%);
-      background-size: 200% 200%;
-      animation: gradientBG 12s ease infinite;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-      color: #e2e8f0;
-    }
+        .container { max-width: 1050px; margin: 0 auto; }
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+        header { text-align: center; margin-bottom: 25px; }
+        header h1 { color: #00f2fe; font-size: 1.8rem; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,242,254,0.3); }
+        header p { color: #a1c4fd; font-size: 0.95rem; }
 
-    .container {
-      width: 100%;
-      max-width: 950px;
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      padding: clamp(20px, 4vw, 35px);
-      border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(168, 85, 247, 0.25);
-    }
+        .clock-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 242, 254, 0.12);
+            border: 1px solid rgba(0, 242, 254, 0.35);
+            padding: 6px 16px;
+            border-radius: 20px;
+            color: #00f2fe;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
 
-    .hidden {
-      display: none !important;
-    }
+        .card { 
+            background: rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.15); 
+            border-radius: 14px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
 
-    /* Header & Judul */
-    .header-title {
-      text-align: center;
-      margin-bottom: 25px;
-    }
+        .card h2 { color: #00f2fe; margin-bottom: 15px; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
 
-    .badge-top {
-      display: inline-block;
-      padding: 6px 18px;
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-      color: #ffffff;
-      border-radius: 20px;
-      font-size: clamp(11px, 2.5vw, 13px);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
-    }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #a1c4fd; font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid rgba(255,255,255,0.2); 
+            background: rgba(255,255,255,0.1); 
+            color: #fff; 
+            font-size: 0.9rem;
+        }
+        .form-group textarea { height: 75px; resize: vertical; }
 
-    .main-title {
-      font-size: clamp(1.2rem, 4vw, 2.1rem);
-      color: #f8fafc;
-      line-height: 1.25;
-      text-transform: uppercase;
-      word-wrap: break-word;
-      text-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
-    }
+        .btn { 
+            padding: 11px 20px; 
+            border: none; 
+            color: #fff; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        .btn-realcount { 
+            background: linear-gradient(45deg, #11998e, #38ef7d); 
+            font-size: 1rem;
+            padding: 14px 24px;
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
+        }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
 
-    .sub-title {
-      font-size: clamp(1.1rem, 3.5vw, 1.8rem);
-      color: #c084fc;
-      margin-top: 4px;
-      text-transform: uppercase;
-      text-shadow: 0 0 10px rgba(192, 132, 252, 0.3);
-    }
+        .nav-menu-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
 
-    /* Clock Card */
-    .clock-card {
-      background: rgba(30, 27, 75, 0.6);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      color: #f1f5f9;
-      padding: 12px 20px;
-      border-radius: 14px;
-      text-align: center;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 12px;
-      font-size: clamp(13px, 3vw, 16px);
-    }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; }
+        th { background: rgba(0, 242, 254, 0.2); color: #00f2fe; }
 
-    .clock-time {
-      font-size: clamp(15px, 3.5vw, 18px);
-      color: #facc15;
-      letter-spacing: 1px;
-    }
+        .paslon-img-preview {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #00f2fe;
+            display: block;
+            margin-top: 8px;
+            background: rgba(0,0,0,0.2);
+        }
 
-    /* Form Login */
-    .login-box {
-      max-width: 420px;
-      margin: 0 auto;
-      text-align: center;
-    }
+        .img-table {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #00f2fe;
+        }
 
-    .input-group {
-      margin-bottom: 22px;
-      text-align: left;
-    }
+        .hidden { display: none !important; }
 
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #cbd5e1;
-      font-size: 15px;
-    }
+        /* Style Live Indicator */
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(56, 239, 125, 0.15);
+            border: 1px solid #38ef7d;
+            color: #38ef7d;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 10px;
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #38ef7d;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(56, 239, 125, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 239, 125, 0); }
+        }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 14px 18px;
-      border: 2px solid rgba(168, 85, 247, 0.4);
-      border-radius: 12px;
-      outline: none;
-      font-size: 16px;
-      background: rgba(15, 23, 42, 0.8);
-      color: #f8fafc;
-      transition: all 0.3s ease;
-    }
+        /* Modal Real Count */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0,0,0,0.85); 
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
 
-    input[type="text"]:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-    }
+        .modal-content {
+            background: #1a2a3a;
+            border: 1px solid #00f2fe;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 850px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,242,254,0.3);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
 
-    input[type="text"]::placeholder {
-      color: #64748b;
-    }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #ff4b2b;
+            font-size: 1.8rem;
+            cursor: pointer;
+        }
 
-    .btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-      color: #ffffff;
-      border: none;
-      border-radius: 12px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
-    }
+        .chart-container {
+            position: relative;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(124, 58, 237, 0.6);
-      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-    }
-
-    .error-msg {
-      color: #fca5a5;
-      margin-top: 12px;
-      font-size: 14px;
-      background: rgba(127, 29, 29, 0.4);
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid rgba(239, 68, 68, 0.4);
-    }
-
-    /* User Info */
-    .user-info {
-      background: rgba(30, 27, 75, 0.6);
-      padding: 14px 18px;
-      border-radius: 14px;
-      border-left: 5px solid #a855f7;
-      border-right: 1px solid rgba(168, 85, 247, 0.2);
-      border-top: 1px solid rgba(168, 85, 247, 0.2);
-      border-bottom: 1px solid rgba(168, 85, 247, 0.2);
-      color: #e2e8f0;
-      font-size: clamp(13px, 3vw, 15px);
-      margin-bottom: 22px;
-      line-height: 1.6;
-    }
-
-    /* Card Paslon */
-    .paslon-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
-    }
-
-    .card-paslon {
-      background: rgba(15, 23, 42, 0.7);
-      border: 2px solid rgba(139, 92, 246, 0.3);
-      border-radius: 20px;
-      padding: 20px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-      transition: all 0.3s ease;
-    }
-
-    .card-paslon:hover {
-      transform: translateY(-5px);
-      border-color: #a855f7;
-      box-shadow: 0 15px 35px rgba(168, 85, 247, 0.25);
-    }
-
-    .paslon-header {
-      background: linear-gradient(135deg, #1e1b4b, #581c87);
-      color: #ffffff;
-      padding: 10px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      font-size: 18px;
-      letter-spacing: 1px;
-      border: 1px solid rgba(168, 85, 247, 0.3);
-    }
-
-    .paslon-img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-      border-radius: 14px;
-      border: 2px solid #3b82f6;
-      margin-bottom: 15px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .visi-misi {
-      text-align: left;
-      font-size: 13.5px;
-      color: #cbd5e1;
-      margin-bottom: 18px;
-      background: rgba(30, 27, 75, 0.5);
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(139, 92, 246, 0.2);
-    }
-
-    .visi-misi h4 {
-      color: #c084fc;
-      margin-bottom: 6px;
-    }
-
-    .visi-misi ul {
-      padding-left: 18px;
-    }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 10px;
-      }
-      .container {
-        padding: 18px 14px;
-        border-radius: 18px;
-      }
-      .paslon-img {
-        height: 200px;
-      }
-    }
-  </style>
+        .spin-icon {
+            animation: spin 0.6s linear;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="header-title">
-      <span class="badge-top">E - VOTING RESMI</span>
-      <h1 class="main-title">E-VOTING KETUA DAN WAKIL KETUA OSIS</h1>
-      <h2 class="sub-title">SMPN 1 RANCAH</h2>
+<div class="container">
+    <header>
+        <h1>DASHBOARD ADMIN E-VOTING OSIS</h1>
+        <p>SMPN 1 Rancah - Sistem Pemilihan Ketua & Wakil Ketua OSIS</p>
+        <div class="clock-box">
+            <i class="fas fa-clock"></i>
+            <span id="liveClock">--:--:-- WIB</span>
+        </div>
+    </header>
+
+    <!-- TOMBOL MENU MASUK KE REAL COUNT / PEROLEHAN SUARA -->
+    <div class="nav-menu-box">
+        <button class="btn btn-realcount" onclick="openRealCountModal()">
+            <i class="fas fa-chart-line"></i> BUKA REAL COUNT / PEROLEHAN SUARA
+        </button>
     </div>
 
-    <!-- Login Section -->
-    <div id="loginSection" class="login-box">
-      <p style="margin-bottom: 22px; color: #94a3b8; font-size: 15px;">
-        Silakan masukkan NISN (Siswa) atau Nama Lengkap (Guru) untuk masuk ke sistem pemilihan
-      </p>
-      
-      <div class="input-group">
-        <label for="nisInput">NISN Siswa / Nama Guru</label>
-        <input type="text" id="nisInput" placeholder="Masukkan NISN atau Nama Guru..." autocomplete="off">
-      </div>
-      
-      <button class="btn" id="btnLogin" onclick="prosesLogin()">MASUK SYSTEM</button>
-      <div id="loginError" class="error-msg hidden"></div>
-    </div>
-
-    <!-- Halaman Paslon Section -->
-    <div id="votingSection" class="hidden">
-      <div class="clock-card">
-        <div>📅 <span id="clockDate">Memuat tanggal...</span></div>
-        <div class="clock-time">⏰ <span id="clockTime">00:00:00 WIB</span></div>
-      </div>
-
-      <div class="user-info">
-        👤 <b>Pemilih:</b> <span id="userName">-</span> | <b>Kelas/Jabatan:</b> <span id="userKelas">-</span><br>
-        🆔 <b>NISN/Identitas:</b> <span id="userNis">-</span>
-      </div>
-
-      <h3 style="text-align: center; color: #e2e8f0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
-        PILIH PASLON FAVORIT ANDA
-      </h3>
-      
-      <div class="paslon-container">
-        <!-- Paslon 01 -->
-        <div class="card-paslon">
-          <div>
-            <div class="paslon-header">PASLON 01</div>
-            <img src="https://via.placeholder.com/300x300?text=Foto+Paslon+1" alt="Paslon 1" class="paslon-img">
-            <div class="visi-misi">
-              <h4>Visi:</h4>
-              <p>Mewujudkan OSIS SMPN 1 Rancah yang aktif, kreatif, dan berprestasi.</p>
-              <h4 style="margin-top: 10px;">Misi:</h4>
-              <ul>
-                <li>Meningkatkan kegiatan seni, olahraga, dan kedisiplinan.</li>
-                <li>Menjaga kebersihan dan keasrian lingkungan sekolah.</li>
-              </ul>
+    <!-- KELOLA PASLON, VISI, MISI, & UPLOAD FOTO -->
+    <div class="card">
+        <h2><i class="fas fa-user-edit"></i> Kelola Paslon, Visi, Misi & Foto Paslon</h2>
+        <form id="formPaslon" onsubmit="savePaslon(event)">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nomor Urut Paslon</label>
+                    <input type="number" id="paslonNo" min="1" placeholder="Contoh: 1" required>
+                </div>
+                <div class="form-group">
+                    <label>Nama Paslon (Ketua & Wakil)</label>
+                    <input type="text" id="paslonNama" placeholder="Contoh: Ahmad & Siti" required>
+                </div>
+                <div class="form-group">
+                    <label>Upload Foto Paslon (Opsional - JPG/PNG)</label>
+                    <input type="file" id="paslonFoto" accept="image/jpeg, image/png" onchange="previewImage(event)">
+                    <img id="imgPreview" class="paslon-img-preview hidden" alt="Preview Foto">
+                </div>
             </div>
-          </div>
-          <button class="btn" onclick="kirimPilihan('Paslon 1')">PILIH PASLON 01</button>
+            <div class="form-group">
+                <label>Visi Paslon</label>
+                <textarea id="paslonVisi" placeholder="Tuliskan Visi Paslon..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Misi Paslon</label>
+                <textarea id="paslonMisi" placeholder="Tuliskan Misi Paslon (Gunakan baris baru/nomor)..." required></textarea>
+            </div>
+            <button type="submit" class="btn" id="btnSimpanPaslon">
+                <i class="fas fa-save"></i> Simpan Data Paslon
+            </button>
+        </form>
+
+        <h3 style="color: #a1c4fd; margin-top: 25px; font-size: 1rem;">Daftar Paslon Terdaftar</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Foto</th>
+                    <th>Nama Paslon</th>
+                    <th>Visi</th>
+                    <th>Misi</th>
+                </tr>
+            </thead>
+            <tbody id="tablePaslonAdmin">
+                <tr><td colspan="5" style="text-align:center;">Memuat data paslon...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL PEROLEHAN SUARA REAL-TIME (REAL COUNT) -->
+<div id="modalRealCount" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeRealCountModal()">&times;</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; margin-bottom: 15px;">
+            <h2 style="color: #00f2fe; margin-bottom: 5px;">
+                <i class="fas fa-chart-pie"></i> Real Count Perolehan Suara
+                <span class="live-badge"><span class="live-dot"></span> REALTIME</span>
+            </h2>
         </div>
 
-        <!-- Paslon 02 -->
-        <div class="card-paslon">
-          <div>
-            <div class="paslon-header">PASLON 02</div>
-            <img src="https://via.placeholder.com/300x300?text=Foto+Paslon+2" alt="Paslon 2" class="paslon-img">
-            <div class="visi-misi">
-              <h4>Visi:</h4>
-              <p>Menjadi wadah aspirasi siswa yang inklusif, inovatif, dan berkarakter.</p>
-              <h4 style="margin-top: 10px;">Misi:</h4>
-              <ul>
-                <li>Pengembangan program literasi digital siswa.</li>
-                <li>Mempererat kebersamaan dan kekeluargaan antar siswa.</li>
-              </ul>
-            </div>
-          </div>
-          <button class="btn" onclick="kirimPilihan('Paslon 2')">PILIH PASLON 02</button>
-        </div>
-      </div>
-    </div>
-  </div>
+        <!-- TOMBOL REFRESH DATA SUARA TEGAP TERSEDIA & DAPAT DIGUNAKAN -->
+        <button class="btn" id="btnRefresh" onclick="manualRefreshData()" style="margin-bottom: 15px;">
+            <i class="fas fa-sync-alt" id="refreshIcon"></i> Refresh Data Suara
+        </button>
 
-  <script>
+        <!-- CONTAINER GRAFIK CHART.JS -->
+        <div class="chart-container">
+            <canvas id="realCountChart" style="max-height: 280px;"></canvas>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>No. Paslon</th>
+                    <th>Nama Paslon</th>
+                    <th>Jumlah Suara</th>
+                    <th>Persentase</th>
+                </tr>
+            </thead>
+            <tbody id="tableHasilVote">
+                <tr><td colspan="4" style="text-align:center;">Memuat rekap suara...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
+    let base64Foto = "";
+    let autoUpdateTimer = null;
+    let realCountChart = null;
 
-    let currentNis = "";
-    let currentNama = ""; 
-
+    // Jam Real-time
     function updateClock() {
-      const now = new Date();
-      const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      document.getElementById('clockDate').innerText = now.toLocaleDateString('id-ID', optionsDate);
-      
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('clockTime').innerText = `${hours}:${minutes}:${seconds} WIB`;
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " WIB";
+        document.getElementById("liveClock").innerText = timeStr;
     }
     setInterval(updateClock, 1000);
     updateClock();
 
-function prosesLogin() {
-  const nis = document.getElementById('nisInput').value.trim();
-  const errorDiv = document.getElementById('loginError');
-  const btnLogin = document.getElementById('btnLogin');
-  
-  errorDiv.innerText = "";
-  errorDiv.classList.add('hidden');
-
-  if (!nis) {
-    errorDiv.innerText = "NISN / Nama Guru tidak boleh kosong!";
-    errorDiv.classList.remove('hidden');
-    return;
-  }
-
-  // UBAH TEKS TOMBOL INSTAN
-  btnLogin.innerText = "MEMERIKSA...";
-  btnLogin.disabled = true;
-
-  const startTime = performance.now();
-
-  fetch(`${SCRIPT_URL}?action=verifikasi&nis=${encodeURIComponent(nis)}`)
-    .then(res => res.json())
-    .then(response => {
-      btnLogin.innerText = "MASUK SYSTEM";
-      btnLogin.disabled = false;
-
-      if (response.success) {
-        currentNis = nis;
-        currentNama = response.nama;
-
-        // Transisi Halaman Cepat
-        document.getElementById('loginSection').classList.add('hidden');
-        document.getElementById('votingSection').classList.remove('hidden');
-        
-        document.getElementById('userName').innerText = response.nama;
-        document.getElementById('userKelas').innerText = response.kelas;
-        document.getElementById('userNis').innerText = nis;
-      } else {
-        errorDiv.innerText = response.message;
-        errorDiv.classList.remove('hidden');
-      }
-    })
-    .catch(() => {
-      btnLogin.innerText = "MASUK SYSTEM";
-      btnLogin.disabled = false;
-      errorDiv.innerText = "Gagal terhubung ke server database!";
-      errorDiv.classList.remove('hidden');
-    });
-}
-    function kirimPilihan(pilihan) {
-      if (!confirm("Apakah Anda yakin ingin memilih " + pilihan + "? Pilihan tidak dapat diubah setelah disimpan.")) {
-        return;
-      }
-
-      fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihan)}&nama=${encodeURIComponent(currentNama)}`)
-        .then(res => res.json())
-        .then(response => {
-          if (response.success) {
-            alert("Terima kasih! Suara Anda telah berhasil disimpan.");
-            location.reload();
-          } else {
-            alert(response.message);
-          }
-        })
-        .catch(() => {
-          alert("Terjadi kesalahan saat menyimpan suara ke database.");
-        });
+    // Preview Foto Paslon
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                alert("Format file harus JPG atau PNG!");
+                event.target.value = "";
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                base64Foto = e.target.result;
+                const imgEl = document.getElementById("imgPreview");
+                imgEl.src = base64Foto;
+                imgEl.classList.remove("hidden");
+            };
+            reader.readAsDataURL(file);
+        } else {
+            base64Foto = "";
+            document.getElementById("imgPreview").classList.add("hidden");
+        }
     }
-  </script>
+
+    // Simpan Data Paslon
+    async function savePaslon(e) {
+        e.preventDefault();
+        const btn = document.getElementById("btnSimpanPaslon");
+        btn.innerText = "MENYIMPAN...";
+        btn.disabled = true;
+
+        const no = document.getElementById("paslonNo").value;
+        const nama = document.getElementById("paslonNama").value;
+        const visi = document.getElementById("paslonVisi").value;
+        const misi = document.getElementById("paslonMisi").value;
+
+        try {
+            await fetch(SCRIPT_URL, {
+                method: "POST",
+                body: JSON.stringify({ 
+                    action: "savePaslon", 
+                    no: no, 
+                    nama: nama, 
+                    visi: visi, 
+                    misi: misi,
+                    foto: base64Foto 
+                })
+            });
+            alert("Data Paslon berhasil disimpan!");
+            e.target.reset();
+            document.getElementById("imgPreview").classList.add("hidden");
+            base64Foto = "";
+            loadPaslonData();
+        } catch (err) {
+            alert("Gagal menyimpan data ke server.");
+        } finally {
+            btn.innerHTML = '<i class="fas fa-save"></i> Simpan Data Paslon';
+            btn.disabled = false;
+        }
+    }
+
+    // Load Data Paslon
+    async function loadPaslonData() {
+        try {
+            const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
+            const data = await res.json();
+
+            const tbodyPaslon = document.getElementById("tablePaslonAdmin");
+            tbodyPaslon.innerHTML = "";
+            if (data.paslon && data.paslon.length > 0) {
+                data.paslon.forEach(p => {
+                    tbodyPaslon.innerHTML += `
+                        <tr>
+                            <td><strong>${p.no}</strong></td>
+                            <td><img src="${p.foto || 'https://via.placeholder.com/100?text=Paslon'}" class="img-table"></td>
+                            <td>${p.nama}</td>
+                            <td>${p.visi}</td>
+                            <td>${p.misi ? p.misi.replace(/\n/g, '<br>') : '-'}</td>
+                        </tr>`;
+                });
+            } else {
+                tbodyPaslon.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Belum ada data paslon.</td></tr>";
+            }
+        } catch (err) {
+            console.error("Error loading paslon data:", err);
+        }
+    }
+
+    // Modal Real Count Control
+    function openRealCountModal() {
+        document.getElementById("modalRealCount").style.display = "flex";
+        loadRealCountData();
+        
+        // AUTO UPDATE REALTIME (BERJALAN OTOMATIS SETIAP 3 DETIK)
+        if (!autoUpdateTimer) {
+            autoUpdateTimer = setInterval(loadRealCountData, 3000);
+        }
+    }
+
+    function closeRealCountModal() {
+        document.getElementById("modalRealCount").style.display = "none";
+        if (autoUpdateTimer) {
+            clearInterval(autoUpdateTimer);
+            autoUpdateTimer = null;
+        }
+    }
+
+    // Refresh Manual dengan Animasi Putar Tombol
+    async function manualRefreshData() {
+        const icon = document.getElementById("refreshIcon");
+        icon.classList.add("spin-icon");
+        await loadRealCountData();
+        setTimeout(() => {
+            icon.classList.remove("spin-icon");
+        }, 600);
+    }
+
+    // Render Grafik Modern Chart.js
+    function renderChart(labels, dataSuara) {
+        const ctx = document.getElementById('realCountChart').getContext('2d');
+        
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, '#00f2fe');
+        gradient.addColorStop(1, '#4facfe');
+
+        if (realCountChart) {
+            realCountChart.data.labels = labels;
+            realCountChart.data.datasets[0].data = dataSuara;
+            realCountChart.update('none'); // Update halus tanpa kedipan
+        } else {
+            realCountChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jumlah Suara',
+                        data: dataSuara,
+                        backgroundColor: gradient,
+                        borderColor: '#00f2fe',
+                        borderWidth: 1.5,
+                        borderRadius: 8,
+                        barThickness: 38
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#a1c4fd', font: { family: 'Cambria', weight: 'bold' } },
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { color: '#a1c4fd', stepSize: 1, precision: 0 },
+                            grid: { color: 'rgba(255,255,255,0.08)' }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    // Load Data Real Count Suara (Manual & Realtime)
+    async function loadRealCountData() {
+        try {
+            const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
+            const data = await res.json();
+
+            const tbodyVote = document.getElementById("tableHasilVote");
+            tbodyVote.innerHTML = "";
+
+            if (data.hasilVote && data.hasilVote.length > 0) {
+                const labels = [];
+                const dataSuara = [];
+
+                data.hasilVote.forEach(h => {
+                    labels.push(h.no);
+                    dataSuara.push(h.totalSuara);
+
+                    tbodyVote.innerHTML += `
+                        <tr>
+                            <td><strong>${h.no}</strong></td>
+                            <td>${h.nama}</td>
+                            <td>${h.totalSuara} Suara</td>
+                            <td>${h.persentase}%</td>
+                        </tr>`;
+                });
+
+                // Update Grafik
+                renderChart(labels, dataSuara);
+            } else {
+                tbodyVote.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Belum ada suara masuk.</td></tr>";
+                renderChart([], []);
+            }
+        } catch (err) {
+            console.error("Gagal mengambil data perolehan suara:", err);
+        }
+    }
+
+    // Initial Load
+    loadPaslonData();
+</script>
+
 </body>
 </html>
