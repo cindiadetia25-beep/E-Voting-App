@@ -40,8 +40,8 @@
       -webkit-backdrop-filter: blur(20px);
       padding: clamp(20px, 4vw, 35px);
       border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 20px rgba(168, 85, 247, 0.4);
-      border: 1px solid rgba(168, 85, 247, 0.4);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.3);
+      border: 2px solid #00f2fe;
     }
 
     .hidden {
@@ -56,16 +56,17 @@
 
     .badge-top {
       display: inline-block;
-      padding: 8px 20px;
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-      color: #ffffff;
+      padding: 8px 22px;
+      background: rgba(15, 23, 42, 0.9);
+      color: #00f2fe;
+      border: 2px solid #00f2fe;
       border-radius: 20px;
       font-size: clamp(11px, 2.5vw, 13px);
       letter-spacing: 1.5px;
       text-transform: uppercase;
       margin-bottom: 12px;
-      box-shadow: 0 0 15px rgba(139, 92, 246, 0.8);
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+      text-shadow: 0 0 8px #00f2fe;
     }
 
     .main-title {
@@ -74,7 +75,7 @@
       line-height: 1.25;
       text-transform: uppercase;
       word-wrap: break-word;
-      text-shadow: 0 0 15px rgba(59, 130, 246, 0.8), 0 0 25px rgba(168, 85, 247, 0.6);
+      text-shadow: 0 0 15px rgba(0, 242, 254, 0.8), 0 0 25px rgba(168, 85, 247, 0.6);
     }
 
     .sub-title {
@@ -85,7 +86,7 @@
       text-shadow: 0 0 15px rgba(192, 132, 252, 0.8);
     }
 
-    /* Clock Card - Tampilan Lebih Keren, Warna Seragam & Tanpa Ikon */
+    /* Clock Card - Elemen Utama Tema Cyber Neon */
     .clock-card {
       background: rgba(15, 23, 42, 0.9);
       border: 2px solid #00f2fe;
@@ -94,7 +95,7 @@
       border-radius: 16px;
       text-align: center;
       margin-bottom: 22px;
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.35);
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
@@ -124,15 +125,15 @@
     label {
       display: block;
       margin-bottom: 8px;
-      color: #e2e8f0;
+      color: #00f2fe;
       font-size: 15px;
-      text-shadow: 0 0 8px rgba(226, 232, 240, 0.6);
+      text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
     }
 
     input[type="text"] {
       width: 100%;
       padding: 14px 18px;
-      border: 2px solid rgba(168, 85, 247, 0.6);
+      border: 2px solid #00f2fe;
       border-radius: 12px;
       outline: none;
       font-size: 16px;
@@ -140,11 +141,12 @@
       color: #f8fafc;
       transition: all 0.3s ease;
       text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.2);
     }
 
     input[type="text"]:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
+      border-color: #38ef7d;
+      box-shadow: 0 0 20px rgba(56, 239, 125, 0.7);
     }
 
     input[type="text"]::placeholder {
@@ -154,14 +156,14 @@
     .btn {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+      background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
       color: #ffffff;
-      border: none;
+      border: 2px solid #00f2fe;
       border-radius: 12px;
       font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 0 20px rgba(124, 58, 237, 0.6);
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
       text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
       word-wrap: break-word;
       line-height: 1.3;
@@ -169,13 +171,17 @@
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 30px rgba(124, 58, 237, 0.9);
-      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.9);
+      background: linear-gradient(135deg, #00f2fe 0%, #38ef7d 100%);
+      color: #090d16;
+      text-shadow: none;
     }
 
     .btn-secondary {
-      background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
-      box-shadow: 0 0 15px rgba(71, 85, 105, 0.4);
+      background: rgba(15, 23, 42, 0.9);
+      border: 2px solid #94a3b8;
+      color: #94a3b8;
+      box-shadow: 0 0 15px rgba(148, 163, 184, 0.3);
     }
 
     .error-msg {
@@ -189,24 +195,26 @@
       text-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
     }
 
-    /* User Info - Tanpa Ikon */
+    /* KOTAK INFORMASI PEMILIH - Diubah Menjadi Keren Dengan Neon Glow */
     .user-info {
-      background: rgba(30, 27, 75, 0.8);
-      padding: 14px 18px;
-      border-radius: 14px;
-      border-left: 5px solid #a855f7;
-      border-right: 1px solid rgba(168, 85, 247, 0.4);
-      border-top: 1px solid rgba(168, 85, 247, 0.4);
-      border-bottom: 1px solid rgba(168, 85, 247, 0.4);
-      color: #f8fafc;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 16px 22px;
+      border-radius: 16px;
+      border: 2px solid #00f2fe;
+      color: #00f2fe;
       font-size: clamp(13px, 3vw, 15px);
-      margin-bottom: 22px;
-      line-height: 1.6;
-      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
-      text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+      margin-bottom: 25px;
+      line-height: 1.7;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.35);
+      text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
     }
 
-    /* Card Paslon */
+    .user-info span {
+      color: #ffffff;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    }
+
+    /* KARTU PASLON - Diubah Menjadi Keren Seirama Kotak Tanggal */
     .paslon-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -214,34 +222,36 @@
     }
 
     .card-paslon {
-      background: rgba(15, 23, 42, 0.85);
-      border: 2px solid rgba(139, 92, 246, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      border: 2px solid #00f2fe;
       border-radius: 20px;
-      padding: 20px;
+      padding: 22px;
       text-align: center;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.3);
       transition: all 0.3s ease;
     }
 
     .card-paslon:hover {
       transform: translateY(-5px);
-      border-color: #a855f7;
-      box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+      border-color: #38ef7d;
+      box-shadow: 0 0 35px rgba(56, 239, 125, 0.6);
     }
 
+    /* HEADER NAMA PASLON - Diubah Menjadi Keren */
     .paslon-header {
-      background: linear-gradient(135deg, #1e1b4b, #581c87);
-      color: #ffffff;
-      padding: 12px;
-      border-radius: 12px;
-      margin-bottom: 15px;
+      background: rgba(9, 13, 22, 0.8);
+      color: #00f2fe;
+      padding: 14px;
+      border-radius: 14px;
+      margin-bottom: 18px;
       font-size: 17px;
       letter-spacing: 1px;
-      border: 1px solid rgba(168, 85, 247, 0.5);
-      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      border: 2px solid #00f2fe;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+      text-shadow: 0 0 10px #00f2fe;
       text-transform: uppercase;
     }
 
@@ -251,31 +261,33 @@
       height: 240px;
       object-fit: contain;
       object-position: center;
-      border-radius: 14px;
-      border: 2px solid #3b82f6;
-      margin: 0 auto 15px auto;
+      border-radius: 16px;
+      border: 2px solid #00f2fe;
+      margin: 0 auto 18px auto;
       display: block;
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-      background: rgba(15, 23, 42, 0.9);
-      padding: 5px;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+      background: rgba(9, 13, 22, 0.9);
+      padding: 6px;
     }
 
+    /* KOTAK VISI & MISI - Diubah Menjadi Keren */
     .visi-misi {
       text-align: left;
       font-size: 13.5px;
       color: #e2e8f0;
-      margin-bottom: 18px;
-      background: rgba(30, 27, 75, 0.6);
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(139, 92, 246, 0.3);
+      margin-bottom: 20px;
+      background: rgba(9, 13, 22, 0.8);
+      padding: 16px;
+      border-radius: 14px;
+      border: 2px solid rgba(0, 242, 254, 0.6);
+      box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.2);
       text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
     }
 
     .visi-misi h4 {
-      color: #c084fc;
+      color: #00f2fe;
       margin-bottom: 6px;
-      text-shadow: 0 0 8px rgba(192, 132, 252, 0.8);
+      text-shadow: 0 0 8px #00f2fe;
     }
 
     /* CUSTOM MODAL POP-UP */
@@ -297,13 +309,13 @@
 
     .custom-modal-box {
       background: rgba(15, 23, 42, 0.95);
-      border: 2px solid #a855f7;
+      border: 2px solid #00f2fe;
       border-radius: 20px;
       max-width: 420px;
       width: 100%;
       padding: 25px;
       text-align: center;
-      box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+      box-shadow: 0 0 35px rgba(0, 242, 254, 0.6);
       animation: modalPop 0.25s ease-out;
     }
 
@@ -367,7 +379,7 @@
 
     <!-- Login Section -->
     <div id="loginSection" class="login-box">
-      <p style="margin-bottom: 22px; color: #cbd5e1; font-size: 15px; text-shadow: 0 0 6px rgba(203, 213, 225, 0.5);">
+      <p style="margin-bottom: 22px; color: #00f2fe; font-size: 15px; text-shadow: 0 0 6px rgba(0, 242, 254, 0.5);">
         Silakan masukkan NISN (Siswa) atau Nama Lengkap (Guru) untuk masuk ke sistem pemilihan
       </p>
       
@@ -382,20 +394,20 @@
 
     <!-- Halaman Paslon Section -->
     <div id="votingSection" class="hidden">
-      <!-- Waktu, Hari & Tanggal Didesain Seragam Satu Warna Keren Tanpa Ikon -->
+      <!-- Waktu, Hari & Tanggal -->
       <div class="clock-card">
         <span id="clockDate">Memuat tanggal...</span>
         <span class="clock-divider">|</span>
         <span id="clockTime">00:00:00 WIB</span>
       </div>
 
-      <!-- User Info Tanpa Ikon -->
+      <!-- User Info Berdesain Keren -->
       <div class="user-info">
         <b>Pemilih:</b> <span id="userName">-</span> | <b>Kelas/Jabatan:</b> <span id="userKelas">-</span><br>
         <b>NISN/Identitas:</b> <span id="userNis">-</span>
       </div>
 
-      <h3 style="text-align: center; color: #f8fafc; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);">
+      <h3 style="text-align: center; color: #00f2fe; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.8);">
         PILIH PASLON FAVORIT ANDA
       </h3>
       
