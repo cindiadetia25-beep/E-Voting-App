@@ -203,7 +203,7 @@
       text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
     }
 
-    /* Card Paslon - Layout HP Otomatis Menyesuaikan */
+    /* Card Paslon */
     .paslon-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -232,20 +232,14 @@
     .paslon-header {
       background: linear-gradient(135deg, #1e1b4b, #581c87);
       color: #ffffff;
-      padding: 10px;
+      padding: 12px;
       border-radius: 12px;
       margin-bottom: 15px;
-      font-size: 18px;
+      font-size: 17px;
       letter-spacing: 1px;
       border: 1px solid rgba(168, 85, 247, 0.5);
       text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-    }
-
-    .paslon-title-name {
-      color: #38ef7d;
-      font-size: 17px;
-      margin-bottom: 12px;
-      text-shadow: 0 0 12px rgba(56, 239, 125, 0.8);
+      text-transform: uppercase;
     }
 
     .paslon-img {
@@ -281,7 +275,6 @@
       text-shadow: 0 0 8px rgba(192, 132, 252, 0.8);
     }
 
-    /* Penyesuaian Responsif Khusus HP Layar Kecil */
     @media (max-width: 600px) {
       body {
         padding: 8px;
@@ -291,7 +284,7 @@
         border-radius: 18px;
       }
       .paslon-container {
-        grid-template-columns: 1fr; /* Memastikan 1 kolom penuh tanpa terbagi 2 */
+        grid-template-columns: 1fr;
         gap: 20px;
       }
       .paslon-img {
@@ -344,7 +337,7 @@
         PILIH PASLON FAVORIT ANDA
       </h3>
       
-      <!-- Container Kartu Paslon (Dikerjakan Dinamis via JS) -->
+      <!-- Container Kartu Paslon -->
       <div class="paslon-container" id="paslonContainer">
         <p style="text-align:center; grid-column: 1/-1; color:#a1c4fd;">Memuat daftar paslon...</p>
       </div>
@@ -404,7 +397,6 @@
             document.getElementById('userKelas').innerText = response.kelas;
             document.getElementById('userNis').innerText = nis;
 
-            // AMBIL DATA PASLON SECARA DINAMIS DARI DASHBOARD ADMIN/SPREADSHEET
             loadPaslonDataForVoting();
           } else {
             errorDiv.innerText = response.message;
@@ -419,7 +411,6 @@
         });
     }
 
-    // Fungsi Mengambil Daftar Paslon dari Sheet DATA PASLON (Sync dengan Admin)
     async function loadPaslonDataForVoting() {
       const container = document.getElementById('paslonContainer');
       container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#a1c4fd;">Memuat daftar paslon...</p>';
@@ -438,8 +429,8 @@
             container.innerHTML += `
               <div class="card-paslon">
                 <div>
-                  <div class="paslon-header">PASLON ${numFormatted}</div>
-                  <div class="paslon-title-name">${p.nama}</div>
+                  <!-- NAMA PASLON DI ATAS KARTU PASLON -->
+                  <div class="paslon-header">${p.nama}</div>
                   <img src="${fotoUrl}" alt="Paslon ${p.no}" class="paslon-img">
                   <div class="visi-misi">
                     <h4>Visi:</h4>
@@ -448,8 +439,8 @@
                     <p>${formattedMisi}</p>
                   </div>
                 </div>
-                <!-- TOMBOL DIGANTI DENGAN NAMA PASLON BERCAHAYA -->
-                <button class="btn" onclick="kirimPilihan('Paslon ${p.no}')">PILIH ${p.nama.toUpperCase()}</button>
+                <!-- TOMBOL DIUBAH MENJADI PILIH PASLON -->
+                <button class="btn" onclick="kirimPilihan('Paslon ${p.no}')">PILIH PASLON ${numFormatted}</button>
               </div>
             `;
           });
