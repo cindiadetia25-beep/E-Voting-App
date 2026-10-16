@@ -38,7 +38,7 @@
       background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      padding: clamp(20px, 4vw, 35px);
+      padding: clamp(15px, 3vw, 35px);
       border-radius: 24px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.3);
       border: 2px solid #00f2fe;
@@ -51,26 +51,26 @@
     /* Header & Judul */
     .header-title {
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
 
     .badge-top {
       display: inline-block;
-      padding: 8px 22px;
+      padding: 6px 18px;
       background: rgba(15, 23, 42, 0.9);
       color: #00f2fe;
       border: 2px solid #00f2fe;
       border-radius: 20px;
-      font-size: clamp(11px, 2.5vw, 13px);
+      font-size: clamp(10px, 2.2vw, 13px);
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
       text-shadow: 0 0 8px #00f2fe;
     }
 
     .main-title {
-      font-size: clamp(1.2rem, 4vw, 2.1rem);
+      font-size: clamp(1.1rem, 3.8vw, 2.1rem);
       color: #f8fafc;
       line-height: 1.25;
       text-transform: uppercase;
@@ -79,29 +79,29 @@
     }
 
     .sub-title {
-      font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+      font-size: clamp(1rem, 3.2vw, 1.8rem);
       color: #c084fc;
-      margin-top: 6px;
+      margin-top: 4px;
       text-transform: uppercase;
       text-shadow: 0 0 15px rgba(192, 132, 252, 0.8);
     }
 
-    /* Clock Card - Elemen Utama Tema Cyber Neon */
+    /* Clock Card */
     .clock-card {
       background: rgba(15, 23, 42, 0.9);
       border: 2px solid #00f2fe;
       color: #00f2fe;
-      padding: 14px 24px;
-      border-radius: 16px;
+      padding: 10px 18px;
+      border-radius: 14px;
       text-align: center;
-      margin-bottom: 22px;
+      margin-bottom: 16px;
       box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      gap: 15px;
-      font-size: clamp(14px, 3.2vw, 17px);
+      gap: 10px;
+      font-size: clamp(12px, 2.8vw, 16px);
       text-shadow: 0 0 12px rgba(0, 242, 254, 0.8);
       letter-spacing: 0.5px;
     }
@@ -155,12 +155,12 @@
 
     .btn {
       width: 100%;
-      padding: 14px;
+      padding: 12px 16px;
       background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
       color: #ffffff;
       border: 2px solid #00f2fe;
       border-radius: 12px;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
       transition: all 0.3s ease;
       box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
@@ -195,16 +195,16 @@
       text-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
     }
 
-    /* KOTAK INFORMASI PEMILIH - Diubah Menjadi Keren Dengan Neon Glow */
+    /* Kotak Informasi Pemilih */
     .user-info {
       background: rgba(15, 23, 42, 0.9);
-      padding: 16px 22px;
-      border-radius: 16px;
+      padding: 12px 18px;
+      border-radius: 14px;
       border: 2px solid #00f2fe;
       color: #00f2fe;
-      font-size: clamp(13px, 3vw, 15px);
-      margin-bottom: 25px;
-      line-height: 1.7;
+      font-size: clamp(12px, 2.5vw, 14px);
+      margin-bottom: 18px;
+      line-height: 1.6;
       box-shadow: 0 0 20px rgba(0, 242, 254, 0.35);
       text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
     }
@@ -214,18 +214,22 @@
       text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
     }
 
-    /* KARTU PASLON - Diubah Menjadi Keren Seirama Kotak Tanggal */
+    /* Kartu Paslon Sejajar */
     .paslon-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 25px;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      gap: 15px;
+      width: 100%;
     }
 
     .card-paslon {
+      flex: 1 1 0;
+      min-width: 0;
       background: rgba(15, 23, 42, 0.9);
       border: 2px solid #00f2fe;
-      border-radius: 20px;
-      padding: 22px;
+      border-radius: 18px;
+      padding: 14px;
       text-align: center;
       display: flex;
       flex-direction: column;
@@ -235,62 +239,63 @@
     }
 
     .card-paslon:hover {
-      transform: translateY(-5px);
+      transform: translateY(-4px);
       border-color: #38ef7d;
-      box-shadow: 0 0 35px rgba(56, 239, 125, 0.6);
+      box-shadow: 0 0 30px rgba(56, 239, 125, 0.6);
     }
 
-    /* HEADER NAMA PASLON - Diubah Menjadi Keren */
     .paslon-header {
       background: rgba(9, 13, 22, 0.8);
       color: #00f2fe;
-      padding: 14px;
-      border-radius: 14px;
-      margin-bottom: 18px;
-      font-size: 17px;
-      letter-spacing: 1px;
+      padding: 10px 6px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      font-size: clamp(12px, 2.5vw, 16px);
+      letter-spacing: 0.5px;
       border: 2px solid #00f2fe;
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
-      text-shadow: 0 0 10px #00f2fe;
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+      text-shadow: 0 0 8px #00f2fe;
       text-transform: uppercase;
+      word-break: break-word;
     }
 
     .paslon-img {
       width: 100%;
-      max-width: 260px;
-      height: 240px;
+      max-width: 220px;
+      height: clamp(130px, 28vw, 220px);
       object-fit: contain;
       object-position: center;
-      border-radius: 16px;
+      border-radius: 14px;
       border: 2px solid #00f2fe;
-      margin: 0 auto 18px auto;
+      margin: 0 auto 12px auto;
       display: block;
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
       background: rgba(9, 13, 22, 0.9);
-      padding: 6px;
+      padding: 4px;
     }
 
-    /* KOTAK VISI & MISI - Diubah Menjadi Keren */
     .visi-misi {
       text-align: left;
-      font-size: 13.5px;
+      font-size: clamp(11px, 2.2vw, 13px);
       color: #e2e8f0;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
       background: rgba(9, 13, 22, 0.8);
-      padding: 16px;
-      border-radius: 14px;
-      border: 2px solid rgba(0, 242, 254, 0.6);
-      box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.2);
-      text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 242, 254, 0.5);
+      box-shadow: inset 0 0 8px rgba(0, 242, 254, 0.2);
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
+      max-height: 180px;
+      overflow-y: auto;
     }
 
     .visi-misi h4 {
       color: #00f2fe;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       text-shadow: 0 0 8px #00f2fe;
     }
 
-    /* CUSTOM MODAL POP-UP */
+    /* Custom Modal Pop-Up */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -348,22 +353,27 @@
 
     @media (max-width: 600px) {
       body {
-        padding: 8px;
+        padding: 5px;
       }
       .container {
-        padding: 16px 12px;
-        border-radius: 18px;
+        padding: 12px 8px;
+        border-radius: 16px;
       }
       .paslon-container {
-        grid-template-columns: 1fr;
-        gap: 20px;
+        gap: 8px;
       }
-      .paslon-img {
-        height: 210px;
+      .card-paslon {
+        padding: 8px;
+        border-radius: 12px;
+      }
+      .visi-misi {
+        padding: 8px;
+        max-height: 130px;
       }
       .btn {
-        font-size: 15px;
-        padding: 12px 10px;
+        font-size: 12px;
+        padding: 10px 4px;
+        border-radius: 8px;
       }
     }
   </style>
@@ -401,19 +411,19 @@
         <span id="clockTime">00:00:00 WIB</span>
       </div>
 
-      <!-- User Info Berdesain Keren -->
+      <!-- User Info -->
       <div class="user-info">
         <b>Pemilih:</b> <span id="userName">-</span> | <b>Kelas/Jabatan:</b> <span id="userKelas">-</span><br>
         <b>NISN/Identitas:</b> <span id="userNis">-</span>
       </div>
 
-      <h3 style="text-align: center; color: #00f2fe; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.8);">
+      <h3 style="text-align: center; color: #00f2fe; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.8); font-size: clamp(13px, 3vw, 17px);">
         PILIH PASLON FAVORIT ANDA
       </h3>
       
       <!-- Container Kartu Paslon -->
       <div class="paslon-container" id="paslonContainer">
-        <p style="text-align:center; grid-column: 1/-1; color:#a1c4fd;">Memuat daftar paslon...</p>
+        <p style="text-align:center; width: 100%; color:#a1c4fd;">Memuat daftar paslon...</p>
       </div>
     </div>
   </div>
@@ -436,10 +446,22 @@
     let currentNama = ""; 
     let confirmCallbackAction = null;
 
-    function showCustomAlert(msg, title = "PEMBERITAHUAN") {
+    function showCustomAlert(msg, title = "PEMBERITAHUAN", callbackOnClose = null) {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
-      document.getElementById('modalBtns').innerHTML = `<button class="btn" onclick="closeCustomModal()">OK</button>`;
+      
+      const btnOk = document.createElement('button');
+      btnOk.className = 'btn';
+      btnOk.innerText = 'OK';
+      btnOk.onclick = function() {
+        closeCustomModal();
+        if (callbackOnClose) callbackOnClose();
+      };
+
+      const btnContainer = document.getElementById('modalBtns');
+      btnContainer.innerHTML = '';
+      btnContainer.appendChild(btnOk);
+
       document.getElementById('customModal').classList.remove('hidden');
     }
 
@@ -476,6 +498,15 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    function resetToHome() {
+      currentNis = "";
+      currentNama = "";
+      document.getElementById('nisInput').value = "";
+      document.getElementById('votingSection').classList.add('hidden');
+      document.getElementById('loginSection').classList.remove('hidden');
+      document.getElementById('paslonContainer').innerHTML = '<p style="text-align:center; width: 100%; color:#a1c4fd;">Memuat daftar paslon...</p>';
+    }
 
     function prosesLogin() {
       const nis = document.getElementById('nisInput').value.trim();
@@ -527,7 +558,7 @@
 
     async function loadPaslonDataForVoting() {
       const container = document.getElementById('paslonContainer');
-      container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#a1c4fd;">Memuat daftar paslon...</p>';
+      container.innerHTML = '<p style="text-align:center; width: 100%; color:#a1c4fd;">Memuat daftar paslon...</p>';
 
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
@@ -539,6 +570,7 @@
             const numFormatted = parseInt(p.no) < 10 ? "0" + parseInt(p.no) : p.no;
             const fotoUrl = p.foto && p.foto !== "" ? p.foto : 'https://via.placeholder.com/300x300?text=Foto+Paslon+' + p.no;
             const formattedMisi = p.misi ? p.misi.replace(/\n/g, '<br>') : '-';
+            const namaPaslonSafe = p.nama.replace(/'/g, "\\'");
 
             container.innerHTML += `
               <div class="card-paslon">
@@ -548,35 +580,36 @@
                   <div class="visi-misi">
                     <h4>Visi:</h4>
                     <p>${p.visi}</p>
-                    <h4 style="margin-top: 10px;">Misi:</h4>
+                    <h4 style="margin-top: 8px;">Misi:</h4>
                     <p>${formattedMisi}</p>
                   </div>
                 </div>
-                <button class="btn" onclick="kirimPilihan('Paslon ${p.no}')">PILIH PASLON ${numFormatted}</button>
+                <button class="btn" onclick="kirimPilihan('${namaPaslonSafe}', 'PASLON ${numFormatted}')">PILIH PASLON ${numFormatted}</button>
               </div>
             `;
           });
         } else {
-          container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#fca5a5;">Belum ada paslon yang terdaftar di sistem.</p>';
+          container.innerHTML = '<p style="text-align:center; width: 100%; color:#fca5a5;">Belum ada paslon yang terdaftar di sistem.</p>';
         }
       } catch (err) {
-        container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#fca5a5;">Gagal memuat daftar paslon dari database.</p>';
+        container.innerHTML = '<p style="text-align:center; width: 100%; color:#fca5a5;">Gagal memuat daftar paslon dari database.</p>';
       }
     }
 
-    function kirimPilihan(pilihan) {
-      showCustomConfirm("Apakah Anda yakin ingin memilih " + pilihan + "? Pilihan tidak dapat diubah setelah disimpan.", function() {
+    function kirimPilihan(pilihanNamaPaslon, labelPaslon) {
+      showCustomConfirm("Apakah Anda yakin ingin memilih " + labelPaslon + " (" + pilihanNamaPaslon + ")? Pilihan tidak dapat diubah setelah disimpan.", function() {
         
-        fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihan)}&nama=${encodeURIComponent(currentNama)}`)
+        fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihanNamaPaslon)}&nama=${encodeURIComponent(currentNama)}`)
           .then(res => res.json())
           .then(response => {
             if (response.success) {
-              showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES");
-              setTimeout(() => {
-                location.reload();
-              }, 1200);
+              showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES", function() {
+                resetToHome();
+              });
             } else {
-              showCustomAlert(response.message, "PERINGATAN");
+              showCustomAlert(response.message, "PERINGATAN", function() {
+                resetToHome();
+              });
             }
           })
           .catch(() => {
