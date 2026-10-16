@@ -50,6 +50,8 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.37);
             margin-bottom: 30px;
         }
+
+        /* Modifikasi Header Section / Top Bar agar Tombol Refresh dekat Status Real-Time */
         .section-title {
             font-size: 1.3rem;
             font-weight: 700;
@@ -57,9 +59,87 @@
             margin-bottom: 25px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 12px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Badge Status Real-Time */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(56, 239, 125, 0.15);
+            border: 1px solid #38ef7d;
+            color: #38ef7d;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #38ef7d;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #38ef7d;
+        }
+
+        /* Style Tombol Refresh */
+        .btn-refresh {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            border: none;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 198, 255, 0.3);
+        }
+        .btn-refresh:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 198, 255, 0.5);
+        }
+
+        /* Style Tombol Close (X) jika digunakan dalam Modal */
+        .btn-close-modal {
+            background: rgba(255, 75, 43, 0.2);
+            border: 1px solid #ff4b2b;
+            color: #ff4b2b;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+        .btn-close-modal:hover {
+            background: #ff4b2b;
+            color: #fff;
+            transform: scale(1.05);
         }
 
         .results-container { display: flex; flex-direction: column; gap: 20px; }
@@ -151,7 +231,23 @@
 
     <div class="main-card">
         <div class="section-title">
-            <i class="fas fa-poll-h"></i> Rekapitulasi Suara Pasangan Calon
+            <div class="header-left">
+                <i class="fas fa-poll-h"></i> Rekapitulasi Suara
+            </div>
+
+            <!-- Area Kontrol: Tombol Refresh Digeser ke Dekat Status Real-Time & Terpisah dari Tombol Close/X -->
+            <div class="header-controls">
+                <div class="status-badge">
+                    <span class="status-dot"></span> REAL-TIME
+                </div>
+                
+                <button class="btn-refresh" onclick="fetchRealCount()">
+                    <i class="fas fa-sync-alt" id="btnRefreshIcon"></i> Refresh
+                </button>
+
+                <!-- Tombol Close (X) opsional jika dipakai di dalam Modal Window -->
+                <!-- <button class="btn-close-modal" onclick="closeModal()"><i class="fas fa-times"></i></button> -->
+            </div>
         </div>
         <div id="resultsList" class="results-container">
             <p style="text-align: center; color: #a1c4fd;"><i class="fas fa-spinner fa-spin"></i> Memuat data perhitungan suara...</p>
@@ -178,6 +274,9 @@
     let myChart = null;
 
     async function fetchRealCount() {
+        const refreshIcon = document.getElementById("btnRefreshIcon");
+        if (refreshIcon) refreshIcon.classList.add("fa-spin");
+
         try {
             const res = await fetch(SCRIPT_URL);
             const data = await res.json();
@@ -202,6 +301,8 @@
             document.getElementById("syncIcon").className = "fas fa-exclamation-triangle";
             document.getElementById("syncIcon").style.color = "#f44336";
             document.getElementById("statusText").innerText = "Gagal memperbarui data dari server.";
+        } finally {
+            if (refreshIcon) refreshIcon.classList.remove("fa-spin");
         }
     }
 
