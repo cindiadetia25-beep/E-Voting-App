@@ -10,7 +10,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Cambria', serif;
-      font-weight: bold;
+      font-weight: bold !important;
     }
 
     body {
@@ -22,7 +22,8 @@
       justify-content: center;
       align-items: center;
       padding: 15px;
-      color: #e2e8f0;
+      color: #f8fafc;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
     }
 
     @keyframes gradientBG {
@@ -34,12 +35,13 @@
     .container {
       width: 100%;
       max-width: 950px;
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       padding: clamp(20px, 4vw, 35px);
       border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(168, 85, 247, 0.25);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 20px rgba(168, 85, 247, 0.4);
+      border: 1px solid rgba(168, 85, 247, 0.4);
     }
 
     .hidden {
@@ -54,7 +56,7 @@
 
     .badge-top {
       display: inline-block;
-      padding: 6px 18px;
+      padding: 8px 20px;
       background: linear-gradient(135deg, #3b82f6, #8b5cf6);
       color: #ffffff;
       border-radius: 20px;
@@ -62,7 +64,8 @@
       letter-spacing: 1.5px;
       text-transform: uppercase;
       margin-bottom: 12px;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.8);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
     }
 
     .main-title {
@@ -71,39 +74,41 @@
       line-height: 1.25;
       text-transform: uppercase;
       word-wrap: break-word;
-      text-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+      text-shadow: 0 0 15px rgba(59, 130, 246, 0.8), 0 0 25px rgba(168, 85, 247, 0.6);
     }
 
     .sub-title {
       font-size: clamp(1.1rem, 3.5vw, 1.8rem);
       color: #c084fc;
-      margin-top: 4px;
+      margin-top: 6px;
       text-transform: uppercase;
-      text-shadow: 0 0 10px rgba(192, 132, 252, 0.3);
+      text-shadow: 0 0 15px rgba(192, 132, 252, 0.8);
     }
 
     /* Clock Card */
     .clock-card {
-      background: rgba(30, 27, 75, 0.6);
-      border: 1px solid rgba(168, 85, 247, 0.3);
+      background: rgba(30, 27, 75, 0.8);
+      border: 2px solid rgba(168, 85, 247, 0.5);
       color: #f1f5f9;
       padding: 12px 20px;
       border-radius: 14px;
       text-align: center;
       margin-bottom: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
       gap: 12px;
       font-size: clamp(13px, 3vw, 16px);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
     }
 
     .clock-time {
       font-size: clamp(15px, 3.5vw, 18px);
       color: #facc15;
       letter-spacing: 1px;
+      text-shadow: 0 0 12px rgba(250, 204, 21, 0.8);
     }
 
     /* Form Login */
@@ -121,25 +126,27 @@
     label {
       display: block;
       margin-bottom: 8px;
-      color: #cbd5e1;
+      color: #e2e8f0;
       font-size: 15px;
+      text-shadow: 0 0 8px rgba(226, 232, 240, 0.6);
     }
 
     input[type="text"] {
       width: 100%;
       padding: 14px 18px;
-      border: 2px solid rgba(168, 85, 247, 0.4);
+      border: 2px solid rgba(168, 85, 247, 0.6);
       border-radius: 12px;
       outline: none;
       font-size: 16px;
-      background: rgba(15, 23, 42, 0.8);
+      background: rgba(15, 23, 42, 0.9);
       color: #f8fafc;
       transition: all 0.3s ease;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
     }
 
     input[type="text"]:focus {
       border-color: #3b82f6;
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.7);
     }
 
     input[type="text"]::placeholder {
@@ -153,15 +160,18 @@
       color: #ffffff;
       border: none;
       border-radius: 12px;
-      font-size: 18px;
+      font-size: 16px;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+      box-shadow: 0 0 20px rgba(124, 58, 237, 0.6);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      word-wrap: break-word;
+      line-height: 1.3;
     }
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 30px rgba(124, 58, 237, 0.6);
+      box-shadow: 0 0 30px rgba(124, 58, 237, 0.9);
       background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
     }
 
@@ -169,28 +179,31 @@
       color: #fca5a5;
       margin-top: 12px;
       font-size: 14px;
-      background: rgba(127, 29, 29, 0.4);
+      background: rgba(127, 29, 29, 0.6);
       padding: 10px;
       border-radius: 10px;
-      border: 1px solid rgba(239, 68, 68, 0.4);
+      border: 1px solid rgba(239, 68, 68, 0.6);
+      text-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
     }
 
     /* User Info */
     .user-info {
-      background: rgba(30, 27, 75, 0.6);
+      background: rgba(30, 27, 75, 0.8);
       padding: 14px 18px;
       border-radius: 14px;
       border-left: 5px solid #a855f7;
-      border-right: 1px solid rgba(168, 85, 247, 0.2);
-      border-top: 1px solid rgba(168, 85, 247, 0.2);
-      border-bottom: 1px solid rgba(168, 85, 247, 0.2);
-      color: #e2e8f0;
+      border-right: 1px solid rgba(168, 85, 247, 0.4);
+      border-top: 1px solid rgba(168, 85, 247, 0.4);
+      border-bottom: 1px solid rgba(168, 85, 247, 0.4);
+      color: #f8fafc;
       font-size: clamp(13px, 3vw, 15px);
       margin-bottom: 22px;
       line-height: 1.6;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
     }
 
-    /* Card Paslon */
+    /* Card Paslon - Layout HP Otomatis Menyesuaikan */
     .paslon-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -198,22 +211,22 @@
     }
 
     .card-paslon {
-      background: rgba(15, 23, 42, 0.7);
-      border: 2px solid rgba(139, 92, 246, 0.3);
+      background: rgba(15, 23, 42, 0.85);
+      border: 2px solid rgba(139, 92, 246, 0.5);
       border-radius: 20px;
       padding: 20px;
       text-align: center;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
       transition: all 0.3s ease;
     }
 
     .card-paslon:hover {
       transform: translateY(-5px);
       border-color: #a855f7;
-      box-shadow: 0 15px 35px rgba(168, 85, 247, 0.25);
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
     }
 
     .paslon-header {
@@ -224,13 +237,15 @@
       margin-bottom: 15px;
       font-size: 18px;
       letter-spacing: 1px;
-      border: 1px solid rgba(168, 85, 247, 0.3);
+      border: 1px solid rgba(168, 85, 247, 0.5);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
     }
 
     .paslon-title-name {
       color: #38ef7d;
-      font-size: 16px;
-      margin-bottom: 10px;
+      font-size: 17px;
+      margin-bottom: 12px;
+      text-shadow: 0 0 12px rgba(56, 239, 125, 0.8);
     }
 
     .paslon-img {
@@ -243,7 +258,7 @@
       border: 2px solid #3b82f6;
       margin: 0 auto 15px auto;
       display: block;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
       background: rgba(15, 23, 42, 0.9);
       padding: 5px;
     }
@@ -251,29 +266,40 @@
     .visi-misi {
       text-align: left;
       font-size: 13.5px;
-      color: #cbd5e1;
+      color: #e2e8f0;
       margin-bottom: 18px;
-      background: rgba(30, 27, 75, 0.5);
+      background: rgba(30, 27, 75, 0.6);
       padding: 14px;
       border-radius: 12px;
-      border: 1px solid rgba(139, 92, 246, 0.2);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
     }
 
     .visi-misi h4 {
       color: #c084fc;
       margin-bottom: 6px;
+      text-shadow: 0 0 8px rgba(192, 132, 252, 0.8);
     }
 
-    @media (max-width: 480px) {
+    /* Penyesuaian Responsif Khusus HP Layar Kecil */
+    @media (max-width: 600px) {
       body {
-        padding: 10px;
+        padding: 8px;
       }
       .container {
-        padding: 18px 14px;
+        padding: 16px 12px;
         border-radius: 18px;
       }
+      .paslon-container {
+        grid-template-columns: 1fr; /* Memastikan 1 kolom penuh tanpa terbagi 2 */
+        gap: 20px;
+      }
       .paslon-img {
-        height: 200px;
+        height: 210px;
+      }
+      .btn {
+        font-size: 15px;
+        padding: 12px 10px;
       }
     }
   </style>
@@ -289,7 +315,7 @@
 
     <!-- Login Section -->
     <div id="loginSection" class="login-box">
-      <p style="margin-bottom: 22px; color: #94a3b8; font-size: 15px;">
+      <p style="margin-bottom: 22px; color: #cbd5e1; font-size: 15px; text-shadow: 0 0 6px rgba(203, 213, 225, 0.5);">
         Silakan masukkan NISN (Siswa) atau Nama Lengkap (Guru) untuk masuk ke sistem pemilihan
       </p>
       
@@ -314,7 +340,7 @@
         🆔 <b>NISN/Identitas:</b> <span id="userNis">-</span>
       </div>
 
-      <h3 style="text-align: center; color: #e2e8f0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;">
+      <h3 style="text-align: center; color: #f8fafc; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);">
         PILIH PASLON FAVORIT ANDA
       </h3>
       
@@ -422,7 +448,8 @@
                     <p>${formattedMisi}</p>
                   </div>
                 </div>
-                <button class="btn" onclick="kirimPilihan('Paslon ${p.no}')">PILIH PASLON ${numFormatted}</button>
+                <!-- TOMBOL DIGANTI DENGAN NAMA PASLON BERCAHAYA -->
+                <button class="btn" onclick="kirimPilihan('Paslon ${p.no}')">PILIH ${p.nama.toUpperCase()}</button>
               </div>
             `;
           });
