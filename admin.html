@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin E-Voting OSIS SMPN 1 Rancah</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Font Minecraft Style -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- Chart.js Library untuk Grafik Modern -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -12,86 +14,136 @@
             box-sizing: border-box; 
             margin: 0; 
             padding: 0; 
-            font-family: 'Cambria', Georgia, serif; 
-            font-weight: bold;
+            font-family: 'Press Start 2P', cursive, monospace; 
         }
         
         body { 
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); 
+            background: linear-gradient(135deg, #0a0e27 0%, #1a0b2e 50%, #2e0819 100%); 
             min-height: 100vh; 
             color: #fff; 
-            padding: 20px; 
+            padding: 15px; 
+            overflow-x: hidden;
         }
 
-        .container { max-width: 1050px; margin: 0 auto; }
+        .container { max-width: 1100px; margin: 0 auto; width: 100%; }
 
-        header { text-align: center; margin-bottom: 25px; }
-        header h1 { color: #00f2fe; font-size: 1.8rem; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,242,254,0.3); }
-        header p { color: #a1c4fd; font-size: 0.95rem; }
+        header { text-align: center; margin-bottom: 25px; padding: 0 10px; }
+        header h1 { 
+            color: #00d2ff; 
+            font-size: clamp(1rem, 2.5vw, 1.6rem); 
+            margin-bottom: 12px; 
+            text-shadow: 0 0 10px #00d2ff, 0 0 20px #9d4edd; 
+            line-height: 1.4;
+        }
+        header p { color: #e0aaff; font-size: clamp(0.6rem, 1.5vw, 0.8rem); line-height: 1.5; }
 
         .clock-box {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(0, 242, 254, 0.12);
-            border: 1px solid rgba(0, 242, 254, 0.35);
-            padding: 6px 16px;
-            border-radius: 20px;
-            color: #00f2fe;
-            font-size: 0.85rem;
-            margin-top: 10px;
+            gap: 10px;
+            background: rgba(157, 78, 221, 0.2);
+            border: 2px solid #ff0055;
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: #00d2ff;
+            font-size: clamp(0.6rem, 1.2vw, 0.75rem);
+            margin-top: 15px;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
         }
 
         .card { 
-            background: rgba(255, 255, 255, 0.08); 
-            backdrop-filter: blur(10px); 
-            border: 1px solid rgba(255, 255, 255, 0.15); 
-            border-radius: 14px; 
+            background: rgba(26, 11, 46, 0.75); 
+            backdrop-filter: blur(12px); 
+            border: 2px solid #9d4edd; 
+            border-radius: 12px; 
             padding: 20px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            margin-bottom: 25px; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 0 15px rgba(157, 78, 221, 0.2);
         }
 
-        .card h2 { color: #00f2fe; margin-bottom: 15px; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; }
+        .card h2 { 
+            color: #00d2ff; 
+            margin-bottom: 20px; 
+            font-size: clamp(0.8rem, 1.8vw, 1.1rem); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            line-height: 1.4;
+            text-shadow: 0 0 8px #00d2ff;
+        }
 
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 15px; 
+            margin-bottom: 15px; 
+        }
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; color: #a1c4fd; font-size: 0.9rem; }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #e0aaff; 
+            font-size: 0.65rem; 
+            line-height: 1.4;
+        }
         .form-group input, .form-group select, .form-group textarea { 
             width: 100%; 
-            padding: 10px; 
-            border-radius: 8px; 
-            border: 1px solid rgba(255,255,255,0.2); 
-            background: rgba(255,255,255,0.1); 
+            padding: 12px; 
+            border-radius: 6px; 
+            border: 2px solid #9d4edd; 
+            background: rgba(10, 14, 39, 0.8); 
             color: #fff; 
-            font-size: 0.9rem;
+            font-size: 0.7rem;
+            outline: none;
+            transition: 0.3s;
         }
-        .form-group textarea { height: 75px; resize: vertical; }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #ff0055;
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+        }
+        .form-group textarea { height: 85px; resize: vertical; line-height: 1.4; }
 
         .btn { 
-            padding: 11px 20px; 
-            border: none; 
+            padding: 12px 20px; 
+            border: 2px solid #00d2ff; 
             color: #fff; 
-            border-radius: 8px; 
+            border-radius: 6px; 
             cursor: pointer; 
-            font-size: 0.9rem; 
+            font-size: 0.65rem; 
             display: inline-flex; 
             align-items: center; 
-            gap: 8px; 
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            justify-content: center;
+            gap: 10px; 
+            background: linear-gradient(45deg, #00d2ff, #7b2cbf);
             transition: 0.3s;
             text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
+            line-height: 1.2;
         }
         .btn-realcount { 
-            background: linear-gradient(45deg, #11998e, #38ef7d); 
-            font-size: 1rem;
-            padding: 14px 24px;
-            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
+            background: linear-gradient(45deg, #ff0055, #7b2cbf); 
+            font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+            padding: 16px 28px;
+            border-color: #ff0055;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.5);
         }
-        .btn-danger { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
-        .btn-warning { background: linear-gradient(45deg, #f7b731, #ffa801); color: #000; }
-        .btn-secondary { background: linear-gradient(45deg, #718093, #2f3640); }
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-danger { 
+            background: linear-gradient(45deg, #ff0055, #990033); 
+            border-color: #ff0055;
+        }
+        .btn-warning { 
+            background: linear-gradient(45deg, #ffb703, #fb8500); 
+            border-color: #ffb703; 
+            color: #000; 
+        }
+        .btn-secondary { 
+            background: linear-gradient(45deg, #4a4e69, #22223b); 
+            border-color: #9a8c98;
+        }
+        .btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+        }
 
         .nav-menu-box {
             display: flex;
@@ -99,19 +151,25 @@
             margin-bottom: 25px;
         }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; }
-        th { background: rgba(0, 242, 254, 0.2); color: #00f2fe; }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(157, 78, 221, 0.3); font-size: 0.6rem; line-height: 1.5; }
+        th { background: rgba(123, 44, 191, 0.4); color: #00d2ff; text-shadow: 0 0 5px #00d2ff; }
 
         .paslon-img-preview {
             width: 70px;
             height: 70px;
             object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #00f2fe;
+            border-radius: 6px;
+            border: 2px solid #ff0055;
             display: block;
             margin-top: 8px;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.4);
         }
 
         .img-table {
@@ -119,38 +177,36 @@
             height: 50px;
             object-fit: cover;
             border-radius: 6px;
-            border: 1px solid #00f2fe;
+            border: 1px solid #00d2ff;
         }
 
         .hidden { display: none !important; }
 
-        /* Style Live Indicator */
         .live-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(56, 239, 125, 0.15);
-            border: 1px solid #38ef7d;
-            color: #38ef7d;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.75rem;
+            background: rgba(255, 0, 85, 0.2);
+            border: 1px solid #ff0055;
+            color: #ff0055;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.55rem;
             margin-left: 10px;
         }
         .live-dot {
             width: 8px;
             height: 8px;
-            background-color: #38ef7d;
+            background-color: #ff0055;
             border-radius: 50%;
             animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(56, 239, 125, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(56, 239, 125, 0); }
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(255, 0, 85, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
         }
 
-        /* Modal Real Count */
         .modal {
             display: none; 
             position: fixed; 
@@ -159,7 +215,7 @@
             top: 0;
             width: 100%; 
             height: 100%; 
-            background-color: rgba(0,0,0,0.85); 
+            background-color: rgba(10, 14, 39, 0.9); 
             backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
@@ -167,13 +223,13 @@
         }
 
         .modal-content {
-            background: #1a2a3a;
-            border: 1px solid #00f2fe;
-            border-radius: 16px;
+            background: #1a0b2e;
+            border: 2px solid #00d2ff;
+            border-radius: 12px;
             width: 100%;
             max-width: 850px;
             padding: 25px;
-            box-shadow: 0 10px 40px rgba(0,242,254,0.3);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
@@ -183,8 +239,8 @@
             position: absolute;
             top: 15px;
             right: 20px;
-            color: #ff4b2b;
-            font-size: 1.8rem;
+            color: #ff0055;
+            font-size: 1.5rem;
             cursor: pointer;
         }
 
@@ -192,14 +248,55 @@
             position: relative;
             margin: 20px 0;
             padding: 15px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(10, 14, 39, 0.6);
+            border-radius: 8px;
+            border: 1px solid #9d4edd;
         }
 
         .action-btns {
             display: flex;
             gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .custom-alert-box {
+            background: #1a0b2e;
+            border: 3px solid #ff0055;
+            border-radius: 12px;
+            max-width: 420px;
+            width: 90%;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.6);
+        }
+
+        .custom-alert-title {
+            color: #00d2ff;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px #00d2ff;
+        }
+
+        .custom-alert-msg {
+            color: #fff;
+            font-size: 0.65rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .custom-alert-btns {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .card { padding: 15px; }
+            .btn { width: 100%; }
+            .action-btns { flex-direction: column; }
+            .action-btns .btn { width: 100%; }
+            .modal-content { padding: 15px; }
         }
     </style>
 </head>
@@ -215,28 +312,26 @@
         </div>
     </header>
 
-    <!-- TOMBOL MENU MASUK KE REAL COUNT / PEROLEHAN SUARA -->
     <div class="nav-menu-box">
         <button class="btn btn-realcount" onclick="openRealCountModal()">
             <i class="fas fa-chart-line"></i> BUKA REAL COUNT / PEROLEHAN SUARA
         </button>
     </div>
 
-    <!-- KELOLA PASLON, VISI, MISI, & UPLOAD FOTO -->
     <div class="card">
         <h2><i class="fas fa-user-edit"></i> Kelola Paslon, Visi, Misi & Foto Paslon</h2>
         <form id="formPaslon" onsubmit="savePaslon(event)">
             <div class="form-grid">
                 <div class="form-group">
                     <label>Nomor Urut Paslon</label>
-                    <input type="number" id="paslonNo" min="1" placeholder="Contoh: 1" required>
+                    <input type="number" id="paslonNo" min="1" placeholder="Ex: 1" required>
                 </div>
                 <div class="form-group">
                     <label>Nama Paslon (Ketua & Wakil)</label>
-                    <input type="text" id="paslonNama" placeholder="Contoh: Ahmad & Siti" required>
+                    <input type="text" id="paslonNama" placeholder="Ex: Ahmad & Siti" required>
                 </div>
                 <div class="form-group">
-                    <label>Upload Foto Paslon (Opsional - JPG/PNG)</label>
+                    <label>Upload Foto (JPG/PNG)</label>
                     <input type="file" id="paslonFoto" accept="image/jpeg, image/png" onchange="previewImage(event)">
                     <img id="imgPreview" class="paslon-img-preview hidden" alt="Preview Foto">
                 </div>
@@ -247,9 +342,9 @@
             </div>
             <div class="form-group">
                 <label>Misi Paslon</label>
-                <textarea id="paslonMisi" placeholder="Tuliskan Misi Paslon (Gunakan baris baru/nomor)..." required></textarea>
+                <textarea id="paslonMisi" placeholder="Tuliskan Misi Paslon..." required></textarea>
             </div>
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button type="submit" class="btn" id="btnSimpanPaslon">
                     <i class="fas fa-save"></i> Simpan Data Paslon
                 </button>
@@ -259,57 +354,69 @@
             </div>
         </form>
 
-        <h3 style="color: #a1c4fd; margin-top: 25px; font-size: 1rem;">Daftar Paslon Terdaftar</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Foto</th>
-                    <th>Nama Paslon</th>
-                    <th>Visi</th>
-                    <th>Misi</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody id="tablePaslonAdmin">
-                <tr><td colspan="6" style="text-align:center;">Memuat data paslon...</td></tr>
-            </tbody>
-        </table>
+        <h3 style="color: #e0aaff; margin-top: 25px; margin-bottom: 15px; font-size: 0.75rem;">Daftar Paslon Terdaftar</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Foto</th>
+                        <th>Nama Paslon</th>
+                        <th>Visi</th>
+                        <th>Misi</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tablePaslonAdmin">
+                    <tr><td colspan="6" style="text-align:center;">Memuat data paslon...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-<!-- MODAL PEROLEHAN SUARA REAL-TIME (REAL COUNT) -->
 <div id="modalRealCount" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="closeRealCountModal()">&times;</span>
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-            <h2 style="color: #00f2fe; margin-bottom: 10px;">
-                <i class="fas fa-chart-pie"></i> Real Count Perolehan Suara
-                <span class="live-badge"><span class="live-dot"></span> AUTO UPDATE REALTIME</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <h2 style="color: #00d2ff; margin-bottom: 0px;">
+                <i class="fas fa-chart-pie"></i> Real Count
+                <span class="live-badge"><span class="live-dot"></span> REALTIME (0.5s)</span>
             </h2>
-            <button class="btn" onclick="loadRealCountData()" style="margin-bottom: 10px; padding: 6px 12px; font-size: 0.8rem;">
-                <i class="fas fa-sync-alt"></i> Refresh Manual
+            <button class="btn" onclick="loadRealCountData()" style="padding: 8px 12px; font-size: 0.55rem;">
+                <i class="fas fa-sync-alt"></i> Refresh
             </button>
         </div>
 
-        <!-- CONTAINER GRAFIK CHART.JS -->
         <div class="chart-container">
             <canvas id="realCountChart" style="max-height: 280px;"></canvas>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>No. Paslon</th>
-                    <th>Nama Paslon</th>
-                    <th>Jumlah Suara</th>
-                    <th>Persentase</th>
-                </tr>
-            </thead>
-            <tbody id="tableHasilVote">
-                <tr><td colspan="4" style="text-align:center;">Memuat rekap suara...</td></tr>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No. Paslon</th>
+                        <th>Nama Paslon</th>
+                        <th>Jumlah Suara</th>
+                        <th>Persentase</th>
+                    </tr>
+                </thead>
+                <tbody id="tableHasilVote">
+                    <tr><td colspan="4" style="text-align:center;">Memuat rekap suara...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="customAlertModal" class="modal">
+    <div class="custom-alert-box">
+        <div class="custom-alert-title" id="customAlertTitle">NOTIFIKASI</div>
+        <div class="custom-alert-msg" id="customAlertMessage">Pesan Notifikasi</div>
+        <div class="custom-alert-btns" id="customAlertBtns">
+            <button class="btn" onclick="closeCustomAlert()">OK</button>
+        </div>
     </div>
 </div>
 
@@ -319,8 +426,37 @@
     let autoUpdateTimer = null;
     let realCountChart = null;
     let paslonCache = [];
+    let confirmCallback = null;
+    let isFetchingVote = false; // Flag cegah penumpukan request 0.5s
 
-    // Jam Real-time
+    function showCustomAlert(msg, title = "SYSTEM INFO") {
+        document.getElementById("customAlertTitle").innerText = title;
+        document.getElementById("customAlertMessage").innerText = msg;
+        document.getElementById("customAlertBtns").innerHTML = `<button class="btn" onclick="closeCustomAlert()">OK</button>`;
+        document.getElementById("customAlertModal").style.display = "flex";
+    }
+
+    function showCustomConfirm(msg, onConfirm, title = "KONFIRMASI") {
+        document.getElementById("customAlertTitle").innerText = title;
+        document.getElementById("customAlertMessage").innerText = msg;
+        confirmCallback = onConfirm;
+        document.getElementById("customAlertBtns").innerHTML = `
+            <button class="btn btn-danger" onclick="executeConfirm()">YA</button>
+            <button class="btn btn-secondary" onclick="closeCustomAlert()">BATAL</button>
+        `;
+        document.getElementById("customAlertModal").style.display = "flex";
+    }
+
+    function executeConfirm() {
+        closeCustomAlert();
+        if (confirmCallback) confirmCallback();
+    }
+
+    function closeCustomAlert() {
+        document.getElementById("customAlertModal").style.display = "none";
+        confirmCallback = null;
+    }
+
     function updateClock() {
         const now = new Date();
         const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " WIB";
@@ -329,12 +465,11 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Preview Foto Paslon
     function previewImage(event) {
         const file = event.target.files[0];
         if (file) {
             if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
-                alert("Format file harus JPG atau PNG!");
+                showCustomAlert("Format file harus JPG atau PNG!", "ERROR");
                 event.target.value = "";
                 return;
             }
@@ -353,7 +488,6 @@
         }
     }
 
-    // Simpan / Edit Data Paslon
     async function savePaslon(e) {
         e.preventDefault();
         const btn = document.getElementById("btnSimpanPaslon");
@@ -377,18 +511,17 @@
                     foto: base64Foto 
                 })
             });
-            alert("Data Paslon berhasil disimpan!");
+            showCustomAlert("Data Paslon berhasil disimpan!", "SUKSES");
             batalEdit();
             loadPaslonData();
         } catch (err) {
-            alert("Gagal menyimpan data ke server.");
+            showCustomAlert("Gagal menyimpan data ke server.", "ERROR");
         } finally {
             btn.innerHTML = '<i class="fas fa-save"></i> Simpan Data Paslon';
             btn.disabled = false;
         }
     }
 
-    // Load Data Paslon
     async function loadPaslonData() {
         try {
             const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
@@ -398,7 +531,7 @@
             tbodyPaslon.innerHTML = "";
             
             if (data.paslon && data.paslon.length > 0) {
-                paslonCache = data.paslon; // Simpan cache untuk kemudahan edit
+                paslonCache = data.paslon;
                 data.paslon.forEach(p => {
                     tbodyPaslon.innerHTML += `
                         <tr>
@@ -409,8 +542,8 @@
                             <td>${p.misi ? p.misi.replace(/\n/g, '<br>') : '-'}</td>
                             <td>
                                 <div class="action-btns">
-                                    <button class="btn btn-warning" style="padding:5px 10px; font-size:0.75rem;" onclick="editPaslon('${p.no}')"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="btn btn-danger" style="padding:5px 10px; font-size:0.75rem;" onclick="deletePaslon('${p.no}')"><i class="fas fa-trash"></i> Hapus</button>
+                                    <button class="btn btn-warning" onclick="editPaslon('${p.no}')"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn btn-danger" onclick="deletePaslon('${p.no}')"><i class="fas fa-trash"></i> Hapus</button>
                                 </div>
                             </td>
                         </tr>`;
@@ -424,7 +557,6 @@
         }
     }
 
-    // Fungsi Edit Paslon
     function editPaslon(no) {
         const p = paslonCache.find(item => item.no.toString() === no.toString());
         if (!p) return;
@@ -449,7 +581,6 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Batal Edit
     function batalEdit() {
         document.getElementById("formPaslon").reset();
         base64Foto = "";
@@ -458,29 +589,28 @@
         document.getElementById("btnBatalEdit").classList.add("hidden");
     }
 
-    // Fungsi Hapus Paslon
-    async function deletePaslon(no) {
-        if (!confirm(`Apakah Anda yakin ingin menghapus Paslon No. ${no}?`)) return;
-
-        try {
-            await fetch(SCRIPT_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "deletePaslon", no: no })
-            });
-            alert(`Paslon No. ${no} berhasil dihapus!`);
-            loadPaslonData();
-        } catch (err) {
-            alert("Gagal menghapus data paslon.");
-        }
+    function deletePaslon(no) {
+        showCustomConfirm(`Apakah Anda yakin ingin menghapus Paslon No. ${no}?`, async function() {
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "deletePaslon", no: no })
+                });
+                showCustomAlert(`Paslon No. ${no} berhasil dihapus!`, "SUKSES");
+                loadPaslonData();
+            } catch (err) {
+                showCustomAlert("Gagal menghapus data paslon.", "ERROR");
+            }
+        });
     }
 
-    // Modal Real Count Control
     function openRealCountModal() {
         document.getElementById("modalRealCount").style.display = "flex";
         loadRealCountData();
         
+        // INTERVAL AUTO UPDATE DISESUAIKAN MENJADI 0,5 DETIK (500ms)
         if (!autoUpdateTimer) {
-            autoUpdateTimer = setInterval(loadRealCountData, 3000);
+            autoUpdateTimer = setInterval(loadRealCountData, 500);
         }
     }
 
@@ -492,18 +622,18 @@
         }
     }
 
-    // Render Grafik Modern Chart.js
     function renderChart(labels, dataSuara) {
         const ctx = document.getElementById('realCountChart').getContext('2d');
         
         const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, '#00f2fe');
-        gradient.addColorStop(1, '#4facfe');
+        gradient.addColorStop(0, '#ff0055');
+        gradient.addColorStop(0.5, '#7b2cbf');
+        gradient.addColorStop(1, '#00d2ff');
 
         if (realCountChart) {
             realCountChart.data.labels = labels;
             realCountChart.data.datasets[0].data = dataSuara;
-            realCountChart.update();
+            realCountChart.update('none'); // Update instan tanpa re-animasi lambat
         } else {
             realCountChart = new Chart(ctx, {
                 type: 'bar',
@@ -513,27 +643,28 @@
                         label: 'Jumlah Suara',
                         data: dataSuara,
                         backgroundColor: gradient,
-                        borderColor: '#00f2fe',
-                        borderWidth: 1.5,
-                        borderRadius: 8,
-                        barThickness: 38
+                        borderColor: '#00d2ff',
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        barThickness: 32
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    animation: false, // Nonaktifkan animasi dasar agar refresh 0.5s sangat cepat & lancar
                     plugins: {
                         legend: { display: false }
                     },
                     scales: {
                         x: {
-                            ticks: { color: '#a1c4fd', font: { family: 'Cambria', weight: 'bold' } },
+                            ticks: { color: '#e0aaff', font: { family: "'Press Start 2P'", size: 8 } },
                             grid: { display: false }
                         },
                         y: {
                             beginAtZero: true,
-                            ticks: { color: '#a1c4fd', stepSize: 1, precision: 0 },
-                            grid: { color: 'rgba(255,255,255,0.08)' }
+                            ticks: { color: '#e0aaff', font: { family: "'Press Start 2P'", size: 8 }, stepSize: 1, precision: 0 },
+                            grid: { color: 'rgba(157, 78, 221, 0.2)' }
                         }
                     }
                 }
@@ -541,8 +672,10 @@
         }
     }
 
-    // Load Data Real Count Suara
     async function loadRealCountData() {
+        if (isFetchingVote) return; // Mencegah bentrokan request saat jaringan lambat
+        isFetchingVote = true;
+
         try {
             const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
             const data = await res.json();
@@ -574,10 +707,11 @@
             }
         } catch (err) {
             console.error("Gagal mengambil data perolehan suara:", err);
+        } finally {
+            isFetchingVote = false;
         }
     }
 
-    // Initial Load
     loadPaslonData();
 </script>
 
