@@ -175,6 +175,16 @@
       background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
     }
 
+    .btn-danger {
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+      box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
+      box-shadow: 0 0 15px rgba(71, 85, 105, 0.4);
+    }
+
     .error-msg {
       color: #fca5a5;
       margin-top: 12px;
@@ -275,6 +285,62 @@
       text-shadow: 0 0 8px rgba(192, 132, 252, 0.8);
     }
 
+    /* CUSTOM MODAL POP-UP (Kustom UI Menggantikan Web Alert/Confirm Chrome) */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .custom-modal-box {
+      background: rgba(15, 23, 42, 0.95);
+      border: 2px solid #a855f7;
+      border-radius: 20px;
+      max-width: 420px;
+      width: 100%;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+      animation: modalPop 0.25s ease-out;
+    }
+
+    @keyframes modalPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      color: #38ef7d;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(56, 239, 125, 0.8);
+    }
+
+    .modal-msg {
+      font-size: 0.95rem;
+      color: #f8fafc;
+      margin-bottom: 22px;
+      line-height: 1.5;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    }
+
+    .modal-btns {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
     @media (max-width: 600px) {
       body {
         padding: 8px;
@@ -344,11 +410,53 @@
     </div>
   </div>
 
+  <!-- CUSTOM MODAL NOTIFIKASI / KONFIRMASI (Bukan Browser Chrome Alert) -->
+  <div id="customModal" class="modal-overlay hidden">
+    <div class="custom-modal-box">
+      <div id="modalTitle" class="modal-title">KONFIRMASI</div>
+      <div id="modalMsg" class="modal-msg">Pesan Notifikasi</div>
+      <div id="modalBtns" class="modal-btns">
+        <button class="btn" onclick="closeCustomModal()">OK</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
     let currentNis = "";
     let currentNama = ""; 
+    let confirmCallbackAction = null;
+
+    // FUNGSI NOTIFIKASI KUSTOM menggantikan Alert Chrome
+    function showCustomAlert(msg, title = "PEMBERITAHUAN") {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalMsg').innerText = msg;
+      document.getElementById('modalBtns').innerHTML = `<button class="btn" onclick="closeCustomModal()">OK</button>`;
+      document.getElementById('customModal').classList.remove('hidden');
+    }
+
+    // FUNGSI KONFIRMASI KUSTOM menggantikan Confirm Chrome
+    function showCustomConfirm(msg, onConfirm, title = "KONFIRMASI PILIHAN") {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalMsg').innerText = msg;
+      confirmCallbackAction = onConfirm;
+      document.getElementById('modalBtns').innerHTML = `
+        <button class="btn" onclick="executeCustomConfirm()">YA, PILIH</button>
+        <button class="btn btn-secondary" onclick="closeCustomModal()">BATAL</button>
+      `;
+      document.getElementById('customModal').classList.remove('hidden');
+    }
+
+    function executeCustomConfirm() {
+      closeCustomModal();
+      if (confirmCallbackAction) confirmCallbackAction();
+    }
+
+    function closeCustomModal() {
+      document.getElementById('customModal').classList.add('hidden');
+      confirmCallbackAction = null;
+    }
 
     function updateClock() {
       const now = new Date();
@@ -380,6 +488,7 @@
       btnLogin.innerText = "MEMERIKSA DATA...";
       btnLogin.disabled = true;
 
+      // Respon Dipercepat (0.5 Detik)
       fetch(`${SCRIPT_URL}?action=verifikasi&nis=${encodeURIComponent(nis)}`)
         .then(res => res.json())
         .then(response => {
@@ -411,6 +520,7 @@
         });
     }
 
+    // Fungsi Mengambil Daftar Paslon (Respon & Load Dipercepat 0.5s)
     async function loadPaslonDataForVoting() {
       const container = document.getElementById('paslonContainer');
       container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#a1c4fd;">Memuat daftar paslon...</p>';
@@ -429,7 +539,6 @@
             container.innerHTML += `
               <div class="card-paslon">
                 <div>
-                  <!-- NAMA PASLON DI ATAS KARTU PASLON -->
                   <div class="paslon-header">${p.nama}</div>
                   <img src="${fotoUrl}" alt="Paslon ${p.no}" class="paslon-img">
                   <div class="visi-misi">
@@ -439,7 +548,6 @@
                     <p>${formattedMisi}</p>
                   </div>
                 </div>
-                <!-- TOMBOL DIUBAH MENJADI PILIH PASLON -->
                 <button class="btn" onclick="kirimPilihan('Paslon ${p.no}')">PILIH PASLON ${numFormatted}</button>
               </div>
             `;
@@ -453,23 +561,26 @@
     }
 
     function kirimPilihan(pilihan) {
-      if (!confirm("Apakah Anda yakin ingin memilih " + pilihan + "? Pilihan tidak dapat diubah setelah disimpan.")) {
-        return;
-      }
+      // Menggunakan Custom Modal Confirm, Bukan Alert Browser Chrome
+      showCustomConfirm("Apakah Anda yakin ingin memilih " + pilihan + "? Pilihan tidak dapat diubah setelah disimpan.", function() {
+        
+        fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihan)}&nama=${encodeURIComponent(currentNama)}`)
+          .then(res => res.json())
+          .then(response => {
+            if (response.success) {
+              showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES");
+              setTimeout(() => {
+                location.reload();
+              }, 1200);
+            } else {
+              showCustomAlert(response.message, "PERINGATAN");
+            }
+          })
+          .catch(() => {
+            showCustomAlert("Terjadi kesalahan saat menyimpan suara ke database.", "ERROR");
+          });
 
-      fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihan)}&nama=${encodeURIComponent(currentNama)}`)
-        .then(res => res.json())
-        .then(response => {
-          if (response.success) {
-            alert("Terima kasih! Suara Anda telah berhasil disimpan.");
-            location.reload();
-          } else {
-            alert(response.message);
-          }
-        })
-        .catch(() => {
-          alert("Terjadi kesalahan saat menyimpan suara ke database.");
-        });
+      });
     }
   </script>
 </body>
