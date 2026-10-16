@@ -85,30 +85,28 @@
       text-shadow: 0 0 15px rgba(192, 132, 252, 0.8);
     }
 
-    /* Clock Card */
+    /* Clock Card - Tampilan Lebih Keren, Warna Seragam & Tanpa Ikon */
     .clock-card {
-      background: rgba(30, 27, 75, 0.8);
-      border: 2px solid rgba(168, 85, 247, 0.5);
-      color: #f1f5f9;
-      padding: 12px 20px;
-      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 2px solid #00f2fe;
+      color: #00f2fe;
+      padding: 14px 24px;
+      border-radius: 16px;
       text-align: center;
-      margin-bottom: 20px;
-      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+      margin-bottom: 22px;
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.35);
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      gap: 12px;
-      font-size: clamp(13px, 3vw, 16px);
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+      gap: 15px;
+      font-size: clamp(14px, 3.2vw, 17px);
+      text-shadow: 0 0 12px rgba(0, 242, 254, 0.8);
+      letter-spacing: 0.5px;
     }
 
-    .clock-time {
-      font-size: clamp(15px, 3.5vw, 18px);
-      color: #facc15;
-      letter-spacing: 1px;
-      text-shadow: 0 0 12px rgba(250, 204, 21, 0.8);
+    .clock-divider {
+      color: rgba(0, 242, 254, 0.5);
     }
 
     /* Form Login */
@@ -175,11 +173,6 @@
       background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
     }
 
-    .btn-danger {
-      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-      box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
-    }
-
     .btn-secondary {
       background: linear-gradient(135deg, #475569 0%, #1e293b 100%);
       box-shadow: 0 0 15px rgba(71, 85, 105, 0.4);
@@ -196,7 +189,7 @@
       text-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
     }
 
-    /* User Info */
+    /* User Info - Tanpa Ikon */
     .user-info {
       background: rgba(30, 27, 75, 0.8);
       padding: 14px 18px;
@@ -285,7 +278,7 @@
       text-shadow: 0 0 8px rgba(192, 132, 252, 0.8);
     }
 
-    /* CUSTOM MODAL POP-UP (Kustom UI Menggantikan Web Alert/Confirm Chrome) */
+    /* CUSTOM MODAL POP-UP */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -389,14 +382,17 @@
 
     <!-- Halaman Paslon Section -->
     <div id="votingSection" class="hidden">
+      <!-- Waktu, Hari & Tanggal Didesain Seragam Satu Warna Keren Tanpa Ikon -->
       <div class="clock-card">
-        <div>📅 <span id="clockDate">Memuat tanggal...</span></div>
-        <div class="clock-time">⏰ <span id="clockTime">00:00:00 WIB</span></div>
+        <span id="clockDate">Memuat tanggal...</span>
+        <span class="clock-divider">|</span>
+        <span id="clockTime">00:00:00 WIB</span>
       </div>
 
+      <!-- User Info Tanpa Ikon -->
       <div class="user-info">
-        👤 <b>Pemilih:</b> <span id="userName">-</span> | <b>Kelas/Jabatan:</b> <span id="userKelas">-</span><br>
-        🆔 <b>NISN/Identitas:</b> <span id="userNis">-</span>
+        <b>Pemilih:</b> <span id="userName">-</span> | <b>Kelas/Jabatan:</b> <span id="userKelas">-</span><br>
+        <b>NISN/Identitas:</b> <span id="userNis">-</span>
       </div>
 
       <h3 style="text-align: center; color: #f8fafc; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);">
@@ -410,7 +406,7 @@
     </div>
   </div>
 
-  <!-- CUSTOM MODAL NOTIFIKASI / KONFIRMASI (Bukan Browser Chrome Alert) -->
+  <!-- CUSTOM MODAL NOTIFIKASI / KONFIRMASI -->
   <div id="customModal" class="modal-overlay hidden">
     <div class="custom-modal-box">
       <div id="modalTitle" class="modal-title">KONFIRMASI</div>
@@ -428,7 +424,6 @@
     let currentNama = ""; 
     let confirmCallbackAction = null;
 
-    // FUNGSI NOTIFIKASI KUSTOM menggantikan Alert Chrome
     function showCustomAlert(msg, title = "PEMBERITAHUAN") {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
@@ -436,7 +431,6 @@
       document.getElementById('customModal').classList.remove('hidden');
     }
 
-    // FUNGSI KONFIRMASI KUSTOM menggantikan Confirm Chrome
     function showCustomConfirm(msg, onConfirm, title = "KONFIRMASI PILIHAN") {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
@@ -488,7 +482,6 @@
       btnLogin.innerText = "MEMERIKSA DATA...";
       btnLogin.disabled = true;
 
-      // Respon Dipercepat (0.5 Detik)
       fetch(`${SCRIPT_URL}?action=verifikasi&nis=${encodeURIComponent(nis)}`)
         .then(res => res.json())
         .then(response => {
@@ -520,7 +513,6 @@
         });
     }
 
-    // Fungsi Mengambil Daftar Paslon (Respon & Load Dipercepat 0.5s)
     async function loadPaslonDataForVoting() {
       const container = document.getElementById('paslonContainer');
       container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#a1c4fd;">Memuat daftar paslon...</p>';
@@ -561,7 +553,6 @@
     }
 
     function kirimPilihan(pilihan) {
-      // Menggunakan Custom Modal Confirm, Bukan Alert Browser Chrome
       showCustomConfirm("Apakah Anda yakin ingin memilih " + pilihan + "? Pilihan tidak dapat diubah setelah disimpan.", function() {
         
         fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihan)}&nama=${encodeURIComponent(currentNama)}`)
