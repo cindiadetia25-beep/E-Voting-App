@@ -7,7 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Google Font Minecraft Style -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <!-- Chart.js Library untuk Grafik Modern -->
+    <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { 
@@ -182,19 +182,74 @@
 
         .hidden { display: none !important; }
 
-        .live-badge {
+        /* Modal Real Count */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(10, 14, 39, 0.95); 
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: #1a0b2e;
+            border: 2px solid #00d2ff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 900px;
+            padding: 25px;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* HEADER MODAL PERBAIKAN: Memisahkan Judul + Badge + Refresh ke Kiri, dan Close (X) ke Kanan */
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            border-bottom: 2px solid #9d4edd;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .close-modal {
+            color: #ff0055;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: 0.2s;
+            line-height: 1;
+        }
+        .close-modal:hover { transform: scale(1.2); }
+
+        .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             background: rgba(255, 0, 85, 0.2);
             border: 1px solid #ff0055;
             color: #ff0055;
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             font-size: 0.55rem;
-            margin-left: 10px;
         }
-        .live-dot {
+        .status-dot {
             width: 8px;
             height: 8px;
             background-color: #ff0055;
@@ -207,42 +262,21 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
         }
 
-        .modal {
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0;
-            top: 0;
-            width: 100%; 
-            height: 100%; 
-            background-color: rgba(10, 14, 39, 0.9); 
-            backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-card {
+            background: rgba(10, 14, 39, 0.6);
+            border: 1px solid #9d4edd;
+            border-radius: 8px;
             padding: 15px;
+            text-align: center;
         }
-
-        .modal-content {
-            background: #1a0b2e;
-            border: 2px solid #00d2ff;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 850px;
-            padding: 25px;
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.4);
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            color: #ff0055;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
+        .summary-card h4 { font-size: 0.6rem; color: #e0aaff; margin-bottom: 8px; }
+        .summary-card p { font-size: 1.1rem; color: #00d2ff; }
 
         .chart-container {
             position: relative;
@@ -253,11 +287,7 @@
             border: 1px solid #9d4edd;
         }
 
-        .action-btns {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
+        .action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
 
         .custom-alert-box {
             background: #1a0b2e;
@@ -269,26 +299,9 @@
             text-align: center;
             box-shadow: 0 0 30px rgba(255, 0, 85, 0.6);
         }
-
-        .custom-alert-title {
-            color: #00d2ff;
-            font-size: 0.8rem;
-            margin-bottom: 15px;
-            text-shadow: 0 0 5px #00d2ff;
-        }
-
-        .custom-alert-msg {
-            color: #fff;
-            font-size: 0.65rem;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-
-        .custom-alert-btns {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-        }
+        .custom-alert-title { color: #00d2ff; font-size: 0.8rem; margin-bottom: 15px; }
+        .custom-alert-msg { color: #fff; font-size: 0.65rem; margin-bottom: 20px; line-height: 1.6; }
+        .custom-alert-btns { display: flex; justify-content: center; gap: 12px; }
 
         @media (max-width: 768px) {
             body { padding: 10px; }
@@ -375,21 +388,38 @@
     </div>
 </div>
 
+<!-- MODAL REAL COUNT PEROLEHAN SUARA -->
 <div id="modalRealCount" class="modal">
     <div class="modal-content">
-        <span class="close-modal" onclick="closeRealCountModal()">&times;</span>
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-            <h2 style="color: #00d2ff; margin-bottom: 0px;">
-                <i class="fas fa-chart-pie"></i> Real Count
-                <span class="live-badge"><span class="live-dot"></span> REALTIME (0.5s)</span>
-            </h2>
-            <button class="btn" onclick="loadRealCountData()" style="padding: 8px 12px; font-size: 0.55rem;">
-                <i class="fas fa-sync-alt"></i> Refresh
-            </button>
+        <!-- HEADER DENGAN PENATAAN ELEMEN YANG SUDAH DIPISAHKAN SECARA RAPI -->
+        <div class="modal-header">
+            <div class="modal-header-left">
+                <h2 style="color: #00d2ff; font-size: 0.85rem; margin: 0;">
+                    <i class="fas fa-chart-pie"></i> Real Count
+                </h2>
+                <span class="status-badge"><span class="status-dot"></span> REALTIME (0.5s)</span>
+                <button class="btn" onclick="loadRealCountData()" style="padding: 6px 10px; font-size: 0.55rem;">
+                    <i class="fas fa-sync-alt" id="refreshIcon"></i> Refresh
+                </button>
+            </div>
+            <div>
+                <span class="close-modal" onclick="closeRealCountModal()">&times;</span>
+            </div>
+        </div>
+
+        <div class="summary-cards">
+            <div class="summary-card">
+                <h4>TOTAL SUARA MASUK</h4>
+                <p id="totalSuaraMasuk">0</p>
+            </div>
+            <div class="summary-card">
+                <h4>UPDATE TERAKHIR</h4>
+                <p id="lastUpdateTime">--:--:-- WIB</p>
+            </div>
         </div>
 
         <div class="chart-container">
-            <canvas id="realCountChart" style="max-height: 280px;"></canvas>
+            <canvas id="realCountChart" style="max-height: 260px;"></canvas>
         </div>
 
         <div class="table-responsive">
@@ -410,6 +440,7 @@
     </div>
 </div>
 
+<!-- CUSTOM ALERT MODAL -->
 <div id="customAlertModal" class="modal">
     <div class="custom-alert-box">
         <div class="custom-alert-title" id="customAlertTitle">NOTIFIKASI</div>
@@ -427,7 +458,7 @@
     let realCountChart = null;
     let paslonCache = [];
     let confirmCallback = null;
-    let isFetchingVote = false; // Flag cegah penumpukan request 0.5s
+    let isFetchingVote = false;
 
     function showCustomAlert(msg, title = "SYSTEM INFO") {
         document.getElementById("customAlertTitle").innerText = title;
@@ -608,7 +639,6 @@
         document.getElementById("modalRealCount").style.display = "flex";
         loadRealCountData();
         
-        // INTERVAL AUTO UPDATE DISESUAIKAN MENJADI 0,5 DETIK (500ms)
         if (!autoUpdateTimer) {
             autoUpdateTimer = setInterval(loadRealCountData, 500);
         }
@@ -625,7 +655,7 @@
     function renderChart(labels, dataSuara) {
         const ctx = document.getElementById('realCountChart').getContext('2d');
         
-        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        const gradient = ctx.createLinearGradient(0, 0, 0, 260);
         gradient.addColorStop(0, '#ff0055');
         gradient.addColorStop(0.5, '#7b2cbf');
         gradient.addColorStop(1, '#00d2ff');
@@ -633,7 +663,7 @@
         if (realCountChart) {
             realCountChart.data.labels = labels;
             realCountChart.data.datasets[0].data = dataSuara;
-            realCountChart.update('none'); // Update instan tanpa re-animasi lambat
+            realCountChart.update('none');
         } else {
             realCountChart = new Chart(ctx, {
                 type: 'bar',
@@ -652,10 +682,8 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    animation: false, // Nonaktifkan animasi dasar agar refresh 0.5s sangat cepat & lancar
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    animation: false,
+                    plugins: { legend: { display: false } },
                     scales: {
                         x: {
                             ticks: { color: '#e0aaff', font: { family: "'Press Start 2P'", size: 8 } },
@@ -673,7 +701,7 @@
     }
 
     async function loadRealCountData() {
-        if (isFetchingVote) return; // Mencegah bentrokan request saat jaringan lambat
+        if (isFetchingVote) return;
         isFetchingVote = true;
 
         try {
@@ -699,6 +727,9 @@
                             <td>${h.persentase}%</td>
                         </tr>`;
                 });
+
+                document.getElementById("totalSuaraMasuk").innerText = (data.totalSuaraMasuk || 0).toLocaleString('id-ID');
+                document.getElementById("lastUpdateTime").innerText = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " WIB";
 
                 renderChart(labels, dataSuara);
             } else {
