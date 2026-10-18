@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin E-Voting OSIS SMPN 1 Rancah</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <!-- Google Font Minecraft Style -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { 
@@ -18,7 +16,7 @@
         }
         
         body { 
-            background: linear-gradient(135deg, #0a0e27 0%, #1a0b2e 50%, #2e0819 100%); 
+            background: linear-gradient(135deg, #050b14 0%, #0a192f 50%, #020c1b 100%); 
             min-height: 100vh; 
             color: #fff; 
             padding: 15px; 
@@ -32,33 +30,33 @@
             color: #00d2ff; 
             font-size: clamp(1rem, 2.5vw, 1.6rem); 
             margin-bottom: 12px; 
-            text-shadow: 0 0 10px #00d2ff, 0 0 20px #9d4edd; 
+            text-shadow: 0 0 10px #00d2ff; 
             line-height: 1.4;
         }
-        header p { color: #e0aaff; font-size: clamp(0.6rem, 1.5vw, 0.8rem); line-height: 1.5; }
+        header p { color: #38ef7d; font-size: clamp(0.6rem, 1.5vw, 0.8rem); line-height: 1.5; }
 
         .clock-box {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: rgba(157, 78, 221, 0.2);
-            border: 2px solid #ff0055;
+            background: rgba(0, 210, 255, 0.15);
+            border: 2px solid #00d2ff;
             padding: 8px 16px;
             border-radius: 8px;
             color: #00d2ff;
             font-size: clamp(0.6rem, 1.2vw, 0.75rem);
             margin-top: 15px;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.4);
+            box-shadow: 0 0 12px rgba(0, 210, 255, 0.3);
         }
 
         .card { 
-            background: rgba(26, 11, 46, 0.75); 
+            background: rgba(10, 25, 47, 0.85); 
             backdrop-filter: blur(12px); 
-            border: 2px solid #9d4edd; 
+            border: 2px solid #00d2ff; 
             border-radius: 12px; 
             padding: 20px; 
             margin-bottom: 25px; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5), inset 0 0 15px rgba(157, 78, 221, 0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8);
         }
 
         .card h2 { 
@@ -69,7 +67,6 @@
             align-items: center; 
             gap: 10px; 
             line-height: 1.4;
-            text-shadow: 0 0 8px #00d2ff;
         }
 
         .form-grid { 
@@ -82,7 +79,7 @@
         .form-group label { 
             display: block; 
             margin-bottom: 8px; 
-            color: #e0aaff; 
+            color: #00d2ff; 
             font-size: 0.65rem; 
             line-height: 1.4;
         }
@@ -90,16 +87,16 @@
             width: 100%; 
             padding: 12px; 
             border-radius: 6px; 
-            border: 2px solid #9d4edd; 
-            background: rgba(10, 14, 39, 0.8); 
+            border: 2px solid #00d2ff; 
+            background: #020c1b; 
             color: #fff; 
             font-size: 0.7rem;
             outline: none;
             transition: 0.3s;
         }
         .form-group input:focus, .form-group textarea:focus {
-            border-color: #ff0055;
-            box-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+            border-color: #38ef7d;
+            box-shadow: 0 0 10px rgba(56, 239, 125, 0.5);
         }
         .form-group textarea { height: 85px; resize: vertical; line-height: 1.4; }
 
@@ -114,22 +111,23 @@
             align-items: center; 
             justify-content: center;
             gap: 10px; 
-            background: linear-gradient(45deg, #00d2ff, #7b2cbf);
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
             transition: 0.3s;
             text-decoration: none;
             box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3);
             line-height: 1.2;
         }
         .btn-realcount { 
-            background: linear-gradient(45deg, #ff0055, #7b2cbf); 
+            background: linear-gradient(45deg, #00d2ff, #38ef7d); 
             font-size: clamp(0.65rem, 1.5vw, 0.85rem);
             padding: 16px 28px;
-            border-color: #ff0055;
-            box-shadow: 0 0 20px rgba(255, 0, 85, 0.5);
+            border-color: #38ef7d;
+            color: #020c1b;
+            font-weight: bold;
         }
         .btn-danger { 
-            background: linear-gradient(45deg, #ff0055, #990033); 
-            border-color: #ff0055;
+            background: linear-gradient(45deg, #ff4d4d, #990000); 
+            border-color: #ff4d4d;
         }
         .btn-warning { 
             background: linear-gradient(45deg, #ffb703, #fb8500); 
@@ -137,7 +135,7 @@
             color: #000; 
         }
         .btn-secondary { 
-            background: linear-gradient(45deg, #4a4e69, #22223b); 
+            background: #020c1b; 
             border-color: #9a8c98;
         }
         .btn:hover { 
@@ -148,6 +146,8 @@
         .nav-menu-box {
             display: flex;
             justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
             margin-bottom: 25px;
         }
 
@@ -158,18 +158,18 @@
         }
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(157, 78, 221, 0.3); font-size: 0.6rem; line-height: 1.5; }
-        th { background: rgba(123, 44, 191, 0.4); color: #00d2ff; text-shadow: 0 0 5px #00d2ff; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(0, 210, 255, 0.3); font-size: 0.6rem; line-height: 1.5; }
+        th { background: rgba(0, 210, 255, 0.2); color: #00d2ff; }
 
         .paslon-img-preview {
             width: 70px;
             height: 70px;
             object-fit: cover;
             border-radius: 6px;
-            border: 2px solid #ff0055;
+            border: 2px solid #00d2ff;
             display: block;
             margin-top: 8px;
-            background: rgba(0,0,0,0.4);
+            background: #000;
         }
 
         .img-table {
@@ -182,7 +182,6 @@
 
         .hidden { display: none !important; }
 
-        /* Modal Real Count */
         .modal {
             display: none; 
             position: fixed; 
@@ -191,7 +190,7 @@
             top: 0;
             width: 100%; 
             height: 100%; 
-            background-color: rgba(10, 14, 39, 0.95); 
+            background-color: rgba(2, 12, 27, 0.95); 
             backdrop-filter: blur(8px);
             justify-content: center;
             align-items: center;
@@ -199,7 +198,7 @@
         }
 
         .modal-content {
-            background: #1a0b2e;
+            background: #0a192f;
             border: 2px solid #00d2ff;
             border-radius: 12px;
             width: 100%;
@@ -211,13 +210,12 @@
             overflow-y: auto;
         }
 
-        /* HEADER MODAL PERBAIKAN: Memisahkan Judul + Badge + Refresh ke Kiri, dan Close (X) ke Kanan */
         .modal-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 15px;
-            border-bottom: 2px solid #9d4edd;
+            border-bottom: 2px solid #00d2ff;
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
@@ -230,21 +228,20 @@
         }
 
         .close-modal {
-            color: #ff0055;
+            color: #ff4d4d;
             font-size: 1.8rem;
             cursor: pointer;
             transition: 0.2s;
             line-height: 1;
         }
-        .close-modal:hover { transform: scale(1.2); }
 
         .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(255, 0, 85, 0.2);
-            border: 1px solid #ff0055;
-            color: #ff0055;
+            background: rgba(56, 239, 125, 0.2);
+            border: 1px solid #38ef7d;
+            color: #38ef7d;
             padding: 6px 10px;
             border-radius: 6px;
             font-size: 0.55rem;
@@ -252,14 +249,8 @@
         .status-dot {
             width: 8px;
             height: 8px;
-            background-color: #ff0055;
+            background-color: #38ef7d;
             border-radius: 50%;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(255, 0, 85, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
         }
 
         .summary-cards {
@@ -269,35 +260,35 @@
             margin-bottom: 20px;
         }
         .summary-card {
-            background: rgba(10, 14, 39, 0.6);
-            border: 1px solid #9d4edd;
+            background: #020c1b;
+            border: 1px solid #00d2ff;
             border-radius: 8px;
             padding: 15px;
             text-align: center;
         }
-        .summary-card h4 { font-size: 0.6rem; color: #e0aaff; margin-bottom: 8px; }
-        .summary-card p { font-size: 1.1rem; color: #00d2ff; }
+        .summary-card h4 { font-size: 0.6rem; color: #00d2ff; margin-bottom: 8px; }
+        .summary-card p { font-size: 1.1rem; color: #38ef7d; }
 
         .chart-container {
             position: relative;
             margin: 20px 0;
             padding: 15px;
-            background: rgba(10, 14, 39, 0.6);
+            background: #020c1b;
             border-radius: 8px;
-            border: 1px solid #9d4edd;
+            border: 1px solid #00d2ff;
         }
 
         .action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
 
         .custom-alert-box {
-            background: #1a0b2e;
-            border: 3px solid #ff0055;
+            background: #0a192f;
+            border: 3px solid #00d2ff;
             border-radius: 12px;
             max-width: 420px;
             width: 90%;
             padding: 25px;
             text-align: center;
-            box-shadow: 0 0 30px rgba(255, 0, 85, 0.6);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.6);
         }
         .custom-alert-title { color: #00d2ff; font-size: 0.8rem; margin-bottom: 15px; }
         .custom-alert-msg { color: #fff; font-size: 0.65rem; margin-bottom: 20px; line-height: 1.6; }
@@ -329,6 +320,9 @@
         <button class="btn btn-realcount" onclick="openRealCountModal()">
             <i class="fas fa-chart-line"></i> BUKA REAL COUNT / PEROLEHAN SUARA
         </button>
+        <button class="btn btn-danger" onclick="confirmResetAllVotes()">
+            <i class="fas fa-trash-alt"></i> HAPUS SEMUA DATA SUARA
+        </button>
     </div>
 
     <div class="card">
@@ -336,26 +330,26 @@
         <form id="formPaslon" onsubmit="savePaslon(event)">
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Nomor Urut Paslon</label>
+                    <label>Nomor Urut Paslon *</label>
                     <input type="number" id="paslonNo" min="1" placeholder="Ex: 1" required>
                 </div>
                 <div class="form-group">
-                    <label>Nama Paslon (Ketua & Wakil)</label>
+                    <label>Nama Paslon (Ketua & Wakil) *</label>
                     <input type="text" id="paslonNama" placeholder="Ex: Ahmad & Siti" required>
                 </div>
                 <div class="form-group">
-                    <label>Upload Foto (JPG/PNG)</label>
+                    <label>Upload Foto (Opsional)</label>
                     <input type="file" id="paslonFoto" accept="image/jpeg, image/png" onchange="previewImage(event)">
                     <img id="imgPreview" class="paslon-img-preview hidden" alt="Preview Foto">
                 </div>
             </div>
             <div class="form-group">
-                <label>Visi Paslon</label>
-                <textarea id="paslonVisi" placeholder="Tuliskan Visi Paslon..." required></textarea>
+                <label>Visi Paslon (Opsional)</label>
+                <textarea id="paslonVisi" placeholder="Tuliskan Visi Paslon..."></textarea>
             </div>
             <div class="form-group">
-                <label>Misi Paslon</label>
-                <textarea id="paslonMisi" placeholder="Tuliskan Misi Paslon..." required></textarea>
+                <label>Misi Paslon (Opsional)</label>
+                <textarea id="paslonMisi" placeholder="Tuliskan Misi Paslon..."></textarea>
             </div>
             <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                 <button type="submit" class="btn" id="btnSimpanPaslon">
@@ -367,7 +361,7 @@
             </div>
         </form>
 
-        <h3 style="color: #e0aaff; margin-top: 25px; margin-bottom: 15px; font-size: 0.75rem;">Daftar Paslon Terdaftar</h3>
+        <h3 style="color: #00d2ff; margin-top: 25px; margin-bottom: 15px; font-size: 0.75rem;">Daftar Paslon Terdaftar</h3>
         <div class="table-responsive">
             <table>
                 <thead>
@@ -391,7 +385,6 @@
 <!-- MODAL REAL COUNT PEROLEHAN SUARA -->
 <div id="modalRealCount" class="modal">
     <div class="modal-content">
-        <!-- HEADER DENGAN PENATAAN ELEMEN YANG SUDAH DIPISAHKAN SECARA RAPI -->
         <div class="modal-header">
             <div class="modal-header-left">
                 <h2 style="color: #00d2ff; font-size: 0.85rem; margin: 0;">
@@ -527,8 +520,8 @@
 
         const no = document.getElementById("paslonNo").value;
         const nama = document.getElementById("paslonNama").value;
-        const visi = document.getElementById("paslonVisi").value;
-        const misi = document.getElementById("paslonMisi").value;
+        const visi = document.getElementById("paslonVisi").value || "-";
+        const misi = document.getElementById("paslonMisi").value || "-";
 
         try {
             await fetch(SCRIPT_URL, {
@@ -594,8 +587,8 @@
 
         document.getElementById("paslonNo").value = p.no;
         document.getElementById("paslonNama").value = p.nama;
-        document.getElementById("paslonVisi").value = p.visi;
-        document.getElementById("paslonMisi").value = p.misi;
+        document.getElementById("paslonVisi").value = p.visi !== "-" ? p.visi : "";
+        document.getElementById("paslonMisi").value = p.misi !== "-" ? p.misi : "";
 
         if (p.foto) {
             base64Foto = p.foto;
@@ -635,6 +628,21 @@
         });
     }
 
+    function confirmResetAllVotes() {
+        showCustomConfirm("PERINGATAN! Apakah Anda yakin ingin MENGHAPUS / MERESET SELURUH DATA SUARA MASUK? Data yang dihapus tidak bisa dikembalikan!", async function() {
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "resetAllVotes" })
+                });
+                showCustomAlert("Seluruh data perolehan suara berhasil dikosongkan!", "SUKSES");
+                loadRealCountData();
+            } catch (err) {
+                showCustomAlert("Gagal mereset data suara.", "ERROR");
+            }
+        });
+    }
+
     function openRealCountModal() {
         document.getElementById("modalRealCount").style.display = "flex";
         loadRealCountData();
@@ -655,11 +663,6 @@
     function renderChart(labels, dataSuara) {
         const ctx = document.getElementById('realCountChart').getContext('2d');
         
-        const gradient = ctx.createLinearGradient(0, 0, 0, 260);
-        gradient.addColorStop(0, '#ff0055');
-        gradient.addColorStop(0.5, '#7b2cbf');
-        gradient.addColorStop(1, '#00d2ff');
-
         if (realCountChart) {
             realCountChart.data.labels = labels;
             realCountChart.data.datasets[0].data = dataSuara;
@@ -672,8 +675,8 @@
                     datasets: [{
                         label: 'Jumlah Suara',
                         data: dataSuara,
-                        backgroundColor: gradient,
-                        borderColor: '#00d2ff',
+                        backgroundColor: '#00d2ff',
+                        borderColor: '#38ef7d',
                         borderWidth: 2,
                         borderRadius: 6,
                         barThickness: 32
@@ -686,13 +689,13 @@
                     plugins: { legend: { display: false } },
                     scales: {
                         x: {
-                            ticks: { color: '#e0aaff', font: { family: "'Press Start 2P'", size: 8 } },
+                            ticks: { color: '#00d2ff', font: { family: "'Press Start 2P'", size: 8 } },
                             grid: { display: false }
                         },
                         y: {
                             beginAtZero: true,
-                            ticks: { color: '#e0aaff', font: { family: "'Press Start 2P'", size: 8 }, stepSize: 1, precision: 0 },
-                            grid: { color: 'rgba(157, 78, 221, 0.2)' }
+                            ticks: { color: '#00d2ff', font: { family: "'Press Start 2P'", size: 8 }, stepSize: 1, precision: 0 },
+                            grid: { color: 'rgba(0, 210, 255, 0.2)' }
                         }
                     }
                 }
