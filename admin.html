@@ -33,7 +33,7 @@
             text-shadow: 0 0 10px #00d2ff; 
             line-height: 1.4;
         }
-        header p { color: #38ef7d; font-size: clamp(0.6rem, 1.5vw, 0.8rem); line-height: 1.5; }
+        header p { color: #00d2ff; font-size: clamp(0.6rem, 1.5vw, 0.8rem); line-height: 1.5; }
 
         .clock-box {
             display: inline-flex;
@@ -95,8 +95,8 @@
             transition: 0.3s;
         }
         .form-group input:focus, .form-group textarea:focus {
-            border-color: #38ef7d;
-            box-shadow: 0 0 10px rgba(56, 239, 125, 0.5);
+            border-color: #00d2ff;
+            box-shadow: 0 0 10px rgba(0, 210, 255, 0.5);
         }
         .form-group textarea { height: 85px; resize: vertical; line-height: 1.4; }
 
@@ -118,10 +118,10 @@
             line-height: 1.2;
         }
         .btn-realcount { 
-            background: linear-gradient(45deg, #00d2ff, #38ef7d); 
+            background: linear-gradient(45deg, #00d2ff, #00c6ff); 
             font-size: clamp(0.65rem, 1.5vw, 0.85rem);
             padding: 16px 28px;
-            border-color: #38ef7d;
+            border-color: #00d2ff;
             color: #020c1b;
             font-weight: bold;
         }
@@ -239,9 +239,9 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(56, 239, 125, 0.2);
-            border: 1px solid #38ef7d;
-            color: #38ef7d;
+            background: rgba(0, 210, 255, 0.2);
+            border: 1px solid #00d2ff;
+            color: #00d2ff;
             padding: 6px 10px;
             border-radius: 6px;
             font-size: 0.55rem;
@@ -249,7 +249,7 @@
         .status-dot {
             width: 8px;
             height: 8px;
-            background-color: #38ef7d;
+            background-color: #00d2ff;
             border-radius: 50%;
         }
 
@@ -267,7 +267,7 @@
             text-align: center;
         }
         .summary-card h4 { font-size: 0.6rem; color: #00d2ff; margin-bottom: 8px; }
-        .summary-card p { font-size: 1.1rem; color: #38ef7d; }
+        .summary-card p { font-size: 1.1rem; color: #00d2ff; }
 
         .chart-container {
             position: relative;
@@ -320,8 +320,8 @@
         <button class="btn btn-realcount" onclick="openRealCountModal()">
             <i class="fas fa-chart-line"></i> BUKA REAL COUNT / PEROLEHAN SUARA
         </button>
-        <button class="btn btn-danger" onclick="confirmResetAllVotes()">
-            <i class="fas fa-trash-alt"></i> HAPUS SEMUA DATA SUARA
+        <button class="btn btn-danger" onclick="confirmDeleteAllPaslon()">
+            <i class="fas fa-trash-alt"></i> HAPUS SEMUA DATA PASLON
         </button>
     </div>
 
@@ -628,17 +628,17 @@
         });
     }
 
-    function confirmResetAllVotes() {
-        showCustomConfirm("PERINGATAN! Apakah Anda yakin ingin MENGHAPUS / MERESET SELURUH DATA SUARA MASUK? Data yang dihapus tidak bisa dikembalikan!", async function() {
+    function confirmDeleteAllPaslon() {
+        showCustomConfirm("PERINGATAN! Apakah Anda yakin ingin MENGHAPUS SELURUH DATA PASLON yang sudah diinput? Data di spreadsheet juga akan dikosongkan!", async function() {
             try {
                 await fetch(SCRIPT_URL, {
                     method: "POST",
-                    body: JSON.stringify({ action: "resetAllVotes" })
+                    body: JSON.stringify({ action: "deleteAllPaslon" })
                 });
-                showCustomAlert("Seluruh data perolehan suara berhasil dikosongkan!", "SUKSES");
-                loadRealCountData();
+                showCustomAlert("Seluruh data paslon berhasil dihapus!", "SUKSES");
+                loadPaslonData();
             } catch (err) {
-                showCustomAlert("Gagal mereset data suara.", "ERROR");
+                showCustomAlert("Gagal menghapus data paslon.", "ERROR");
             }
         });
     }
@@ -676,7 +676,7 @@
                         label: 'Jumlah Suara',
                         data: dataSuara,
                         backgroundColor: '#00d2ff',
-                        borderColor: '#38ef7d',
+                        borderColor: '#00c6ff',
                         borderWidth: 2,
                         borderRadius: 6,
                         barThickness: 32
