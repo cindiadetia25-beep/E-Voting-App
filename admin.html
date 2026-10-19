@@ -524,8 +524,9 @@
         const misi = document.getElementById("paslonMisi").value || "-";
 
         try {
-            await fetch(SCRIPT_URL, {
+            const res = await fetch(SCRIPT_URL, {
                 method: "POST",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({ 
                     action: "savePaslon", 
                     no: no, 
@@ -535,7 +536,7 @@
                     foto: base64Foto 
                 })
             });
-            showCustomAlert("Data Paslon berhasil disimpan!", "SUKSES");
+            showCustomAlert("Data Paslon berhasil disimpan ke Spreadsheet!", "SUKSES");
             batalEdit();
             loadPaslonData();
         } catch (err) {
@@ -616,14 +617,21 @@
     function deletePaslon(no) {
         showCustomConfirm(`Apakah Anda yakin ingin menghapus Paslon No. ${no}?`, async function() {
             try {
-                await fetch(SCRIPT_URL, {
+                const response = await fetch(SCRIPT_URL, {
                     method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({ action: "deletePaslon", no: no })
                 });
-                showCustomAlert(`Paslon No. ${no} berhasil dihapus!`, "SUKSES");
-                loadPaslonData();
+                const result = await response.json();
+                
+                if (result.success) {
+                    showCustomAlert(`Paslon No. ${no} berhasil dihapus dari Spreadsheet!`, "SUKSES");
+                    loadPaslonData();
+                } else {
+                    showCustomAlert(result.message || "Gagal menghapus paslon.", "ERROR");
+                }
             } catch (err) {
-                showCustomAlert("Gagal menghapus data paslon.", "ERROR");
+                showCustomAlert("Gagal terhubung ke server untuk menghapus paslon.", "ERROR");
             }
         });
     }
@@ -631,11 +639,13 @@
     function confirmDeleteAllPaslon() {
         showCustomConfirm("PERINGATAN! Apakah Anda yakin ingin MENGHAPUS SELURUH DATA PASLON yang sudah diinput? Data di spreadsheet juga akan dikosongkan!", async function() {
             try {
-                await fetch(SCRIPT_URL, {
+                const response = await fetch(SCRIPT_URL, {
                     method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
                     body: JSON.stringify({ action: "deleteAllPaslon" })
                 });
-                showCustomAlert("Seluruh data paslon berhasil dihapus!", "SUKSES");
+                const result = await response.json();
+                showCustomAlert("Seluruh data paslon berhasil dihapus dari Spreadsheet!", "SUKSES");
                 loadPaslonData();
             } catch (err) {
                 showCustomAlert("Gagal menghapus data paslon.", "ERROR");
