@@ -7,6 +7,10 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- ====================================================================== -->
+    <!-- BAGIAN 1: CSS DESAIN DASHBOARD ADMIN                                   -->
+    <!-- ====================================================================== -->
     <style>
         * { 
             box-sizing: border-box; 
@@ -306,6 +310,9 @@
 </head>
 <body>
 
+<!-- ====================================================================== -->
+<!-- BAGIAN 2: STRUKTUR STRUKTURAL HTML DASHBOARD                           -->
+<!-- ====================================================================== -->
 <div class="container">
     <header>
         <h1>DASHBOARD ADMIN E-VOTING OSIS</h1>
@@ -382,7 +389,7 @@
     </div>
 </div>
 
-<!-- MODAL REAL COUNT PEROLEHAN SUARA -->
+<!-- Modal Real Count (Pop-up Chart & Rekap) -->
 <div id="modalRealCount" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -433,7 +440,7 @@
     </div>
 </div>
 
-<!-- CUSTOM ALERT MODAL -->
+<!-- Modal Custom Alert -->
 <div id="customAlertModal" class="modal">
     <div class="custom-alert-box">
         <div class="custom-alert-title" id="customAlertTitle">NOTIFIKASI</div>
@@ -444,6 +451,9 @@
     </div>
 </div>
 
+<!-- ====================================================================== -->
+<!-- BAGIAN 3: LOGIKA JAVASCRIPT CONTROL ADMIN & REAL COUNT                  -->
+<!-- ====================================================================== -->
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
     let base64Foto = "";
