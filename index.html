@@ -535,11 +535,11 @@
           .then(response => {
             if (response.success) {
               showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES", function() {
-                resetToHome(); // LANGSUNG RESET DAN KEMBALI KE HALAMAN UTAMA LOGIN
+                resetToHome();
               });
             } else {
               showCustomAlert(response.message, "PERINGATAN", function() {
-                resetToHome(); // RESET DARI SISINYA BILA GAGAL KARENA SUDAH VOTE
+                resetToHome();
               });
             }
           })
