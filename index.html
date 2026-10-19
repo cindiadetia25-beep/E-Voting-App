@@ -376,23 +376,30 @@
     let currentNis = "";
     let currentNama = ""; 
     let confirmCallbackAction = null;
+    let currentAlertCallback = null;
 
+    // FUNGSI ALERT MODAL PERBAIKAN: Memastikan callbackOnClose berjalan saat tombol OK ditekan
     function showCustomAlert(msg, title = "PEMBERITAHUAN", callbackOnClose = null) {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
+      currentAlertCallback = callbackOnClose;
       
+      const btnContainer = document.getElementById('modalBtns');
+      btnContainer.innerHTML = '';
+
       const btnOk = document.createElement('button');
       btnOk.className = 'btn';
       btnOk.innerText = 'OK';
       btnOk.onclick = function() {
         closeCustomModal();
-        if (callbackOnClose) callbackOnClose();
+        if (currentAlertCallback) {
+          const actionToRun = currentAlertCallback;
+          currentAlertCallback = null;
+          actionToRun();
+        }
       };
 
-      const btnContainer = document.getElementById('modalBtns');
-      btnContainer.innerHTML = '';
       btnContainer.appendChild(btnOk);
-
       document.getElementById('customModal').classList.remove('hidden');
     }
 
@@ -430,10 +437,12 @@
     setInterval(updateClock, 1000);
     updateClock();
 
+    // RESET TOTAL HALAMAN KE STATE LOGIN UTAMA
     function resetToHome() {
       currentNis = "";
       currentNama = "";
       document.getElementById('nisInput').value = "";
+      document.getElementById('loginError').classList.add('hidden');
       document.getElementById('votingSection').classList.add('hidden');
       document.getElementById('loginSection').classList.remove('hidden');
       document.getElementById('paslonContainer').innerHTML = '<p style="text-align:center; width: 100%; color:#00f2fe;">Memuat daftar paslon...</p>';
@@ -527,6 +536,7 @@
       }
     }
 
+    // FUNGSI KIRIM PILIHAN PERBAIKAN: Mengirim pilihan tepat dan otomatis memanggil resetToHome() saat OK ditekan
     function kirimPilihan(pilihanNamaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin ingin memilih " + labelPaslon + " (" + pilihanNamaPaslon + ")? Pilihan tidak dapat diubah setelah disimpan.", function() {
         
@@ -535,11 +545,11 @@
           .then(response => {
             if (response.success) {
               showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES", function() {
-                resetToHome();
+                resetToHome(); // OTOMATIS KEMBALI KE FORM LOGIN KETIKA "OK" DIKLIK
               });
             } else {
               showCustomAlert(response.message, "PERINGATAN", function() {
-                resetToHome();
+                resetToHome(); // TETA AP KEMBALI JIKA USER TERDAPAT PERINGATAN DOUBLE VOTE
               });
             }
           })
