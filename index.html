@@ -3,11 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>E-Voting OSIS SMPN 1 Rancah</title>
-  
-  <!-- ====================================================================== -->
-  <!-- BAGIAN 1: CSS DESAIN UTAMA                                             -->
-  <!-- ====================================================================== -->
+  <title>E-Voting Ketua & Wakil Ketua OSIS SMPN 1 Rancah</title>
   <style>
     * {
       box-sizing: border-box;
@@ -19,23 +15,32 @@
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #050b14 0%, #0a192f 50%, #020c1b 100%);
+      background: linear-gradient(135deg, #090d16 0%, #0f172a 30%, #1e1b4b 65%, #311042 100%);
+      background-size: 200% 200%;
+      animation: gradientBG 12s ease infinite;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 15px;
       color: #f8fafc;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.2);
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .container {
       width: 100%;
       max-width: 950px;
-      background: rgba(10, 25, 47, 0.95);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       padding: clamp(15px, 3vw, 35px);
-      border-radius: 20px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 25px rgba(0, 242, 254, 0.4);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.3);
       border: 2px solid #00f2fe;
     }
 
@@ -43,6 +48,7 @@
       display: none !important;
     }
 
+    /* Header & Judul */
     .header-title {
       text-align: center;
       margin-bottom: 20px;
@@ -51,7 +57,7 @@
     .badge-top {
       display: inline-block;
       padding: 6px 18px;
-      background: #020c1b;
+      background: rgba(15, 23, 42, 0.9);
       color: #00f2fe;
       border: 2px solid #00f2fe;
       border-radius: 20px;
@@ -59,47 +65,52 @@
       letter-spacing: 1.5px;
       text-transform: uppercase;
       margin-bottom: 10px;
-      box-shadow: 0 0 12px rgba(0, 242, 254, 0.5);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+      text-shadow: 0 0 8px #00f2fe;
     }
 
     .main-title {
       font-size: clamp(1.1rem, 3.8vw, 2.1rem);
-      color: #00f2fe;
+      color: #f8fafc;
       line-height: 1.25;
       text-transform: uppercase;
       word-wrap: break-word;
-      text-shadow: 0 0 15px rgba(0, 242, 254, 0.8);
+      text-shadow: 0 0 15px rgba(0, 242, 254, 0.8), 0 0 25px rgba(168, 85, 247, 0.6);
     }
 
     .sub-title {
       font-size: clamp(1rem, 3.2vw, 1.8rem);
-      color: #00f2fe;
+      color: #c084fc;
       margin-top: 4px;
       text-transform: uppercase;
-      text-shadow: 0 0 12px rgba(0, 242, 254, 0.8);
+      text-shadow: 0 0 15px rgba(192, 132, 252, 0.8);
     }
 
+    /* Clock Card */
     .clock-card {
-      background: #020c1b;
+      background: rgba(15, 23, 42, 0.9);
       border: 2px solid #00f2fe;
       color: #00f2fe;
       padding: 10px 18px;
-      border-radius: 12px;
+      border-radius: 14px;
       text-align: center;
       margin-bottom: 16px;
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
       gap: 10px;
       font-size: clamp(12px, 2.8vw, 16px);
+      text-shadow: 0 0 12px rgba(0, 242, 254, 0.8);
+      letter-spacing: 0.5px;
     }
 
     .clock-divider {
       color: rgba(0, 242, 254, 0.5);
     }
 
+    /* Form Login */
     .login-box {
       max-width: 420px;
       margin: 0 auto;
@@ -116,24 +127,30 @@
       margin-bottom: 8px;
       color: #00f2fe;
       font-size: 15px;
+      text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
     }
 
     input[type="text"] {
       width: 100%;
       padding: 14px 18px;
       border: 2px solid #00f2fe;
-      border-radius: 10px;
+      border-radius: 12px;
       outline: none;
       font-size: 16px;
-      background: #020c1b;
-      color: #ffffff;
+      background: rgba(15, 23, 42, 0.9);
+      color: #f8fafc;
       transition: all 0.3s ease;
-      box-shadow: inset 0 0 8px rgba(0, 242, 254, 0.2);
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.2);
     }
 
     input[type="text"]:focus {
-      border-color: #00f2fe;
-      box-shadow: 0 0 18px rgba(0, 242, 254, 0.7);
+      border-color: #38ef7d;
+      box-shadow: 0 0 20px rgba(56, 239, 125, 0.7);
+    }
+
+    input[type="text"]::placeholder {
+      color: #64748b;
     }
 
     .btn {
@@ -142,57 +159,62 @@
       background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
       color: #ffffff;
       border: 2px solid #00f2fe;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 15px;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      word-wrap: break-word;
+      line-height: 1.3;
     }
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 25px rgba(0, 242, 254, 0.9);
-      background: linear-gradient(135deg, #00f2fe 0%, #00c6ff 100%);
-      color: #020c1b;
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
+      box-shadow: 0 0 30px rgba(0, 242, 254, 0.9);
+      background: linear-gradient(135deg, #00f2fe 0%, #38ef7d 100%);
+      color: #090d16;
+      text-shadow: none;
     }
 
     .btn-secondary {
-      background: #020c1b;
+      background: rgba(15, 23, 42, 0.9);
       border: 2px solid #94a3b8;
       color: #94a3b8;
+      box-shadow: 0 0 15px rgba(148, 163, 184, 0.3);
     }
 
     .error-msg {
-      color: #ff4d4d;
+      color: #fca5a5;
       margin-top: 12px;
       font-size: 14px;
-      background: rgba(100, 0, 0, 0.6);
+      background: rgba(127, 29, 29, 0.6);
       padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ff4d4d;
+      border-radius: 10px;
+      border: 1px solid rgba(239, 68, 68, 0.6);
+      text-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
     }
 
+    /* Kotak Informasi Pemilih */
     .user-info {
-      background: #020c1b;
+      background: rgba(15, 23, 42, 0.9);
       padding: 12px 18px;
-      border-radius: 12px;
+      border-radius: 14px;
       border: 2px solid #00f2fe;
       color: #00f2fe;
       font-size: clamp(12px, 2.5vw, 14px);
       margin-bottom: 18px;
       line-height: 1.6;
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+      box-shadow: 0 0 20px rgba(0, 242, 254, 0.35);
+      text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
     }
 
     .user-info span {
       color: #ffffff;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
     }
 
+    /* Kartu Paslon Sejajar */
     .paslon-container {
       display: flex;
       justify-content: center;
@@ -204,32 +226,35 @@
     .card-paslon {
       flex: 1 1 0;
       min-width: 0;
-      background: #020c1b;
+      background: rgba(15, 23, 42, 0.9);
       border: 2px solid #00f2fe;
-      border-radius: 16px;
+      border-radius: 18px;
       padding: 14px;
       text-align: center;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.3);
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.3);
       transition: all 0.3s ease;
     }
 
     .card-paslon:hover {
       transform: translateY(-4px);
-      border-color: #00f2fe;
-      box-shadow: 0 0 25px rgba(0, 242, 254, 0.6);
+      border-color: #38ef7d;
+      box-shadow: 0 0 30px rgba(56, 239, 125, 0.6);
     }
 
     .paslon-header {
-      background: #0a192f;
+      background: rgba(9, 13, 22, 0.8);
       color: #00f2fe;
       padding: 10px 6px;
-      border-radius: 10px;
+      border-radius: 12px;
       margin-bottom: 12px;
       font-size: clamp(12px, 2.5vw, 16px);
+      letter-spacing: 0.5px;
       border: 2px solid #00f2fe;
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.4);
+      text-shadow: 0 0 8px #00f2fe;
       text-transform: uppercase;
       word-break: break-word;
     }
@@ -239,11 +264,13 @@
       max-width: 220px;
       height: clamp(130px, 28vw, 220px);
       object-fit: contain;
-      border-radius: 12px;
+      object-position: center;
+      border-radius: 14px;
       border: 2px solid #00f2fe;
       margin: 0 auto 12px auto;
       display: block;
-      background: #000000;
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+      background: rgba(9, 13, 22, 0.9);
       padding: 4px;
     }
 
@@ -252,10 +279,12 @@
       font-size: clamp(11px, 2.2vw, 13px);
       color: #e2e8f0;
       margin-bottom: 14px;
-      background: #0a192f;
+      background: rgba(9, 13, 22, 0.8);
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid rgba(0, 242, 254, 0.5);
+      box-shadow: inset 0 0 8px rgba(0, 242, 254, 0.2);
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
       max-height: 180px;
       overflow-y: auto;
     }
@@ -263,16 +292,19 @@
     .visi-misi h4 {
       color: #00f2fe;
       margin-bottom: 4px;
+      text-shadow: 0 0 8px #00f2fe;
     }
 
+    /* Custom Modal Pop-Up */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(2, 12, 27, 0.9);
-      backdrop-filter: blur(10px);
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 1000;
       display: flex;
       justify-content: center;
@@ -281,21 +313,28 @@
     }
 
     .custom-modal-box {
-      background: #0a192f;
+      background: rgba(15, 23, 42, 0.95);
       border: 2px solid #00f2fe;
-      border-radius: 16px;
+      border-radius: 20px;
       max-width: 420px;
       width: 100%;
       padding: 25px;
       text-align: center;
-      box-shadow: 0 0 30px rgba(0, 242, 254, 0.6);
+      box-shadow: 0 0 35px rgba(0, 242, 254, 0.6);
+      animation: modalPop 0.25s ease-out;
+    }
+
+    @keyframes modalPop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .modal-title {
       font-size: 1.1rem;
-      color: #00f2fe;
+      color: #38ef7d;
       margin-bottom: 15px;
       text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(56, 239, 125, 0.8);
     }
 
     .modal-msg {
@@ -303,6 +342,7 @@
       color: #f8fafc;
       margin-bottom: 22px;
       line-height: 1.5;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
     }
 
     .modal-btns {
@@ -312,20 +352,34 @@
     }
 
     @media (max-width: 600px) {
-      body { padding: 5px; }
-      .container { padding: 12px 8px; }
-      .paslon-container { gap: 8px; }
-      .card-paslon { padding: 8px; }
-      .visi-misi { max-height: 130px; }
-      .btn { font-size: 12px; padding: 10px 4px; }
+      body {
+        padding: 5px;
+      }
+      .container {
+        padding: 12px 8px;
+        border-radius: 16px;
+      }
+      .paslon-container {
+        gap: 8px;
+      }
+      .card-paslon {
+        padding: 8px;
+        border-radius: 12px;
+      }
+      .visi-misi {
+        padding: 8px;
+        max-height: 130px;
+      }
+      .btn {
+        font-size: 12px;
+        padding: 10px 4px;
+        border-radius: 8px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- ====================================================================== -->
-  <!-- BAGIAN 2: STRUKTUR TAMPILAN HTML                                      -->
-  <!-- ====================================================================== -->
   <div class="container">
     <div class="header-title">
       <span class="badge-top">E - VOTING RESMI</span>
@@ -335,8 +389,8 @@
 
     <!-- Login Section -->
     <div id="loginSection" class="login-box">
-      <p style="margin-bottom: 22px; color: #00f2fe; font-size: 14px;">
-        Masukkan NISN (Siswa) atau Nama Depan/Awal (Guru) untuk masuk
+      <p style="margin-bottom: 22px; color: #00f2fe; font-size: 15px; text-shadow: 0 0 6px rgba(0, 242, 254, 0.5);">
+        Silakan masukkan NISN (Siswa) atau Nama Lengkap (Guru) untuk masuk ke sistem pemilihan
       </p>
       
       <div class="input-group">
@@ -350,28 +404,31 @@
 
     <!-- Halaman Paslon Section -->
     <div id="votingSection" class="hidden">
+      <!-- Waktu, Hari & Tanggal -->
       <div class="clock-card">
         <span id="clockDate">Memuat tanggal...</span>
         <span class="clock-divider">|</span>
         <span id="clockTime">00:00:00 WIB</span>
       </div>
 
+      <!-- User Info -->
       <div class="user-info">
         <b>Pemilih:</b> <span id="userName">-</span> | <b>Kelas/Jabatan:</b> <span id="userKelas">-</span><br>
         <b>NISN/Identitas:</b> <span id="userNis">-</span>
       </div>
 
-      <h3 style="text-align: center; color: #00f2fe; margin-bottom: 16px; text-transform: uppercase; font-size: clamp(13px, 3vw, 17px);">
+      <h3 style="text-align: center; color: #00f2fe; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.8); font-size: clamp(13px, 3vw, 17px);">
         PILIH PASLON FAVORIT ANDA
       </h3>
       
+      <!-- Container Kartu Paslon -->
       <div class="paslon-container" id="paslonContainer">
-        <p style="text-align:center; width: 100%; color:#00f2fe;">Memuat daftar paslon...</p>
+        <p style="text-align:center; width: 100%; color:#a1c4fd;">Memuat daftar paslon...</p>
       </div>
     </div>
   </div>
 
-  <!-- Modal Pop-Up Notifikasi / Konfirmasi -->
+  <!-- CUSTOM MODAL NOTIFIKASI / KONFIRMASI -->
   <div id="customModal" class="modal-overlay hidden">
     <div class="custom-modal-box">
       <div id="modalTitle" class="modal-title">KONFIRMASI</div>
@@ -382,9 +439,6 @@
     </div>
   </div>
 
-  <!-- ====================================================================== -->
-  <!-- BAGIAN 3: LOGIKA JAVASCRIPT & KONEKSI BACKEND                           -->
-  <!-- ====================================================================== -->
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
@@ -392,29 +446,25 @@
     let currentNama = ""; 
     let confirmCallbackAction = null;
 
-    // Pop-up Notifikasi Alert
     function showCustomAlert(msg, title = "PEMBERITAHUAN", callbackOnClose = null) {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
       
-      const btnContainer = document.getElementById('modalBtns');
-      btnContainer.innerHTML = '';
-
       const btnOk = document.createElement('button');
       btnOk.className = 'btn';
       btnOk.innerText = 'OK';
       btnOk.onclick = function() {
         closeCustomModal();
-        if (callbackOnClose && typeof callbackOnClose === 'function') {
-          callbackOnClose();
-        }
+        if (callbackOnClose) callbackOnClose();
       };
 
+      const btnContainer = document.getElementById('modalBtns');
+      btnContainer.innerHTML = '';
       btnContainer.appendChild(btnOk);
+
       document.getElementById('customModal').classList.remove('hidden');
     }
 
-    // Pop-up Modal Konfirmasi Pilihan
     function showCustomConfirm(msg, onConfirm, title = "KONFIRMASI PILIHAN") {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
@@ -436,7 +486,6 @@
       confirmCallbackAction = null;
     }
 
-    // Live Jam
     function updateClock() {
       const now = new Date();
       const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -450,18 +499,15 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Reset Ke Halaman Login Utama
     function resetToHome() {
       currentNis = "";
       currentNama = "";
       document.getElementById('nisInput').value = "";
-      document.getElementById('loginError').classList.add('hidden');
       document.getElementById('votingSection').classList.add('hidden');
       document.getElementById('loginSection').classList.remove('hidden');
-      document.getElementById('paslonContainer').innerHTML = '<p style="text-align:center; width: 100%; color:#00f2fe;">Memuat daftar paslon...</p>';
+      document.getElementById('paslonContainer').innerHTML = '<p style="text-align:center; width: 100%; color:#a1c4fd;">Memuat daftar paslon...</p>';
     }
 
-    // Verifikasi Pemilih (Mengecek NISN/Nama serta Hak Pilih)
     function prosesLogin() {
       const nis = document.getElementById('nisInput').value.trim();
       const errorDiv = document.getElementById('loginError');
@@ -479,14 +525,14 @@
       btnLogin.innerText = "MEMERIKSA DATA...";
       btnLogin.disabled = true;
 
-      fetch(`${SCRIPT_URL}?action=verifikasi&nis=${encodeURIComponent(nis)}&t=${Date.now()}`)
+      fetch(`${SCRIPT_URL}?action=verifikasi&nis=${encodeURIComponent(nis)}`)
         .then(res => res.json())
         .then(response => {
           btnLogin.innerText = "MASUK SYSTEM";
           btnLogin.disabled = false;
 
           if (response.success) {
-            currentNis = response.identityKey || nis;
+            currentNis = nis;
             currentNama = response.nama; 
 
             document.getElementById('loginSection').classList.add('hidden');
@@ -494,7 +540,7 @@
             
             document.getElementById('userName').innerText = response.nama;
             document.getElementById('userKelas').innerText = response.kelas;
-            document.getElementById('userNis').innerText = currentNis;
+            document.getElementById('userNis').innerText = nis;
 
             loadPaslonDataForVoting();
           } else {
@@ -510,10 +556,9 @@
         });
     }
 
-    // Load Paslon
     async function loadPaslonDataForVoting() {
       const container = document.getElementById('paslonContainer');
-      container.innerHTML = '<p style="text-align:center; width: 100%; color:#00f2fe;">Memuat daftar paslon...</p>';
+      container.innerHTML = '<p style="text-align:center; width: 100%; color:#a1c4fd;">Memuat daftar paslon...</p>';
 
       try {
         const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
@@ -525,7 +570,7 @@
             const numFormatted = parseInt(p.no) < 10 ? "0" + parseInt(p.no) : p.no;
             const fotoUrl = p.foto && p.foto !== "" ? p.foto : 'https://via.placeholder.com/300x300?text=Foto+Paslon+' + p.no;
             const formattedMisi = p.misi ? p.misi.replace(/\n/g, '<br>') : '-';
-            const namaPaslonSafe = encodeURIComponent(p.nama);
+            const namaPaslonSafe = p.nama.replace(/'/g, "\\'");
 
             container.innerHTML += `
               <div class="card-paslon">
@@ -544,39 +589,31 @@
             `;
           });
         } else {
-          container.innerHTML = '<p style="text-align:center; width: 100%; color:#ff4d4d;">Belum ada paslon terdaftar.</p>';
+          container.innerHTML = '<p style="text-align:center; width: 100%; color:#fca5a5;">Belum ada paslon yang terdaftar di sistem.</p>';
         }
       } catch (err) {
-        container.innerHTML = '<p style="text-align:center; width: 100%; color:#ff4d4d;">Gagal memuat daftar paslon.</p>';
+        container.innerHTML = '<p style="text-align:center; width: 100%; color:#fca5a5;">Gagal memuat daftar paslon dari database.</p>';
       }
     }
 
-    // Proses Kirim Pilihan Suara
-    function kirimPilihan(encodedNamaPaslon, labelPaslon) {
-      const pilihanNamaPaslon = decodeURIComponent(encodedNamaPaslon);
-
+    function kirimPilihan(pilihanNamaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin ingin memilih " + labelPaslon + " (" + pilihanNamaPaslon + ")? Pilihan tidak dapat diubah setelah disimpan.", function() {
         
-        // Tampilkan Loading Alert
-        showCustomAlert("Sedang menyimpan suara Anda ke database...", "PROSES SAVING");
-
-        const urlSimpan = `${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihanNamaPaslon)}&nama=${encodeURIComponent(currentNama)}&t=${Date.now()}`;
-
-        fetch(urlSimpan)
+        fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihanNamaPaslon)}&nama=${encodeURIComponent(currentNama)}`)
           .then(res => res.json())
           .then(response => {
             if (response.success) {
-              showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
+              showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES", function() {
                 resetToHome();
               });
             } else {
-              showCustomAlert(response.message || "Gagal menyimpan suara.", "PERINGATAN", function() {
+              showCustomAlert(response.message, "PERINGATAN", function() {
                 resetToHome();
               });
             }
           })
           .catch(() => {
-            showCustomAlert("Terjadi kesalahan koneksi saat menyimpan suara.", "ERROR KONEKSI");
+            showCustomAlert("Terjadi kesalahan saat menyimpan suara ke database.", "ERROR");
           });
 
       });
