@@ -376,13 +376,10 @@
     let currentNis = "";
     let currentNama = ""; 
     let confirmCallbackAction = null;
-    let currentAlertCallback = null;
 
-    // FUNGSI ALERT MODAL PERBAIKAN: Memastikan callbackOnClose berjalan saat tombol OK ditekan
     function showCustomAlert(msg, title = "PEMBERITAHUAN", callbackOnClose = null) {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
-      currentAlertCallback = callbackOnClose;
       
       const btnContainer = document.getElementById('modalBtns');
       btnContainer.innerHTML = '';
@@ -392,10 +389,8 @@
       btnOk.innerText = 'OK';
       btnOk.onclick = function() {
         closeCustomModal();
-        if (currentAlertCallback) {
-          const actionToRun = currentAlertCallback;
-          currentAlertCallback = null;
-          actionToRun();
+        if (callbackOnClose && typeof callbackOnClose === 'function') {
+          callbackOnClose();
         }
       };
 
@@ -437,7 +432,6 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // RESET TOTAL HALAMAN KE STATE LOGIN UTAMA
     function resetToHome() {
       currentNis = "";
       currentNama = "";
@@ -536,25 +530,29 @@
       }
     }
 
-    // FUNGSI KIRIM PILIHAN PERBAIKAN: Mengirim pilihan tepat dan otomatis memanggil resetToHome() saat OK ditekan
     function kirimPilihan(pilihanNamaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin ingin memilih " + labelPaslon + " (" + pilihanNamaPaslon + ")? Pilihan tidak dapat diubah setelah disimpan.", function() {
         
-        fetch(`${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihanNamaPaslon)}&nama=${encodeURIComponent(currentNama)}`)
+        const modalMsg = document.getElementById('modalMsg');
+        if (modalMsg) modalMsg.innerText = "Menyimpan suara Anda ke server...";
+
+        const urlSimpan = `${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihanNamaPaslon)}&nama=${encodeURIComponent(currentNama)}&t=${Date.now()}`;
+
+        fetch(urlSimpan)
           .then(res => res.json())
           .then(response => {
             if (response.success) {
-              showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES", function() {
-                resetToHome(); // OTOMATIS KEMBALI KE FORM LOGIN KETIKA "OK" DIKLIK
+              showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
+                resetToHome();
               });
             } else {
-              showCustomAlert(response.message, "PERINGATAN", function() {
-                resetToHome(); // TETA AP KEMBALI JIKA USER TERDAPAT PERINGATAN DOUBLE VOTE
+              showCustomAlert(response.message || "Gagal menyimpan suara.", "PERINGATAN", function() {
+                resetToHome();
               });
             }
           })
           .catch(() => {
-            showCustomAlert("Terjadi kesalahan saat menyimpan suara ke database.", "ERROR");
+            showCustomAlert("Terjadi kesalahan koneksi saat menyimpan suara.", "ERROR KONEKSI");
           });
 
       });
