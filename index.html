@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Voting OSIS SMPN 1 Rancah</title>
+  
+  <!-- ====================================================================== -->
+  <!-- BAGIAN 1: CSS DESAIN UTAMA (BIRU LIGHT & HITAM)                        -->
+  <!-- ====================================================================== -->
   <style>
     * {
       box-sizing: border-box;
@@ -314,6 +318,9 @@
 </head>
 <body>
 
+  <!-- ====================================================================== -->
+  <!-- BAGIAN 2: STRUKTUR TAMPILAN HTML                                      -->
+  <!-- ====================================================================== -->
   <div class="container">
     <div class="header-title">
       <span class="badge-top">E - VOTING RESMI</span>
@@ -359,7 +366,7 @@
     </div>
   </div>
 
-  <!-- CUSTOM MODAL NOTIFIKASI -->
+  <!-- Modal Pop-Up Custom Alert / Konfirmasi -->
   <div id="customModal" class="modal-overlay hidden">
     <div class="custom-modal-box">
       <div id="modalTitle" class="modal-title">KONFIRMASI</div>
@@ -370,6 +377,9 @@
     </div>
   </div>
 
+  <!-- ====================================================================== -->
+  <!-- BAGIAN 3: LOGIKA JAVASCRIPT & KONEKSI APPS SCRIPT                       -->
+  <!-- ====================================================================== -->
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
@@ -377,6 +387,7 @@
     let currentNama = ""; 
     let confirmCallbackAction = null;
 
+    // Helper Modal Alert
     function showCustomAlert(msg, title = "PEMBERITAHUAN", callbackOnClose = null) {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
@@ -398,6 +409,7 @@
       document.getElementById('customModal').classList.remove('hidden');
     }
 
+    // Helper Modal Confirm
     function showCustomConfirm(msg, onConfirm, title = "KONFIRMASI PILIHAN") {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
@@ -419,6 +431,7 @@
       confirmCallbackAction = null;
     }
 
+    // Update Live Clock
     function updateClock() {
       const now = new Date();
       const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -432,6 +445,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
+    // Reset Tampilan ke Form Login Utama
     function resetToHome() {
       currentNis = "";
       currentNama = "";
@@ -442,6 +456,7 @@
       document.getElementById('paslonContainer').innerHTML = '<p style="text-align:center; width: 100%; color:#00f2fe;">Memuat daftar paslon...</p>';
     }
 
+    // Proses Log In Siswa / Guru
     function prosesLogin() {
       const nis = document.getElementById('nisInput').value.trim();
       const errorDiv = document.getElementById('loginError');
@@ -490,6 +505,7 @@
         });
     }
 
+    // Memuat Kartu Paslon untuk Pemilih
     async function loadPaslonDataForVoting() {
       const container = document.getElementById('paslonContainer');
       container.innerHTML = '<p style="text-align:center; width: 100%; color:#00f2fe;">Memuat daftar paslon...</p>';
@@ -530,6 +546,7 @@
       }
     }
 
+    // Kirim Pilihan Paslon & Otomatis Reset Kembali ke Login
     function kirimPilihan(pilihanNamaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin ingin memilih " + labelPaslon + " (" + pilihanNamaPaslon + ")? Pilihan tidak dapat diubah setelah disimpan.", function() {
         
