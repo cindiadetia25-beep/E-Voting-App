@@ -6,7 +6,7 @@
   <title>E-Voting OSIS SMPN 1 Rancah</title>
   
   <!-- ====================================================================== -->
-  <!-- BAGIAN 1: CSS DESAIN UTAMA (BIRU LIGHT & HITAM)                        -->
+  <!-- BAGIAN 1: CSS DESAIN UTAMA                                             -->
   <!-- ====================================================================== -->
   <style>
     * {
@@ -154,6 +154,11 @@
       box-shadow: 0 0 25px rgba(0, 242, 254, 0.9);
       background: linear-gradient(135deg, #00f2fe 0%, #00c6ff 100%);
       color: #020c1b;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
 
     .btn-secondary {
@@ -366,7 +371,7 @@
     </div>
   </div>
 
-  <!-- Modal Pop-Up Custom Alert / Konfirmasi -->
+  <!-- Modal Pop-Up Notifikasi / Konfirmasi -->
   <div id="customModal" class="modal-overlay hidden">
     <div class="custom-modal-box">
       <div id="modalTitle" class="modal-title">KONFIRMASI</div>
@@ -378,7 +383,7 @@
   </div>
 
   <!-- ====================================================================== -->
-  <!-- BAGIAN 3: LOGIKA JAVASCRIPT & KONEKSI APPS SCRIPT                       -->
+  <!-- BAGIAN 3: LOGIKA JAVASCRIPT & KONEKSI BACKEND                           -->
   <!-- ====================================================================== -->
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
@@ -387,7 +392,7 @@
     let currentNama = ""; 
     let confirmCallbackAction = null;
 
-    // Helper Modal Alert
+    // Pop-up Notifikasi Alert
     function showCustomAlert(msg, title = "PEMBERITAHUAN", callbackOnClose = null) {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
@@ -409,7 +414,7 @@
       document.getElementById('customModal').classList.remove('hidden');
     }
 
-    // Helper Modal Confirm
+    // Pop-up Modal Konfirmasi Pilihan
     function showCustomConfirm(msg, onConfirm, title = "KONFIRMASI PILIHAN") {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
@@ -431,7 +436,7 @@
       confirmCallbackAction = null;
     }
 
-    // Update Live Clock
+    // Live Jam
     function updateClock() {
       const now = new Date();
       const optionsDate = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -445,7 +450,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Reset Tampilan ke Form Login Utama
+    // Reset Ke Halaman Login Utama
     function resetToHome() {
       currentNis = "";
       currentNama = "";
@@ -456,7 +461,7 @@
       document.getElementById('paslonContainer').innerHTML = '<p style="text-align:center; width: 100%; color:#00f2fe;">Memuat daftar paslon...</p>';
     }
 
-    // Proses Log In Siswa / Guru
+    // Verifikasi Pemilih (Mengecek NISN/Nama serta Hak Pilih)
     function prosesLogin() {
       const nis = document.getElementById('nisInput').value.trim();
       const errorDiv = document.getElementById('loginError');
@@ -474,7 +479,7 @@
       btnLogin.innerText = "MEMERIKSA DATA...";
       btnLogin.disabled = true;
 
-      fetch(`${SCRIPT_URL}?action=verifikasi&nis=${encodeURIComponent(nis)}`)
+      fetch(`${SCRIPT_URL}?action=verifikasi&nis=${encodeURIComponent(nis)}&t=${Date.now()}`)
         .then(res => res.json())
         .then(response => {
           btnLogin.innerText = "MASUK SYSTEM";
@@ -505,7 +510,7 @@
         });
     }
 
-    // Memuat Kartu Paslon untuk Pemilih
+    // Load Paslon
     async function loadPaslonDataForVoting() {
       const container = document.getElementById('paslonContainer');
       container.innerHTML = '<p style="text-align:center; width: 100%; color:#00f2fe;">Memuat daftar paslon...</p>';
@@ -520,7 +525,7 @@
             const numFormatted = parseInt(p.no) < 10 ? "0" + parseInt(p.no) : p.no;
             const fotoUrl = p.foto && p.foto !== "" ? p.foto : 'https://via.placeholder.com/300x300?text=Foto+Paslon+' + p.no;
             const formattedMisi = p.misi ? p.misi.replace(/\n/g, '<br>') : '-';
-            const namaPaslonSafe = p.nama.replace(/'/g, "\\'");
+            const namaPaslonSafe = encodeURIComponent(p.nama);
 
             container.innerHTML += `
               <div class="card-paslon">
@@ -546,12 +551,14 @@
       }
     }
 
-    // Kirim Pilihan Paslon & Otomatis Reset Kembali ke Login
-    function kirimPilihan(pilihanNamaPaslon, labelPaslon) {
+    // Proses Kirim Pilihan Suara
+    function kirimPilihan(encodedNamaPaslon, labelPaslon) {
+      const pilihanNamaPaslon = decodeURIComponent(encodedNamaPaslon);
+
       showCustomConfirm("Apakah Anda yakin ingin memilih " + labelPaslon + " (" + pilihanNamaPaslon + ")? Pilihan tidak dapat diubah setelah disimpan.", function() {
         
-        const modalMsg = document.getElementById('modalMsg');
-        if (modalMsg) modalMsg.innerText = "Menyimpan suara Anda ke server...";
+        // Tampilkan Loading Alert
+        showCustomAlert("Sedang menyimpan suara Anda ke database...", "PROSES SAVING");
 
         const urlSimpan = `${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(pilihanNamaPaslon)}&nama=${encodeURIComponent(currentNama)}&t=${Date.now()}`;
 
