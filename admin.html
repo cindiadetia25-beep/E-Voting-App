@@ -452,7 +452,7 @@
 </div>
 
 <!-- ====================================================================== -->
-<!-- BAGIAN 3: LOGIKA JAVASCRIPT KONTROL ADMIN (EDIT & HAPUS PASLON FIXED)  -->
+<!-- BAGIAN 3: LOGIKA JAVASCRIPT KONTROL ADMIN                               -->
 <!-- ====================================================================== -->
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
@@ -522,7 +522,6 @@
         }
     }
 
-    // SIMPAN / EDIT PASLON
     async function savePaslon(e) {
         e.preventDefault();
         const btn = document.getElementById("btnSimpanPaslon");
@@ -558,7 +557,6 @@
         }
     }
 
-    // AMBIL DATA PASLON DARI APPS SCRIPT
     async function loadPaslonData() {
         try {
             const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
@@ -594,7 +592,6 @@
         }
     }
 
-    // EDIT PASLON (AMBIL DARI CACHE SPREADSHEET DENGAN DETAIL PRESET)
     function editPaslon(no) {
         const p = paslonCache.find(item => item.no.toString() === no.toString());
         if (!p) return;
@@ -627,7 +624,6 @@
         document.getElementById("btnBatalEdit").classList.add("hidden");
     }
 
-    // HAPUS SANGTU PASLON
     function deletePaslon(no) {
         showCustomConfirm(`Apakah Anda yakin ingin menghapus Paslon No. ${no}?`, async function() {
             try {
@@ -650,7 +646,6 @@
         });
     }
 
-    // HAPUS SEMUA DATA PASLON
     function confirmDeleteAllPaslon() {
         showCustomConfirm("PERINGATAN! Apakah Anda yakin ingin MENGHAPUS SELURUH DATA PASLON yang sudah diinput?", async function() {
             try {
@@ -668,7 +663,6 @@
         });
     }
 
-    // MODAL REAL COUNT
     function openRealCountModal() {
         document.getElementById("modalRealCount").style.display = "flex";
         loadRealCountData();
