@@ -347,8 +347,8 @@
     </div>
   </div>
 
-<!-- ====================================================================== -->
-  <!-- [BAGIAN 3] LOGIKA JAVASCRIPT & KONEKSI BACKEND (SINKRON MAKSIMAL)       -->
+  <!-- ====================================================================== -->
+  <!-- [BAGIAN 3] LOGIKA JAVASCRIPT & KONEKSI BACKEND                         -->
   <!-- ====================================================================== -->
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
@@ -461,7 +461,7 @@
           if (response.success) {
             currentNis = response.identityKey || nis;
             currentNama = response.nama; 
-            currentRole = response.role || "SISWA";
+            currentRole = response.role || "SISWA"; // Menangkap status Siswa/Guru secara tepat
 
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('votingSection').classList.remove('hidden');
@@ -538,16 +538,15 @@
     function prosesSimpanSuara(namaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
         
-        // PARAMETER DIREKAYASA DENGAN STRUKTUR URLQUERYEXPLICIT LENGKAP
-        const targetUrl = SCRIPT_URL + 
-          "?action=simpan" +
-          "&nis=" + encodeURIComponent(currentNis) +
-          "&nama=" + encodeURIComponent(currentNama) +
-          "&pilihan=" + encodeURIComponent(namaPaslon) +
-          "&role=" + encodeURIComponent(currentRole) +
-          "&t=" + Date.now();
+        // PENGIRIMAN PARAMETER LENGKAP DAN PRESISI
+        const queryUrl = `${SCRIPT_URL}?action=simpan` +
+          `&nis=${encodeURIComponent(currentNis)}` +
+          `&nama=${encodeURIComponent(currentNama)}` +
+          `&pilihan=${encodeURIComponent(namaPaslon)}` +
+          `&role=${encodeURIComponent(currentRole)}` +
+          `&t=${Date.now()}`;
 
-        fetch(targetUrl, { method: "GET", redirect: "follow" })
+        fetch(queryUrl, { method: "GET", redirect: "follow" })
           .then(res => res.json())
           .then(response => {
             if (response.success) {
