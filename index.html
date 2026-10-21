@@ -350,7 +350,10 @@
   <!-- ====================================================================== -->
   <!-- [BAGIAN 3] LOGIKA JAVASCRIPT & KONEKSI BACKEND                         -->
   <!-- ====================================================================== -->
-<script>
+<!-- ====================================================================== -->
+  <!-- [BAGIAN 3] LOGIKA JAVASCRIPT & KONEKSI BACKEND (SINKRON PRESISI)       -->
+  <!-- ====================================================================== -->
+  <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
     let currentNis = "";
@@ -461,7 +464,7 @@
           if (response.success) {
             currentNis = response.identityKey || nis;
             currentNama = response.nama; 
-            currentRole = response.role || "SISWA";
+            currentRole = response.role || "SISWA"; // Tangkap ROLE dari verifikasi server
 
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('votingSection').classList.remove('hidden');
@@ -538,19 +541,18 @@
     function prosesSimpanSuara(namaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
         
-        const params = new URLSearchParams();
-        params.append("action", "simpan");
-        params.append("nis", currentNis);
-        params.append("nama", currentNama);
-        params.append("pilihan", namaPaslon);
-        params.append("role", currentRole);
-        params.append("t", Date.now());
+        // PENGIRIMAN PARAMETER EKSPLISIT DAN TEGAS
+        const queryUrl = `${SCRIPT_URL}?action=simpan` +
+          `&nis=${encodeURIComponent(currentNis)}` +
+          `&nama=${encodeURIComponent(currentNama)}` +
+          `&pilihan=${encodeURIComponent(namaPaslon)}` +
+          `&role=${encodeURIComponent(currentRole)}` +
+          `&t=${Date.now()}`;
 
-        fetch(`${SCRIPT_URL}?${params.toString()}`, { method: "GET", redirect: "follow" })
+        fetch(queryUrl, { method: "GET", redirect: "follow" })
           .then(res => res.json())
           .then(response => {
             if (response.success) {
-              // Pemberitahuan Sukses Dipertahankan
               showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
                 resetToHome();
               });
