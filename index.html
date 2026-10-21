@@ -527,14 +527,19 @@
       }
     }
 
-    function prosesSimpanSuara(namaPaslon, labelPaslon) {
+function prosesSimpanSuara(namaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
         
-        // Membentuk URL kirim data
-        const urlSimpan = `${SCRIPT_URL}?action=simpan&nis=${encodeURIComponent(currentNis)}&pilihan=${encodeURIComponent(namaPaslon)}&nama=${encodeURIComponent(currentNama)}&t=${Date.now()}`;
+        // Mengirim parameter dengan nama variabel yang sangat tegas dan jelas
+        const params = new URLSearchParams();
+        params.append("action", "simpan");
+        params.append("nis", currentNis);
+        params.append("nama", currentNama);
+        params.append("pilihan", namaPaslon);
+        params.append("role", currentRole);
+        params.append("t", Date.now());
 
-        // Mengirimkan data dengan penanganan redirect resmi Google Apps Script
-        fetch(urlSimpan, { method: "GET", redirect: "follow" })
+        fetch(`${SCRIPT_URL}?${params.toString()}`, { method: "GET", redirect: "follow" })
           .then(res => res.json())
           .then(response => {
             if (response.success) {
