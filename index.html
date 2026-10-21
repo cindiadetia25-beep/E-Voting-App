@@ -540,22 +540,23 @@
     function prosesSimpanSuara(namaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
         
-        // Membentuk URL permintaan simpan suara secara eksplisit
-        const params = new URLSearchParams();
-        params.append("action", "simpan");
-        params.append("nis", currentNis);
-        params.append("nama", currentNama);
-        params.append("pilihan", namaPaslon);
-        params.append("role", currentRole);
-        params.append("t", Date.now());
+        // Pengiriman parameter dengan urutan dan nama variabel yang sangat tegas
+        const queryParams = [
+          `action=simpan`,
+          `nis=${encodeURIComponent(currentNis)}`,
+          `pilihan=${encodeURIComponent(namaPaslon)}`,
+          `nama=${encodeURIComponent(currentNama)}`,
+          `role=${encodeURIComponent(currentRole)}`,
+          `t=${Date.now()}`
+        ].join('&');
 
-        const requestUrl = `${SCRIPT_URL}?${params.toString()}`;
+        const requestUrl = `${SCRIPT_URL}?${queryParams}`;
 
-        // Mengirimkan data dan memunculkan pop-up sukses
         fetch(requestUrl, { method: "GET", redirect: "follow" })
           .then(res => res.json())
           .then(response => {
             if (response.success) {
+              // Menampilkan pemberitahuan sukses memilih
               showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
                 resetToHome();
               });
