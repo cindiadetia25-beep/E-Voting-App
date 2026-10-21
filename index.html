@@ -471,45 +471,47 @@
     }
 
     async function loadPaslonDataForVoting() {
-      const container = document.getElementById('paslonContainer');
-      container.innerHTML = '<p style="text-align:center; width: 100%; color:#00f2fe; font-size: 9px;">Memuat daftar paslon...</p>';
+  const container = document.getElementById('paslonContainer');
+  container.innerHTML = '<p style="text-align:center; width: 100%; color:#00f2fe; font-size: 9px;">Memuat daftar paslon...</p>';
 
-      try {
-        const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
-        const data = await res.json();
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
+    const data = await res.json();
 
-        container.innerHTML = "";
-        if (data.paslon && data.paslon.length > 0) {
-          data.paslon.forEach(p => {
-            const numFormatted = parseInt(p.no) < 10 ? "0" + parseInt(p.no) : p.no;
-            const fotoUrl = p.foto && p.foto !== "" ? p.foto : 'https://via.placeholder.com/300x300?text=Paslon+' + p.no;
-            const formattedMisi = p.misi ? p.misi.replace(/\n/g, '<br>') : '-';
-            const namaPaslonSafe = encodeURIComponent(p.nama);
+    container.innerHTML = "";
+    if (data.paslon && data.paslon.length > 0) {
+      data.paslon.forEach(p => {
+        const numFormatted = parseInt(p.no) < 10 ? "0" + parseInt(p.no) : p.no;
+        const fotoUrl = p.foto && p.foto !== "" ? p.foto : 'https://via.placeholder.com/300x300?text=Paslon+' + p.no;
+        const formattedMisi = p.misi ? p.misi.replace(/\n/g, '<br>') : '-';
+        
+        // Membersihkan karakter petik tunggal (') agar tidak merusak perintah JavaScript
+        const safeNamaPaslon = p.nama.replace(/'/g, "\\'");
+        const encodedNamaPaslon = encodeURIComponent(p.nama);
 
-            container.innerHTML += `
-              <div class="card-paslon">
-                <div>
-                  <div class="paslon-header">${p.nama}</div>
-                  <img src="${fotoUrl}" alt="Paslon ${p.no}" class="paslon-img">
-                  <div class="visi-misi">
-                    <h4>Visi:</h4>
-                    <p>${p.visi}</p>
-                    <h4 style="margin-top: 6px;">Misi:</h4>
-                    <p>${formattedMisi}</p>
-                  </div>
-                </div>
-                <button class="btn" onclick="kirimPilihan('${namaPaslonSafe}', 'PASLON ${numFormatted}')">PILIH PASLON ${numFormatted}</button>
+        container.innerHTML += `
+          <div class="card-paslon">
+            <div>
+              <div class="paslon-header">${p.nama}</div>
+              <img src="${fotoUrl}" alt="Paslon ${p.no}" class="paslon-img">
+              <div class="visi-misi">
+                <h4>Visi:</h4>
+                <p>${p.visi}</p>
+                <h4 style="margin-top: 6px;">Misi:</h4>
+                <p>${formattedMisi}</p>
               </div>
-            `;
-          });
-        } else {
-          container.innerHTML = '<p style="text-align:center; width: 100%; color:#ff4d4d; font-size: 9px;">Belum ada paslon terdaftar.</p>';
-        }
-      } catch (err) {
-        container.innerHTML = '<p style="text-align:center; width: 100%; color:#ff4d4d; font-size: 9px;">Gagal memuat paslon.</p>';
-      }
+            </div>
+            <button class="btn" onclick="kirimPilihan('${encodedNamaPaslon}', 'PASLON ${numFormatted}')">PILIH PASLON ${numFormatted}</button>
+          </div>
+        `;
+      });
+    } else {
+      container.innerHTML = '<p style="text-align:center; width: 100%; color:#ff4d4d; font-size: 9px;">Belum ada paslon terdaftar.</p>';
     }
-
+  } catch (err) {
+    container.innerHTML = '<p style="text-align:center; width: 100%; color:#ff4d4d; font-size: 9px;">Gagal memuat paslon.</p>';
+  }
+}
     function kirimPilihan(encodedNamaPaslon, labelPaslon) {
       const pilihanNamaPaslon = decodeURIComponent(encodedNamaPaslon);
 
