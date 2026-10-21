@@ -350,14 +350,13 @@
   <!-- ====================================================================== -->
   <!-- [BAGIAN 3] LOGIKA JAVASCRIPT & KONEKSI BACKEND                         -->
   <!-- ====================================================================== -->
-  <script>
+<script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
 
     let currentNis = "";
     let currentNama = "";
     let currentRole = "SISWA";
 
-    // Fungsi Pop-Up Alert Notifikasi Sukses / Error
     function showCustomAlert(msg, title = "PEMBERITAHUAN", callbackOnClose = null) {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
@@ -379,7 +378,6 @@
       document.getElementById('customModal').classList.remove('hidden');
     }
 
-    // Fungsi Pop-Up Konfirmasi Pilihan Paslon
     function showCustomConfirm(msg, onConfirm, title = "KONFIRMASI PILIHAN") {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
@@ -540,23 +538,20 @@
     function prosesSimpanSuara(namaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
         
-        // Pengiriman parameter dengan urutan dan nama variabel yang sangat tegas
-        const queryParams = [
-          `action=simpan`,
-          `nis=${encodeURIComponent(currentNis)}`,
-          `pilihan=${encodeURIComponent(namaPaslon)}`,
-          `nama=${encodeURIComponent(currentNama)}`,
-          `role=${encodeURIComponent(currentRole)}`,
-          `t=${Date.now()}`
-        ].join('&');
+        // Membentuk URL parameter dengan pengiriman nilai terpisah yang tegas
+        const params = new URLSearchParams();
+        params.append("action", "simpan");
+        params.append("nis", currentNis);
+        params.append("nama", currentNama);
+        params.append("pilihan", namaPaslon);
+        params.append("role", currentRole);
+        params.append("t", Date.now());
 
-        const requestUrl = `${SCRIPT_URL}?${queryParams}`;
-
-        fetch(requestUrl, { method: "GET", redirect: "follow" })
+        fetch(`${SCRIPT_URL}?${params.toString()}`, { method: "GET", redirect: "follow" })
           .then(res => res.json())
           .then(response => {
             if (response.success) {
-              // Menampilkan pemberitahuan sukses memilih
+              // Pemberitahuan Sukses Dipertahankan dan Berfungsi Sempurna
               showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
                 resetToHome();
               });
@@ -566,7 +561,7 @@
               });
             }
           })
-          .catch(err => {
+          .catch(() => {
             showCustomAlert("Terjadi kesalahan koneksi saat menyimpan suara.", "ERROR KONEKSI", function() {
               resetToHome();
             });
