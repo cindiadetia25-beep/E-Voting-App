@@ -347,7 +347,7 @@
     </div>
   </div>
 
-<!-- ====================================================================== -->
+  <!-- ====================================================================== -->
   <!-- [BAGIAN 3] LOGIKA JAVASCRIPT & KONEKSI BACKEND                         -->
   <!-- ====================================================================== -->
   <script>
@@ -355,7 +355,9 @@
 
     let currentNis = "";
     let currentNama = "";
+    let currentRole = "SISWA";
 
+    // Fungsi Pop-Up Alert Notifikasi Sukses / Error
     function showCustomAlert(msg, title = "PEMBERITAHUAN", callbackOnClose = null) {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
@@ -377,27 +379,33 @@
       document.getElementById('customModal').classList.remove('hidden');
     }
 
+    // Fungsi Pop-Up Konfirmasi Pilihan Paslon
     function showCustomConfirm(msg, onConfirm, title = "KONFIRMASI PILIHAN") {
       document.getElementById('modalTitle').innerText = title;
       document.getElementById('modalMsg').innerText = msg;
       
       const btnContainer = document.getElementById('modalBtns');
-      btnContainer.innerHTML = `
-        <button class="btn" id="btnYaPilih">YA, PILIH</button>
-        <button class="btn btn-secondary" id="btnBatalPilih">BATAL</button>
-      `;
+      btnContainer.innerHTML = '';
 
-      document.getElementById('btnYaPilih').onclick = function() {
+      const btnYa = document.createElement('button');
+      btnYa.className = 'btn';
+      btnYa.innerText = 'YA, PILIH';
+      btnYa.onclick = function() {
         closeCustomModal();
         if (typeof onConfirm === 'function') {
           onConfirm();
         }
       };
 
-      document.getElementById('btnBatalPilih').onclick = function() {
+      const btnBatal = document.createElement('button');
+      btnBatal.className = 'btn btn-secondary';
+      btnBatal.innerText = 'BATAL';
+      btnBatal.onclick = function() {
         closeCustomModal();
       };
 
+      btnContainer.appendChild(btnYa);
+      btnContainer.appendChild(btnBatal);
       document.getElementById('customModal').classList.remove('hidden');
     }
 
@@ -421,6 +429,7 @@
     function resetToHome() {
       currentNis = "";
       currentNama = "";
+      currentRole = "SISWA";
       document.getElementById('nisInput').value = "";
       document.getElementById('loginError').classList.add('hidden');
       document.getElementById('votingSection').classList.add('hidden');
@@ -454,6 +463,7 @@
           if (response.success) {
             currentNis = response.identityKey || nis;
             currentNama = response.nama; 
+            currentRole = response.role || "SISWA";
 
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('votingSection').classList.remove('hidden');
@@ -527,10 +537,10 @@
       }
     }
 
-function prosesSimpanSuara(namaPaslon, labelPaslon) {
+    function prosesSimpanSuara(namaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
         
-        // Mengirim parameter dengan nama variabel yang sangat tegas dan jelas
+        // Membentuk URL permintaan simpan suara secara eksplisit
         const params = new URLSearchParams();
         params.append("action", "simpan");
         params.append("nis", currentNis);
@@ -539,7 +549,10 @@ function prosesSimpanSuara(namaPaslon, labelPaslon) {
         params.append("role", currentRole);
         params.append("t", Date.now());
 
-        fetch(`${SCRIPT_URL}?${params.toString()}`, { method: "GET", redirect: "follow" })
+        const requestUrl = `${SCRIPT_URL}?${params.toString()}`;
+
+        // Mengirimkan data dan memunculkan pop-up sukses
+        fetch(requestUrl, { method: "GET", redirect: "follow" })
           .then(res => res.json())
           .then(response => {
             if (response.success) {
