@@ -538,7 +538,6 @@
     function prosesSimpanSuara(namaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
         
-        // Membentuk URL parameter dengan pengiriman nilai terpisah yang tegas
         const params = new URLSearchParams();
         params.append("action", "simpan");
         params.append("nis", currentNis);
@@ -551,7 +550,7 @@
           .then(res => res.json())
           .then(response => {
             if (response.success) {
-              // Pemberitahuan Sukses Dipertahankan dan Berfungsi Sempurna
+              // Pemberitahuan Sukses Dipertahankan
               showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
                 resetToHome();
               });
