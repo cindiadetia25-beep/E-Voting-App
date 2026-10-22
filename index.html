@@ -435,7 +435,7 @@
       document.getElementById('paslonContainer').innerHTML = '<p style="text-align:center; width: 100%; color:#00f2fe; font-size: 9px;">Memuat daftar paslon...</p>';
     }
 
-function prosesLogin() {
+    function prosesLogin() {
       const nis = document.getElementById('nisInput').value.trim();
       const errorDiv = document.getElementById('loginError');
       const btnLogin = document.getElementById('btnLogin');
@@ -535,19 +535,19 @@ function prosesLogin() {
       }
     }
 
-function prosesSimpanSuara(namaPaslon, labelPaslon) {
+    function prosesSimpanSuara(namaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
         
-        // MENGIRIM KUNCI PARAMETER YANGSANGAT TEGAS
-        const params = new URLSearchParams();
-        params.append("action", "simpan");
-        params.append("nis", currentNis);
-        params.append("nama", currentNama);
-        params.append("pilihan", namaPaslon);
-        params.append("role", currentRole);
-        params.append("t", Date.now());
+        // PENGIRIMAN DENGAN QUERY STRING LANGSUNG DENGAN URUTAN TERANG
+        const targetUrl = SCRIPT_URL + 
+          "?action=simpan" +
+          "&nis=" + encodeURIComponent(currentNis) +
+          "&nama=" + encodeURIComponent(currentNama) +
+          "&pilihan=" + encodeURIComponent(namaPaslon) +
+          "&role=" + encodeURIComponent(currentRole) +
+          "&t=" + Date.now();
 
-        fetch(`${SCRIPT_URL}?${params.toString()}`, { method: "GET", redirect: "follow" })
+        fetch(targetUrl, { method: "GET", redirect: "follow" })
           .then(res => res.json())
           .then(response => {
             if (response.success) {
