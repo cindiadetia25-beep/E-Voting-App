@@ -535,19 +535,26 @@
       }
     }
 
-    function prosesSimpanSuara(namaPaslon, labelPaslon) {
+function prosesSimpanSuara(namaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
         
-        // PENGIRIMAN DENGAN QUERY STRING LANGSUNG DENGAN URUTAN TERANG
-        const targetUrl = SCRIPT_URL + 
-          "?action=simpan" +
-          "&nis=" + encodeURIComponent(currentNis) +
-          "&nama=" + encodeURIComponent(currentNama) +
-          "&pilihan=" + encodeURIComponent(namaPaslon) +
-          "&role=" + encodeURIComponent(currentRole) +
-          "&t=" + Date.now();
+        // PENGIRIMAN DENGAN PERLAKUAN KHUSUS ROLE GURU & SISWA
+        let nisKirim = currentNis;
+        let namaKirim = currentNama;
 
-        fetch(targetUrl, { method: "GET", redirect: "follow" })
+        // Jika Pemilih adalah GURU, kosongkan variabel NISN agar backend tidak salah baca
+        if (currentRole === "GURU") {
+          nisKirim = ""; 
+        }
+
+        const queryUrl = `${SCRIPT_URL}?action=simpan` +
+          `&nis=${encodeURIComponent(nisKirim)}` +
+          `&nama=${encodeURIComponent(namaKirim)}` +
+          `&pilihan=${encodeURIComponent(namaPaslon)}` +
+          `&role=${encodeURIComponent(currentRole)}` +
+          `&t=${Date.now()}`;
+
+        fetch(queryUrl, { method: "GET", redirect: "follow" })
           .then(res => res.json())
           .then(response => {
             if (response.success) {
