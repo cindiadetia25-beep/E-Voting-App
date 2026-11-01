@@ -535,40 +535,38 @@
       }
     }
 
-    function prosesSimpanSuara(namaPaslon, labelPaslon) {
-      showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
-        
-        // JIKA GURU, PAKSA VARIABEL NIS MENJADI STRING KOSONG MULTAK
-        let nisKirim = (currentRole === "GURU") ? "" : currentNis;
+function prosesSimpanSuara(namaPaslon, labelPaslon) {
+  showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
 
-        const queryUrl = `${SCRIPT_URL}?action=simpan` +
-          `&nis=${encodeURIComponent(nisKirim)}` +
-          `&nama=${encodeURIComponent(currentNama)}` +
-          `&pilihan=${encodeURIComponent(namaPaslon)}` +
-          `&role=${encodeURIComponent(currentRole)}` +
-          `&t=${Date.now()}`;
+    let nisKirim = currentRole === "GURU" ? "" : currentNis;
 
-        fetch(queryUrl, { method: "GET", redirect: "follow" })
-          .then(res => res.json())
-          .then(response => {
-            if (response.success) {
-              showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
-                resetToHome();
-              });
-            } else {
-              showCustomAlert(response.message || "Gagal menyimpan suara.", "PERINGATAN", function() {
-                resetToHome();
-              });
-            }
-          })
-          .catch(() => {
-            showCustomAlert("Terjadi kesalahan koneksi saat menyimpan suara.", "ERROR KONEKSI", function() {
-              resetToHome();
-            });
+    const queryUrl = `${SCRIPT_URL}?action=simpan` +
+      `&nis=${encodeURIComponent(nisKirim)}` +
+      `&nama=${encodeURIComponent(currentNama)}` +
+      `&pilihan=${encodeURIComponent(namaPaslon)}` +
+      `&role=${encodeURIComponent(currentRole)}` +
+      `&t=${Date.now()}`;
+
+    fetch(queryUrl, { method: "GET", redirect: "follow" })
+      .then(res => res.json())
+      .then(response => {
+        if (response.success) {
+          showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
+            resetToHome();
           });
-
+        } else {
+          showCustomAlert(response.message || "Gagal menyimpan suara.", "PERINGATAN", function() {
+            resetToHome();
+          });
+        }
+      })
+      .catch(() => {
+        showCustomAlert("Terjadi kesalahan koneksi saat menyimpan suara.", "ERROR KONEKSI", function() {
+          resetToHome();
+        });
       });
-    }
+  });
+}
 </script>
 </body>
 </html>
