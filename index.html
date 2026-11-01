@@ -538,8 +538,8 @@
     function prosesSimpanSuara(namaPaslon, labelPaslon) {
       showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
         
-        // JIKA GURU, VAR NISKIRIM DIKOSONGKAN AGAR KOLOM A DIPASTIKAN KOSONG
-        let nisKirim = currentRole === "GURU" ? "" : currentNis;
+        // JIKA GURU, PAKSA VARIABEL NIS MENJADI STRING KOSONG MULTAK
+        let nisKirim = (currentRole === "GURU") ? "" : currentNis;
 
         const queryUrl = `${SCRIPT_URL}?action=simpan` +
           `&nis=${encodeURIComponent(nisKirim)}` +
