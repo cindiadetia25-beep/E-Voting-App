@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin E-Voting OSIS SMPN 1 Rancah</title>
     
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Font Minecraft Resmi -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -39,6 +38,15 @@
         }
         header p { color: #38ef7d; font-size: clamp(0.55rem, 1.2vw, 0.75rem); line-height: 1.5; }
 
+        .divider {
+            border: none;
+            height: 3px;
+            background: #00d2ff;
+            box-shadow: 0 0 8px #00d2ff;
+            margin: 18px 0;
+            border-radius: 2px;
+        }
+
         .clock-box {
             display: inline-flex;
             align-items: center;
@@ -65,6 +73,9 @@
             margin-bottom: 16px; 
             font-size: clamp(0.7rem, 1.5vw, 0.95rem); 
             line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .form-grid { 
@@ -108,8 +119,8 @@
             transition: 0.2s;
             line-height: 1.2;
         }
-        .btn:hover { background: #38ef7d; }
-        .btn-realcount { background: #38ef7d; font-size: 9px; padding: 12px 20px; }
+        .btn:hover { background: #38ef7d; color: #0f172a; }
+        .btn-realcount { background: #38ef7d; font-size: 9px; padding: 12px 20px; color: #0f172a; }
         .btn-danger { background: #ff4d4d; color: #fff; }
         .btn-warning { background: #ffb703; color: #000; }
         .btn-secondary { background: #334155; color: #fff; }
@@ -214,22 +225,24 @@
         <h1>DASHBOARD ADMIN E-VOTING</h1>
         <p>SMPN 1 Rancah - Sistem Pemilihan OSIS</p>
         <div class="clock-box">
-            <i class="fas fa-clock"></i>
+            <span>⏰</span>
             <span id="liveClock">--:--:-- WIB</span>
         </div>
     </header>
 
+    <hr class="divider">
+
     <div class="nav-menu-box">
         <button class="btn btn-realcount" onclick="openRealCountModal()">
-            <i class="fas fa-chart-line"></i> REAL COUNT / PEROLEHAN SUARA
+            📊 REAL COUNT / PEROLEHAN SUARA
         </button>
         <button class="btn btn-danger" onclick="confirmDeleteAllPaslon()">
-            <i class="fas fa-trash-alt"></i> HAPUS SEMUA PASLON
+            🗑️ HAPUS SEMUA PASLON
         </button>
     </div>
 
     <div class="card">
-        <h2><i class="fas fa-user-edit"></i> Kelola Paslon, Visi, Misi & Foto</h2>
+        <h2>✏️ Kelola Paslon, Visi, Misi & Foto</h2>
         <form id="formPaslon" onsubmit="savePaslon(event)">
             <div class="form-grid">
                 <div class="form-group">
@@ -256,10 +269,10 @@
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <button type="submit" class="btn" id="btnSimpanPaslon">
-                    <i class="fas fa-save"></i> Simpan Data Paslon
+                    💾 Simpan Data Paslon
                 </button>
                 <button type="button" class="btn btn-secondary hidden" id="btnBatalEdit" onclick="batalEdit()">
-                    <i class="fas fa-times"></i> Batal Edit
+                    ✖️ Batal Edit
                 </button>
             </div>
         </form>
@@ -291,7 +304,7 @@
         <div class="modal-header">
             <div>
                 <h2 style="color: #00d2ff; font-size: 10px; margin: 0;">
-                    <i class="fas fa-chart-pie"></i> Real Count
+                    📈 Real Count Hasil Voting
                 </h2>
             </div>
             <div>
@@ -347,7 +360,8 @@
 <!-- [BAGIAN 3] LOGIKA JAVASCRIPT KONTROL ADMIN (EDIT & HAPUS PASLON)        -->
 <!-- ====================================================================== -->
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaZY2O1fOGiegdwFaPW8cUHPDuq4LGSeGbc7y9MeIWQho3bzHf2qCty3Z1gDhGuW7s/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBtS1XWR6e8pqbQ-YMeLULrNESwH6VxtlZ786XhBY5Dt7hcxEO56DX5_5bU8lJZr9J/exec";
+    
     let base64Foto = "";
     let autoUpdateTimer = null;
     let realCountChart = null;
@@ -426,7 +440,7 @@
         const misi = document.getElementById("paslonMisi").value || "-";
 
         try {
-            await fetch(SCRIPT_URL, {
+            const res = await fetch(SCRIPT_URL, {
                 method: "POST",
                 headers: { "Content-Type": "text/plain;charset=utf-8" },
                 body: JSON.stringify({ 
@@ -436,22 +450,28 @@
                     visi: visi, 
                     misi: misi,
                     foto: base64Foto 
-                })
+                }),
+                redirect: "follow"
             });
-            showCustomAlert("Data Paslon berhasil disimpan!", "SUKSES");
-            batalEdit();
-            loadPaslonData();
+            const result = await res.json();
+            if(result.success) {
+                showCustomAlert("Data Paslon berhasil disimpan!", "SUKSES");
+                batalEdit();
+                loadPaslonData();
+            } else {
+                showCustomAlert(result.message || "Gagal menyimpan data.", "ERROR");
+            }
         } catch (err) {
-            showCustomAlert("Gagal menyimpan data ke server.", "ERROR");
+            showCustomAlert("Gagal terhubung ke server.", "ERROR");
         } finally {
-            btn.innerHTML = '<i class="fas fa-save"></i> Simpan Data Paslon';
+            btn.innerHTML = '💾 Simpan Data Paslon';
             btn.disabled = false;
         }
     }
 
     async function loadPaslonData() {
         try {
-            const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
+            const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`, { redirect: 'follow' });
             const data = await res.json();
 
             const tbodyPaslon = document.getElementById("tablePaslonAdmin");
@@ -470,8 +490,8 @@
                             <td>${p.misi ? p.misi.replace(/\n/g, '<br>') : '-'}</td>
                             <td>
                                 <div class="action-btns">
-                                    <button class="btn btn-warning" onclick="editPaslon('${noStr}')"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="btn btn-danger" onclick="deletePaslon('${noStr}')"><i class="fas fa-trash"></i> Hapus</button>
+                                    <button class="btn btn-warning" onclick="editPaslon('${noStr}')">✏️ Edit</button>
+                                    <button class="btn btn-danger" onclick="deletePaslon('${noStr}')">🗑️ Hapus</button>
                                 </div>
                             </td>
                         </tr>`;
@@ -504,7 +524,7 @@
             document.getElementById("imgPreview").classList.add("hidden");
         }
 
-        document.getElementById("btnSimpanPaslon").innerHTML = '<i class="fas fa-sync-alt"></i> Update Paslon';
+        document.getElementById("btnSimpanPaslon").innerHTML = '🔄 Update Paslon';
         document.getElementById("btnBatalEdit").classList.remove("hidden");
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -513,7 +533,7 @@
         document.getElementById("formPaslon").reset();
         base64Foto = "";
         document.getElementById("imgPreview").classList.add("hidden");
-        document.getElementById("btnSimpanPaslon").innerHTML = '<i class="fas fa-save"></i> Simpan Data Paslon';
+        document.getElementById("btnSimpanPaslon").innerHTML = '💾 Simpan Data Paslon';
         document.getElementById("btnBatalEdit").classList.add("hidden");
     }
 
@@ -523,7 +543,8 @@
                 const response = await fetch(SCRIPT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({ action: "deletePaslon", no: no })
+                    body: JSON.stringify({ action: "deletePaslon", no: no }),
+                    redirect: "follow"
                 });
                 const result = await response.json();
                 
@@ -542,13 +563,19 @@
     function confirmDeleteAllPaslon() {
         showCustomConfirm("PERINGATAN! Apakah Anda yakin ingin MENGHAPUS SELURUH DATA PASLON?", async function() {
             try {
-                await fetch(SCRIPT_URL, {
+                const response = await fetch(SCRIPT_URL, {
                     method: "POST",
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({ action: "deleteAllPaslon" })
+                    body: JSON.stringify({ action: "deleteAllPaslon" }),
+                    redirect: "follow"
                 });
-                showCustomAlert("Seluruh data paslon berhasil dihapus!", "SUKSES");
-                loadPaslonData();
+                const result = await response.json();
+                if(result.success) {
+                    showCustomAlert("Seluruh data paslon berhasil dihapus!", "SUKSES");
+                    loadPaslonData();
+                } else {
+                    showCustomAlert("Gagal menghapus data paslon.", "ERROR");
+                }
             } catch (err) {
                 showCustomAlert("Gagal menghapus data paslon.", "ERROR");
             }
@@ -560,7 +587,7 @@
         loadRealCountData();
         
         if (!autoUpdateTimer) {
-            autoUpdateTimer = setInterval(loadRealCountData, 1000);
+            autoUpdateTimer = setInterval(loadRealCountData, 2000);
         }
     }
 
@@ -619,7 +646,7 @@
         isFetchingVote = true;
 
         try {
-            const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`);
+            const res = await fetch(`${SCRIPT_URL}?action=getDashboardEVoting&t=${Date.now()}`, { redirect: 'follow' });
             const data = await res.json();
 
             const tbodyVote = document.getElementById("tableHasilVote");
