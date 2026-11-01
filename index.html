@@ -39,13 +39,11 @@
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
 
     .header-title {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .badge-top {
@@ -71,6 +69,15 @@
       color: #38ef7d;
       margin-top: 6px;
       text-transform: uppercase;
+    }
+
+    .divider {
+      border: none;
+      height: 3px;
+      background: #00f2fe;
+      box-shadow: 0 0 8px #00f2fe;
+      margin: 18px 0;
+      border-radius: 2px;
     }
 
     .clock-card {
@@ -118,9 +125,7 @@
       color: #ffffff;
     }
 
-    input[type="text"]:focus {
-      border-color: #38ef7d;
-    }
+    input[type="text"]:focus { border-color: #38ef7d; }
 
     .btn {
       width: 100%;
@@ -133,6 +138,10 @@
       cursor: pointer;
       transition: 0.2s;
       line-height: 1.4;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     .btn:hover {
@@ -168,9 +177,7 @@
       line-height: 1.6;
     }
 
-    .user-info span {
-      color: #ffffff;
-    }
+    .user-info span { color: #ffffff; }
 
     .paslon-container {
       display: flex;
@@ -237,10 +244,8 @@
 
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: rgba(15, 23, 42, 0.95);
       z-index: 1000;
       display: flex;
@@ -298,6 +303,8 @@
       <h2 class="sub-title">SMPN 1 RANCAH</h2>
     </div>
 
+    <hr class="divider">
+
     <!-- Section Login -->
     <div id="loginSection" class="login-box">
       <p style="margin-bottom: 18px; color: #00f2fe; font-size: 9px; line-height: 1.5;">
@@ -309,16 +316,16 @@
         <input type="text" id="nisInput" placeholder="Ketik NISN / Nama..." autocomplete="off">
       </div>
       
-      <button class="btn" id="btnLogin" onclick="prosesLogin()">MASUK SYSTEM</button>
+      <button class="btn" id="btnLogin" onclick="prosesLogin()">🚀 MASUK SYSTEM</button>
       <div id="loginError" class="error-msg hidden"></div>
     </div>
 
     <!-- Section Voting Paslon -->
     <div id="votingSection" class="hidden">
       <div class="clock-card">
-        <span id="clockDate">Memuat tanggal...</span>
+        <span>📅 <span id="clockDate">Memuat tanggal...</span></span>
         <span>|</span>
-        <span id="clockTime">00:00:00 WIB</span>
+        <span>⏰ <span id="clockTime">00:00:00 WIB</span></span>
       </div>
 
       <div class="user-info">
@@ -351,7 +358,7 @@
   <!-- [BAGIAN 3] LOGIKA JAVASCRIPT & KONEKSI BACKEND                         -->
   <!-- ====================================================================== -->
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzIwGFjjNek8aWxBMNTvkX80KjMmLQIl0vIUPSrSxrAVVqrDMzCJkxg-h6V4atniKTS/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBtS1XWR6e8pqbQ-YMeLULrNESwH6VxtlZ786XhBY5Dt7hcxEO56DX5_5bU8lJZr9J/exec";
 
     let currentNis = "";
     let currentNama = "";
@@ -387,7 +394,7 @@
 
       const btnYa = document.createElement('button');
       btnYa.className = 'btn';
-      btnYa.innerText = 'YA, PILIH';
+      btnYa.innerText = '✅ YA, PILIH';
       btnYa.onclick = function() {
         closeCustomModal();
         if (typeof onConfirm === 'function') {
@@ -397,7 +404,7 @@
 
       const btnBatal = document.createElement('button');
       btnBatal.className = 'btn btn-secondary';
-      btnBatal.innerText = 'BATAL';
+      btnBatal.innerText = '✖️ BATAL';
       btnBatal.onclick = function() {
         closeCustomModal();
       };
@@ -449,26 +456,26 @@
         return;
       }
 
-      btnLogin.innerText = "MEMERIKSA...";
+      btnLogin.innerText = "⏳ MEMERIKSA...";
       btnLogin.disabled = true;
 
       fetch(`${SCRIPT_URL}?action=verifikasi&nis=${encodeURIComponent(nis)}&t=${Date.now()}`, { redirect: 'follow' })
         .then(res => res.json())
         .then(response => {
-          btnLogin.innerText = "MASUK SYSTEM";
+          btnLogin.innerText = "🚀 MASUK SYSTEM";
           btnLogin.disabled = false;
 
           if (response.success) {
             currentNis = response.identityKey || nis;
             currentNama = response.nama; 
-            currentRole = response.role || "SISWA"; // MENANGKAP ROLE SISWA ATAU GURU
+            currentRole = response.role || "SISWA";
 
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('votingSection').classList.remove('hidden');
             
             document.getElementById('userName').innerText = response.nama;
             document.getElementById('userKelas').innerText = response.kelas;
-            document.getElementById('userNis').innerText = currentNis;
+            document.getElementById('userNis').innerText = currentNis || "-";
 
             loadPaslonDataForVoting();
           } else {
@@ -477,7 +484,7 @@
           }
         })
         .catch(() => {
-          btnLogin.innerText = "MASUK SYSTEM";
+          btnLogin.innerText = "🚀 MASUK SYSTEM";
           btnLogin.disabled = false;
           errorDiv.innerText = "Gagal terhubung ke server!";
           errorDiv.classList.remove('hidden');
@@ -517,7 +524,7 @@
                   <p>${formattedMisi}</p>
                 </div>
               </div>
-              <button class="btn btn-pilih">PILIH PASLON ${numFormatted}</button>
+              <button class="btn btn-pilih">🗳️ PILIH PASLON ${numFormatted}</button>
             `;
 
             const btnPilih = cardDiv.querySelector('.btn-pilih');
@@ -535,38 +542,38 @@
       }
     }
 
-function prosesSimpanSuara(namaPaslon, labelPaslon) {
-  showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
+    function prosesSimpanSuara(namaPaslon, labelPaslon) {
+      showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
 
-    let nisKirim = currentRole === "GURU" ? "" : currentNis;
+        let nisKirim = (currentRole === "GURU") ? "" : currentNis;
 
-    const queryUrl = `${SCRIPT_URL}?action=simpan` +
-      `&nis=${encodeURIComponent(nisKirim)}` +
-      `&nama=${encodeURIComponent(currentNama)}` +
-      `&pilihan=${encodeURIComponent(namaPaslon)}` +
-      `&role=${encodeURIComponent(currentRole)}` +
-      `&t=${Date.now()}`;
+        const queryUrl = `${SCRIPT_URL}?action=simpan` +
+          `&nis=${encodeURIComponent(nisKirim)}` +
+          `&nama=${encodeURIComponent(currentNama)}` +
+          `&pilihan=${encodeURIComponent(namaPaslon)}` +
+          `&role=${encodeURIComponent(currentRole)}` +
+          `&t=${Date.now()}`;
 
-    fetch(queryUrl, { method: "GET", redirect: "follow" })
-      .then(res => res.json())
-      .then(response => {
-        if (response.success) {
-          showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
-            resetToHome();
+        fetch(queryUrl, { method: "GET", redirect: "follow" })
+          .then(res => res.json())
+          .then(response => {
+            if (response.success) {
+              showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
+                resetToHome();
+              });
+            } else {
+              showCustomAlert(response.message || "Gagal menyimpan suara.", "PERINGATAN", function() {
+                resetToHome();
+              });
+            }
+          })
+          .catch(() => {
+            showCustomAlert("Terjadi kesalahan koneksi saat menyimpan suara.", "ERROR KONEKSI", function() {
+              resetToHome();
+            });
           });
-        } else {
-          showCustomAlert(response.message || "Gagal menyimpan suara.", "PERINGATAN", function() {
-            resetToHome();
-          });
-        }
-      })
-      .catch(() => {
-        showCustomAlert("Terjadi kesalahan koneksi saat menyimpan suara.", "ERROR KONEKSI", function() {
-          resetToHome();
-        });
       });
-  });
-}
-</script>
+    }
+  </script>
 </body>
 </html>
