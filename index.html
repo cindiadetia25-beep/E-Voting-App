@@ -535,38 +535,40 @@
       }
     }
 
-function prosesSimpanSuara(namaPaslon, labelPaslon) {
-  showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
+    function prosesSimpanSuara(namaPaslon, labelPaslon) {
+      showCustomConfirm("Apakah Anda yakin memilih " + labelPaslon + " (" + namaPaslon + ")?", function() {
+        
+        // JIKA GURU, VAR NISKIRIM DIKOSONGKAN AGAR KOLOM A DIPASTIKAN KOSONG
+        let nisKirim = currentRole === "GURU" ? "" : currentNis;
 
-    let nisKirim = currentRole === "GURU" ? "" : currentNis;
+        const queryUrl = `${SCRIPT_URL}?action=simpan` +
+          `&nis=${encodeURIComponent(nisKirim)}` +
+          `&nama=${encodeURIComponent(currentNama)}` +
+          `&pilihan=${encodeURIComponent(namaPaslon)}` +
+          `&role=${encodeURIComponent(currentRole)}` +
+          `&t=${Date.now()}`;
 
-    const queryUrl = `${SCRIPT_URL}?action=simpan` +
-      `&nis=${encodeURIComponent(nisKirim)}` +
-      `&nama=${encodeURIComponent(currentNama)}` +
-      `&pilihan=${encodeURIComponent(namaPaslon)}` +
-      `&role=${encodeURIComponent(currentRole)}` +
-      `&t=${Date.now()}`;
-
-    fetch(queryUrl, { method: "GET", redirect: "follow" })
-      .then(res => res.json())
-      .then(response => {
-        if (response.success) {
-          showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
-            resetToHome();
+        fetch(queryUrl, { method: "GET", redirect: "follow" })
+          .then(res => res.json())
+          .then(response => {
+            if (response.success) {
+              showCustomAlert("Terima kasih! Suara Anda telah berhasil disimpan.", "SUKSES MEMILIH", function() {
+                resetToHome();
+              });
+            } else {
+              showCustomAlert(response.message || "Gagal menyimpan suara.", "PERINGATAN", function() {
+                resetToHome();
+              });
+            }
+          })
+          .catch(() => {
+            showCustomAlert("Terjadi kesalahan koneksi saat menyimpan suara.", "ERROR KONEKSI", function() {
+              resetToHome();
+            });
           });
-        } else {
-          showCustomAlert(response.message || "Gagal menyimpan suara.", "PERINGATAN", function() {
-            resetToHome();
-          });
-        }
-      })
-      .catch(() => {
-        showCustomAlert("Terjadi kesalahan koneksi saat menyimpan suara.", "ERROR KONEKSI", function() {
-          resetToHome();
-        });
+
       });
-  });
-}
-  </script>
+    }
+</script>
 </body>
 </html>
