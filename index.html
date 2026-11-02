@@ -46,6 +46,20 @@
       margin-bottom: 16px;
     }
 
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 6px;
+    }
+
+    .header-logo {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+
     .badge-top {
       display: inline-block;
       padding: 6px 12px;
@@ -288,6 +302,7 @@
       .container { padding: 12px; }
       .card-paslon { flex: 1 1 100%; }
       .btn { font-size: 9px; padding: 10px; }
+      .header-logo { width: 35px; height: 35px; }
     }
   </style>
 </head>
@@ -299,7 +314,11 @@
   <div class="container">
     <div class="header-title">
       <span class="badge-top">E - VOTING RESMI</span>
-      <h1 class="main-title">E-VOTING KETUA & WAKIL OSIS</h1>
+      <div class="header-content">
+        <img src="assets/logo-kiri.png" alt="Logo Kiri" class="header-logo" onerror="this.style.display='none'">
+        <h1 class="main-title">E-VOTING KETUA & WAKIL OSIS</h1>
+        <img src="assets/logo-kanan.png" alt="Logo Kanan" class="header-logo" onerror="this.style.display='none'">
+      </div>
       <h2 class="sub-title">SMPN 1 RANCAH</h2>
     </div>
 
