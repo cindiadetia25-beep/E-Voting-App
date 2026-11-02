@@ -30,10 +30,24 @@
         .container { max-width: 1000px; margin: 0 auto; width: 100%; }
 
         header { text-align: center; margin-bottom: 20px; }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 8px;
+        }
+
+        .header-logo {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+        }
+
         header h1 { 
             color: #00d2ff; 
             font-size: clamp(0.9rem, 2.2vw, 1.4rem); 
-            margin-bottom: 8px; 
             line-height: 1.4;
         }
         header p { color: #38ef7d; font-size: clamp(0.55rem, 1.2vw, 0.75rem); line-height: 1.5; }
@@ -212,6 +226,7 @@
             .card { padding: 12px; }
             .btn { width: 100%; }
             .action-btns { flex-direction: column; }
+            .header-logo { width: 40px; height: 40px; }
         }
     </style>
 </head>
@@ -222,7 +237,11 @@
 <!-- ====================================================================== -->
 <div class="container">
     <header>
-        <h1>DASHBOARD ADMIN E-VOTING</h1>
+        <div class="header-content">
+            <img src="assets/logo-kiri.png" alt="Logo Kiri" class="header-logo" onerror="this.style.display='none'">
+            <h1>DASHBOARD ADMIN E-VOTING</h1>
+            <img src="assets/logo-kanan.png" alt="Logo Kanan" class="header-logo" onerror="this.style.display='none'">
+        </div>
         <p>SMPN 1 Rancah - Sistem Pemilihan OSIS</p>
         <div class="clock-box">
             <span>⏰</span>
