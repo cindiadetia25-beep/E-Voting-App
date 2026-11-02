@@ -535,7 +535,7 @@
         }
     }
 
-    function editPaslon(no) {
+function editPaslon(no) {
         const p = paslonCache.find(item => item.no.toString() === no.toString());
         if (!p) return;
 
@@ -567,8 +567,22 @@
         document.getElementById("btnBatalEdit").classList.add("hidden");
     }
 
+    // =========================================================================
+    // [PERBAIKAN FITUR MODAL CONFIRM AGAR BISA MENJALANKAN ASYNC / FETCH]
+    // =========================================================================
+    async function executeConfirmAction() {
+        const actionToRun = confirmActionHandler;
+        closeCustomAlert();
+        if (typeof actionToRun === 'function') {
+            await actionToRun();
+        }
+    }
+
     function deletePaslon(no) {
         showCustomConfirm(`Apakah Anda yakin ingin menghapus Paslon No. ${no}?`, async function() {
+            // Tampilkan indikator proses
+            showCustomAlert("Sedang menghapus data paslon...", "PROSES SERVER");
+            
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: "POST",
@@ -585,13 +599,16 @@
                     showCustomAlert(result.message || "Gagal menghapus paslon.", "ERROR");
                 }
             } catch (err) {
-                showCustomAlert("Gagal terhubung ke server untuk menghapus paslon.", "ERROR");
+                showCustomAlert("Gagal terhubung ke server untuk menghapus paslon.", "ERROR KONEKSI");
             }
         });
     }
 
     function confirmDeleteAllPaslon() {
         showCustomConfirm("PERINGATAN! Apakah Anda yakin ingin MENGHAPUS SELURUH DATA PASLON?", async function() {
+            // Tampilkan indikator proses
+            showCustomAlert("Sedang menghapus seluruh paslon...", "PROSES SERVER");
+
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: "POST",
@@ -604,10 +621,10 @@
                     showCustomAlert("Seluruh data paslon berhasil dihapus!", "SUKSES");
                     loadPaslonData();
                 } else {
-                    showCustomAlert("Gagal menghapus data paslon.", "ERROR");
+                    showCustomAlert(result.message || "Gagal menghapus data paslon.", "ERROR");
                 }
             } catch (err) {
-                showCustomAlert("Gagal menghapus data paslon.", "ERROR");
+                showCustomAlert("Gagal terhubung ke server untuk menghapus data paslon.", "ERROR KONEKSI");
             }
         });
     }
