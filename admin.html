@@ -262,15 +262,15 @@
 
     <div class="card">
         <h2>✏️ Kelola Calon, Visi, Misi & Foto</h2>
-        <form id="formCalon" onsubmit="savePaslon(event)">
+        <form id="formPaslon" onsubmit="savePaslon(event)">
             <div class="form-grid">
                 <div class="form-group">
-                    <label>No. Urut calon *</label>
-                    <input type="number" id="calonNo" min="01" placeholder="Ex: 01" required>
+                    <label>No. Urut Calon *</label>
+                    <input type="number" id="paslonNo" min="1" placeholder="Ex: 1" required>
                 </div>
                 <div class="form-group">
-                    <label>Nama calon *</label>
-                    <input type="text" id="calonNama" placeholder="Ex: Ahmad" required>
+                    <label>Nama Calon *</label>
+                    <input type="text" id="paslonNama" placeholder="Ex: Ahmad" required>
                 </div>
                 <div class="form-group">
                     <label>Upload Foto (Opsional)</label>
@@ -279,16 +279,16 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Visi calon (Opsional)</label>
-                <textarea id="calonVisi" placeholder="Tuliskan Visi Calon..."></textarea>
+                <label>Visi Calon (Opsional)</label>
+                <textarea id="paslonVisi" placeholder="Tuliskan Visi Paslon..."></textarea>
             </div>
             <div class="form-group">
-                <label>Misi calon (Opsional)</label>
-                <textarea id="calonMisi" placeholder="Tuliskan Misi Calon..."></textarea>
+                <label>Misi Calon (Opsional)</label>
+                <textarea id="paslonMisi" placeholder="Tuliskan Misi Paslon..."></textarea>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button type="submit" class="btn" id="btnSimpanCalon">
-                    💾 Simpan Data calon
+                <button type="submit" class="btn" id="btnSimpanPaslon">
+                    💾 Simpan Data Paslon
                 </button>
                 <button type="button" class="btn btn-secondary hidden" id="btnBatalEdit" onclick="batalEdit()">
                     ✖️ Batal Edit
@@ -296,7 +296,7 @@
             </div>
         </form>
 
-        <h3 style="color: #00d2ff; margin-top: 20px; margin-bottom: 12px; font-size: 10px;">Daftar Calon Terdaftar</h3>
+        <h3 style="color: #00d2ff; margin-top: 20px; margin-bottom: 12px; font-size: 10px;">Daftar Paslon Terdaftar</h3>
         <div class="table-responsive">
             <table>
                 <thead>
@@ -309,8 +309,8 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="tableCalonAdmin">
-                    <tr><td colspan="6" style="text-align:center;">Memuat data calon...</td></tr>
+                <tbody id="tablePaslonAdmin">
+                    <tr><td colspan="6" style="text-align:center;">Memuat data paslon...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -374,7 +374,6 @@
         </div>
     </div>
 </div>
-
 <!-- ====================================================================== -->
 <!-- [BAGIAN 3] LOGIKA JAVASCRIPT KONTROL ADMIN (EDIT & HAPUS PASLON)        -->
 <!-- ====================================================================== -->
