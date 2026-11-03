@@ -256,21 +256,21 @@
             📊 REAL COUNT / PEROLEHAN SUARA
         </button>
         <button class="btn btn-danger" onclick="confirmDeleteAllPaslon()">
-            🗑️ HAPUS SEMUA PASLON
+            🗑️ HAPUS SEMUA CALON
         </button>
     </div>
 
     <div class="card">
-        <h2>✏️ Kelola Paslon, Visi, Misi & Foto</h2>
-        <form id="formPaslon" onsubmit="savePaslon(event)">
+        <h2>✏️ Kelola calon, Visi, Misi & Foto</h2>
+        <form id="formCalon" onsubmit="savePaslon(event)">
             <div class="form-grid">
                 <div class="form-group">
-                    <label>No. Urut Paslon *</label>
-                    <input type="number" id="paslonNo" min="1" placeholder="Ex: 1" required>
+                    <label>No. Urut calon *</label>
+                    <input type="number" id="calonNo" min="1" placeholder="Ex: 1" required>
                 </div>
                 <div class="form-group">
-                    <label>Nama Paslon (Ketua & Wakil) *</label>
-                    <input type="text" id="paslonNama" placeholder="Ex: Ahmad & Siti" required>
+                    <label>Nama calon (Ketua & Wakil) *</label>
+                    <input type="text" id="calonNama" placeholder="Ex: Ahmad" required>
                 </div>
                 <div class="form-group">
                     <label>Upload Foto (Opsional)</label>
@@ -279,16 +279,16 @@
                 </div>
             </div>
             <div class="form-group">
-                <label>Visi Paslon (Opsional)</label>
-                <textarea id="paslonVisi" placeholder="Tuliskan Visi Paslon..."></textarea>
+                <label>Visi calon (Opsional)</label>
+                <textarea id="calonVisi" placeholder="Tuliskan Visi Calon..."></textarea>
             </div>
             <div class="form-group">
-                <label>Misi Paslon (Opsional)</label>
-                <textarea id="paslonMisi" placeholder="Tuliskan Misi Paslon..."></textarea>
+                <label>Misi calon (Opsional)</label>
+                <textarea id="calonMisi" placeholder="Tuliskan Misi Calon..."></textarea>
             </div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button type="submit" class="btn" id="btnSimpanPaslon">
-                    💾 Simpan Data Paslon
+                <button type="submit" class="btn" id="btnSimpanCalon">
+                    💾 Simpan Data calon
                 </button>
                 <button type="button" class="btn btn-secondary hidden" id="btnBatalEdit" onclick="batalEdit()">
                     ✖️ Batal Edit
@@ -296,21 +296,21 @@
             </div>
         </form>
 
-        <h3 style="color: #00d2ff; margin-top: 20px; margin-bottom: 12px; font-size: 10px;">Daftar Paslon Terdaftar</h3>
+        <h3 style="color: #00d2ff; margin-top: 20px; margin-bottom: 12px; font-size: 10px;">Daftar Calon Terdaftar</h3>
         <div class="table-responsive">
             <table>
                 <thead>
                     <tr>
                         <th>No</th>
                         <th>Foto</th>
-                        <th>Nama Paslon</th>
+                        <th>Nama Calon</th>
                         <th>Visi</th>
                         <th>Misi</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="tablePaslonAdmin">
-                    <tr><td colspan="6" style="text-align:center;">Memuat data paslon...</td></tr>
+                <tbody id="tableCalonAdmin">
+                    <tr><td colspan="6" style="text-align:center;">Memuat data calon...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -350,8 +350,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>No. Paslon</th>
-                        <th>Nama Paslon</th>
+                        <th>No. Calon</th>
+                        <th>Nama Calon</th>
                         <th>Jumlah Suara</th>
                         <th>Persentase</th>
                     </tr>
