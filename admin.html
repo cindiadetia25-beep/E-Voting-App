@@ -628,12 +628,21 @@ function editPaslon(no) {
         });
     }
 
+let clockRealCountTimer = null; // Variable timer khusus jam modal
+
     function openRealCountModal() {
         document.getElementById("modalRealCount").style.display = "flex";
         loadRealCountData();
         
+        // Timer 1: Ambil data rekap suara dari server setiap 3 detik
         if (!autoUpdateTimer) {
-            autoUpdateTimer = setInterval(loadRealCountData, 2000);
+            autoUpdateTimer = setInterval(loadRealCountData, 3000);
+        }
+
+        // Timer 2: Jam UPDATE TERAKHIR realtime setiap 1 detik (Lancar tanpa lag)
+        updateRealCountClock();
+        if (!clockRealCountTimer) {
+            clockRealCountTimer = setInterval(updateRealCountClock, 1000);
         }
     }
 
@@ -643,6 +652,17 @@ function editPaslon(no) {
             clearInterval(autoUpdateTimer);
             autoUpdateTimer = null;
         }
+        if (clockRealCountTimer) {
+            clearInterval(clockRealCountTimer);
+            clockRealCountTimer = null;
+        }
+    }
+
+    function updateRealCountClock() {
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " WIB";
+        const timeEl = document.getElementById("lastUpdateTime");
+        if (timeEl) timeEl.innerText = timeStr;
     }
 
     function renderChart(labels, dataSuara) {
@@ -703,12 +723,19 @@ function editPaslon(no) {
                 const dataSuara = [];
 
                 data.hasilVote.forEach(h => {
-                    labels.push(h.no);
+                    // Ekstrak angka saja (misal dari "1", "PASLON 01", dll)
+                    const rawNo = h.no.toString().replace(/[^0-9]/g, '');
+                    const numFormatted = parseInt(rawNo || h.no) < 10 ? "0" + parseInt(rawNo || h.no) : rawNo;
+                    
+                    // Format tampilan menjadi CALON 01, CALON 02, dst.
+                    const labelCalon = "CALON " + numFormatted;
+
+                    labels.push(labelCalon);
                     dataSuara.push(h.totalSuara);
 
                     tbodyVote.innerHTML += `
                         <tr>
-                            <td><strong>${h.no}</strong></td>
+                            <td><strong>${labelCalon}</strong></td>
                             <td>${h.nama}</td>
                             <td>${h.totalSuara} Suara</td>
                             <td>${h.persentase}%</td>
@@ -716,7 +743,6 @@ function editPaslon(no) {
                 });
 
                 document.getElementById("totalSuaraMasuk").innerText = (data.totalSuaraMasuk || 0).toLocaleString('id-ID');
-                document.getElementById("lastUpdateTime").innerText = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + " WIB";
 
                 renderChart(labels, dataSuara);
             } else {
