@@ -226,16 +226,16 @@
     }
 
     .paslon-img {
-      width: 100%;
-      max-width: 180px;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 8px;
-      border: 2px solid #00f2fe;
-      margin: 0 auto 10px auto;
-      display: block;
-      background: #000;
-    }
+    width: 100%;                  /* Lebar mengikuti container */
+    max-width: 200px;             /* Batas lebar maksimal agar tidak terlalu besar */
+    height: 220px;                /* Tinggi ideal untuk foto rasio 3x4 / pasfoto */
+    object-fit: contain;          /* MENJAGA FOTO UTUH, PROPORSIONAL & TIDAK TERPOTONG */
+    object-position: center;       /* Memastikan posisi gambar tepat di tengah */
+    border-radius: 8px;           /* Sudut melengkung halus */
+    display: block;
+    margin: 0 auto 12px auto;     /* Posisikan persis di tengah card */
+    background-color: transparent;/* Background bersih */
+}
 
     .visi-misi {
       text-align: left;
