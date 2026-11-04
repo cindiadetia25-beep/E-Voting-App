@@ -484,7 +484,7 @@
         } catch (err) {
             showCustomAlert("Gagal terhubung ke server.", "ERROR");
         } finally {
-            btn.innerHTML = '💾 Simpan Data Paslon';
+            btn.innerHTML = '💾 Simpan Data Calon';
             btn.disabled = false;
         }
     }
@@ -527,7 +527,7 @@
                 });
             } else {
                 paslonCache = [];
-                tbodyPaslon.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Belum ada data paslon.</td></tr>";
+                tbodyPaslon.innerHTML = "<tr><td colspan='6' style='text-align:center;'>Belum ada data calon.</td></tr>";
             }
         } catch (err) {
             console.error("Error loading paslon data:", err);
@@ -562,7 +562,7 @@ function editPaslon(no) {
         document.getElementById("formPaslon").reset();
         base64Foto = "";
         document.getElementById("imgPreview").classList.add("hidden");
-        document.getElementById("btnSimpanPaslon").innerHTML = '💾 Simpan Data Paslon';
+        document.getElementById("btnSimpanPaslon").innerHTML = '💾 Simpan Data Calon';
         document.getElementById("btnBatalEdit").classList.add("hidden");
     }
 
